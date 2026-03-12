@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next dev",
     "start:prod": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "clean": "node -e \"const fs=require('fs'),p='.next';fs.existsSync(p)&&fs.rmSync(p,{recursive:true});console.log('Cleaned .next')\""
   },
   "dependencies": {
     "next": "14.2.21",

@@ -2,13 +2,14 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { authLogin, authRegister, AuthResponse } from "./api";
+import { authGetProfile, authLogin, authRegister, AuthResponse } from "./api";
 
 interface User {
   userId: number;
   email: string;
   nom: string;
   prenom: string;
+  profilePhotoBase64?: string | null;
 }
 
 interface AuthContextValue {
@@ -23,7 +24,9 @@ interface AuthContextValue {
     telephone: string;
     password: string;
   }) => Promise<void>;
-  logout: () => void;
+  /** @param options.redirectTo - si fourni, redirection silencieuse (replace) vers cette URL ; sinon /login */
+  logout: (options?: { redirectTo?: string }) => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -65,6 +68,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(USER_KEY, JSON.stringify(u));
   }, []);
 
+  const refreshUser = useCallback(async () => {
+    const t = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
+    if (!t) return;
+    try {
+      const profile = await authGetProfile();
+      setUser((prev) => {
+        if (!prev) return prev;
+        const next = {
+          ...prev,
+          nom: profile.nom,
+          prenom: profile.prenom,
+          profilePhotoBase64: profile.profilePhotoBase64 ?? null,
+        };
+        if (typeof window !== "undefined") {
+          localStorage.setItem(USER_KEY, JSON.stringify(next));
+        }
+        return next;
+      });
+    } catch {
+      // ignore
+    }
+  }, []);
+
   const login = useCallback(
     async (email: string, password: string) => {
       const res = await authLogin({ email, password });
@@ -89,17 +115,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [persist, router]
   );
 
-  const logout = useCallback(() => {
+  const logout = useCallback((options?: { redirectTo?: string }) => {
     setUser(null);
     setToken(null);
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(USER_KEY);
-    router.push("/login");
+    const target = options?.redirectTo;
+    if (target) router.replace(target);
+    else router.push("/login");
   }, [router]);
 
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, login, register, logout }}
+      value={{ user, token, loading, login, register, logout, refreshUser }}
     >
       {children}
     </AuthContext.Provider>

@@ -3,11 +3,11 @@
 import { useAuth } from "@/lib/auth-context";
 import { localeLabels, t, type Locale } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
+import { isApiError } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
 export default function LoginPage() {
   const { login, token } = useAuth();
   const { locale, setLocale } = useLanguage();
@@ -30,7 +30,11 @@ export default function LoginPage() {
     try {
       await login(email, password);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur de connexion");
+      if (isApiError(err) && err.code === "INVALID_CREDENTIALS") {
+        setError(t("authErrorInvalidCredentials", locale));
+      } else {
+        setError(t("authErrorGeneric", locale));
+      }
     } finally {
       setLoading(false);
     }
@@ -82,51 +86,63 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-neutral-950 text-neutral-50">
+    <div className="relative min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-950 to-neutral-900 text-neutral-50">
+      {/* Retour accueil */}
+      <div className="absolute left-4 top-4 z-30 md:left-6 md:top-5">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/60 px-3 py-1.5 text-[11px] font-medium text-emerald-200 shadow-lg backdrop-blur transition hover:border-emerald-400 hover:bg-emerald-900/40 hover:text-emerald-100"
+        >
+          <span aria-hidden>←</span>
+          {t("authBackToHome", locale)}
+        </Link>
+      </div>
       {/* Sélecteur de langue global, toujours visible en haut à droite */}
       <div className="pointer-events-none absolute right-4 top-4 z-30 flex justify-end md:right-6 md:top-5">
-        <div
-          ref={langRef}
-          className="pointer-events-auto relative"
-        >
-          <button
-            type="button"
-            onClick={() => setLangOpen((o) => !o)}
-            className="flex items-center gap-1.5 rounded-full border border-neutral-800 bg-black/75 px-3 py-1.5 text-[11px] text-neutral-200 shadow-lg shadow-black/40 backdrop-blur transition hover:border-emerald-400/70 hover:text-neutral-50"
-            aria-haspopup="true"
-            aria-expanded={langOpen}
+        <div className="pointer-events-auto flex items-center gap-2">
+          <div
+            ref={langRef}
+            className="relative"
           >
-            <FlagIcon code={locale} />
-            <span className="hidden sm:inline">
-              {localeLabels[locale]}
-            </span>
-            <span className="text-[9px] sm:text-[10px]" aria-hidden>
-              {langOpen ? "▲" : "▼"}
-            </span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setLangOpen((o) => !o)}
+              className="flex items-center gap-1.5 rounded-full border border-neutral-800 bg-black/75 px-3 py-1.5 text-[11px] text-neutral-200 shadow-lg shadow-black/40 backdrop-blur transition hover:border-emerald-400/70 hover:text-neutral-50"
+              aria-haspopup="true"
+              aria-expanded={langOpen}
+            >
+              <FlagIcon code={locale} />
+              <span className="hidden sm:inline">
+                {localeLabels[locale]}
+              </span>
+              <span className="text-[9px] sm:text-[10px]" aria-hidden>
+                {langOpen ? "▲" : "▼"}
+              </span>
+            </button>
 
-          {langOpen && (
-            <div className="absolute right-0 z-40 mt-1 w-40 rounded-2xl border border-neutral-800 bg-neutral-950/95 p-1 text-[11px] shadow-xl shadow-black/60">
-              {languages.map((lang) => (
-                <button
-                  key={lang}
-                  type="button"
-                  onClick={() => {
-                    setLocale(lang);
-                    setLangOpen(false);
-                  }}
-                  className={`flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-left transition ${
-                    locale === lang
-                      ? "bg-emerald-500/15 text-emerald-200"
-                      : "text-neutral-300 hover:bg-neutral-900 hover:text-neutral-50"
-                  }`}
-                >
-                  <FlagIcon code={lang} />
-                  <span>{localeLabels[lang]}</span>
-                </button>
-              ))}
-            </div>
-          )}
+            {langOpen && (
+              <div className="absolute right-0 z-40 mt-1 w-40 rounded-2xl border border-neutral-800 bg-neutral-950/95 p-1 text-[11px] shadow-xl shadow-black/60">
+                {languages.map((lang) => (
+                  <button
+                    key={lang}
+                    type="button"
+                    onClick={() => {
+                      setLocale(lang);
+                      setLangOpen(false);
+                    }}
+                    className={`flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-left transition ${
+                      locale === lang
+                        ? "bg-emerald-500/15 text-emerald-200"
+                        : "text-neutral-300 hover:bg-neutral-900 hover:text-neutral-50"
+                    }`}
+                  >
+                    <FlagIcon code={lang} />
+                    <span>{localeLabels[lang]}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -142,10 +158,10 @@ export default function LoginPage() {
             className="object-cover opacity-70"
           />
           <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/40 to-emerald-900/30" />
-          <div className="relative flex h-full flex-col justify-between px-8 py-10 md:px-10 lg:px-14">
-            <div className="space-y-8 md:space-y-10">
-              <div className="flex items-center gap-5 md:gap-6">
-                <div className="relative h-20 w-20 md:h-24 md:w-24 overflow-hidden rounded-[2.4rem] border border-emerald-400/70 bg-black/70">
+          <div className="relative flex h-full flex-col justify-between px-8 pt-24 pb-10 md:px-10 md:pt-28 lg:px-14 lg:pt-32">
+            <div className="space-y-10 md:space-y-12">
+              <div className="flex items-center gap-6 md:gap-8">
+                <div className="relative h-20 w-20 md:h-24 md:w-24 shrink-0 overflow-hidden rounded-[2.4rem] border-2 border-emerald-400/80 bg-white shadow-lg shadow-emerald-900/30">
                   <Image
                     src="/digikarte-logo.png"
                     alt="Logo DigiKarte"
@@ -154,20 +170,20 @@ export default function LoginPage() {
                     className="object-contain p-2.5 md:p-3"
                   />
                 </div>
-                <div className="leading-tight">
-                  <p className="font-forum text-3xl md:text-4xl tracking-[0.22em] text-emerald-300">
+                <div className="leading-tight min-w-0">
+                  <p className="font-forum text-3xl md:text-4xl tracking-[0.22em] text-emerald-400">
                     DIGIKARTE
                   </p>
-                  <p className="mt-2 text-[10px] md:text-[11px] uppercase tracking-[0.32em] text-neutral-400">
-                    Digital menu · QR code app
+                  <p className="mt-3 text-[11px] md:text-xs font-medium italic tracking-wide text-cyan-200/95">
+                    {t("authSlogan", locale)}
                   </p>
                 </div>
               </div>
               <div className="max-w-md space-y-3">
-                <p className="font-forum text-2xl md:text-[2rem] text-neutral-50">
+                <p className="font-forum text-2xl md:text-[2rem] text-emerald-50/95">
                   {t("heroSubtitle", locale)}
                 </p>
-                <p className="text-sm text-neutral-400">
+                <p className="text-sm text-emerald-200/70">
                   {t("feature3Text", locale)}
                 </p>
               </div>
@@ -179,10 +195,10 @@ export default function LoginPage() {
         </div>
 
         {/* Formulaire droite */}
-        <div className="flex items-center justify-center px-6 py-10 md:px-8 lg:px-10">
+        <div className="flex items-center justify-center px-4 pt-20 pb-10 md:px-8 md:pt-10 lg:px-10">
           <div className="w-full max-w-md">
-            <div className="mb-8 flex items-center gap-3 md:hidden">
-              <div className="relative h-12 w-12 overflow-hidden rounded-3xl border border-emerald-400/70 bg-neutral-900">
+            <div className="mb-8 flex items-center gap-4 md:hidden">
+              <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-3xl border-2 border-emerald-400/80 bg-white shadow-md">
                 <Image
                   src="/digikarte-logo.png"
                   alt="DigiKarte"
@@ -191,18 +207,19 @@ export default function LoginPage() {
                   className="object-contain p-2"
                 />
               </div>
-              <div>
-                <p className="font-forum text-2xl tracking-[0.24em] text-emerald-300">
+              <div className="min-w-0">
+                <p className="font-forum text-2xl tracking-[0.24em] text-emerald-400">
                   DIGIKARTE
                 </p>
-                <p className="text-[10px] uppercase tracking-[0.28em] text-neutral-500">
-                  Espace administrateur
+                <p className="mt-1.5 text-[11px] font-medium italic tracking-wide text-cyan-200/90">
+                  {t("authSlogan", locale)}
                 </p>
               </div>
             </div>
 
             <div className="mb-8 space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-300">
+              <p className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-200">
+                <span className="inline-block h-1 w-1 rounded-full bg-emerald-400" />
                 {t("authLoginKicker", locale)}
               </p>
               <h1 className="font-forum text-3xl text-neutral-50">
@@ -221,13 +238,13 @@ export default function LoginPage() {
 
             <form
               onSubmit={handleSubmit}
-              className="space-y-5 rounded-3xl border border-neutral-900 bg-neutral-950/80 p-6 shadow-[0_18px_45px_rgba(0,0,0,0.75)]"
+              className="space-y-6 rounded-[26px] border border-neutral-900/80 bg-neutral-950/90 p-6 shadow-[0_18px_55px_rgba(0,0,0,0.9)] backdrop-blur-sm md:p-7"
             >
               <div className="space-y-4">
                 <div>
                   <label
                     htmlFor="email"
-                    className="mb-1.5 block text-xs font-medium uppercase tracking-[0.2em] text-neutral-400"
+                    className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.2em] text-amber-300"
                   >
                     {t("authEmailLabel", locale)}
                   </label>
@@ -237,14 +254,14 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full rounded-xl border border-neutral-800 bg-neutral-900/70 px-3 py-2.5 text-sm text-neutral-50 outline-none ring-0 placeholder:text-neutral-500 focus:border-emerald-400 focus:bg-neutral-900 focus:shadow-[0_0_0_1px_rgba(52,211,153,0.55)]"
-                    placeholder="vous@restaurant.ch"
+                    className="w-full rounded-2xl border border-neutral-800/80 bg-neutral-900/70 px-3.5 py-2.75 text-sm text-neutral-50 outline-none ring-0 placeholder:text-neutral-500 transition focus:border-emerald-400 focus:bg-neutral-900 focus:shadow-[0_0_0_1px_rgba(52,211,153,0.65)] focus:outline-none"
+                    placeholder={t("authBusinessEmailPlaceholder", locale)}
                   />
                 </div>
                 <div>
                   <label
                     htmlFor="password"
-                    className="mb-1.5 block text-xs font-medium uppercase tracking-[0.2em] text-neutral-400"
+                    className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.2em] text-amber-300"
                   >
                     {t("authPasswordLabel", locale)}
                   </label>
@@ -254,16 +271,19 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full rounded-xl border border-neutral-800 bg-neutral-900/70 px-3 py-2.5 text-sm text-neutral-50 outline-none ring-0 placeholder:text-neutral-500 focus:border-emerald-400 focus:bg-neutral-900 focus:shadow-[0_0_0_1px_rgba(52,211,153,0.55)]"
-                    placeholder="••••••••"
+                    className="w-full rounded-2xl border border-neutral-800/80 bg-neutral-900/70 px-3.5 py-2.75 text-sm text-neutral-50 outline-none ring-0 placeholder:text-neutral-500 transition focus:border-emerald-400 focus:bg-neutral-900 focus:shadow-[0_0_0_1px_rgba(52,211,153,0.65)] focus:outline-none"
+                    placeholder={t("authPasswordPlaceholder", locale)}
                   />
+                  <p className="mt-1 text-[11px] text-neutral-500">
+                    {t("authPasswordHint", locale)}
+                  </p>
                 </div>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-2 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-lg shadow-emerald-500/40 hover:bg-emerald-300 disabled:cursor-wait disabled:opacity-60"
+                className="mt-1.5 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400/95 px-4 py-2.75 text-sm font-semibold text-neutral-900 shadow-[0_16px_40px_rgba(16,185,129,0.45)] transition hover:-translate-y-0.5 hover:bg-emerald-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 disabled:translate-y-0 disabled:cursor-wait disabled:opacity-60"
               >
                 {loading
                   ? `${t("authLoginButton", locale)}…`

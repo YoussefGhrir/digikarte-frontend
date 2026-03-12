@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Forum, DM_Sans } from "next/font/google";
 import { AuthProvider } from "@/lib/auth-context";
 import { LanguageProvider } from "@/lib/language-context";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 const inter = Inter({
@@ -46,7 +47,12 @@ export default function RootLayout({
         className={`${inter.variable} ${jetbrainsMono.variable} ${forum.variable} ${dmSans.variable} antialiased`}
       >
         <AuthProvider>
-          <LanguageProvider>{children}</LanguageProvider>
+          <LanguageProvider>
+            <div className="flex min-h-screen flex-col bg-[var(--background)] text-[var(--foreground)]">
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </LanguageProvider>
         </AuthProvider>
       </body>
     </html>

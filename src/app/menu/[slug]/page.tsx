@@ -2,14 +2,14 @@
 
 import { menuPublicBySlug, type MenuPublicDto } from "@/lib/api";
 import { useLanguage } from "@/lib/language-context";
-import { localeLabels, t, type Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function PublicMenuPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const { locale, setLocale } = useLanguage();
+  const { locale } = useLanguage();
   const [menu, setMenu] = useState<MenuPublicDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -58,123 +58,108 @@ export default function PublicMenuPage() {
 
   return (
     <div className="min-h-screen font-dm" style={menuBg}>
-      {/* Header + langue */}
-      <header
-        className="sticky top-0 z-10 border-b px-4 py-4"
-        style={{
-          backgroundColor: "var(--eerie-black-4)",
-          borderColor: "rgba(0,0,0,0.15)",
-        }}
-      >
-        <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <span
-            className="font-forum text-xl tracking-wide"
-            style={{ color: "var(--gold)" }}
-          >
-            {menu.organizationName}
-          </span>
-          <div className="flex gap-2">
-            {(["de", "fr", "en"] as Locale[]).map((lang) => (
-              <button
-                key={lang}
-                type="button"
-                onClick={() => setLocale(lang)}
-                className="rounded px-3 py-1.5 text-sm font-bold uppercase tracking-wider transition"
-                style={{
-                  backgroundColor:
-                    locale === lang ? "var(--gold)" : "transparent",
-                  color: locale === lang ? "var(--smoky-black)" : "var(--gold)",
-                  border: "2px solid var(--gold)",
-                }}
+      {/* En-tête moderne avec logo circulaire et nom de l'établissement */}
+      <header className="px-4 pt-10 pb-4">
+        <div className="mx-auto flex max-w-3xl flex-col items-center text-center gap-4 sm:gap-5">
+          <div className="relative">
+            <div className="flex h-28 w-28 sm:h-32 sm:w-32 items-center justify-center rounded-full border-[3px] border-[var(--gold)] bg-[var(--eerie-black-4)] shadow-xl shadow-black/70 overflow-hidden">
+              {menu.organizationLogoBase64 ? (
+                <img
+                  src={`data:image/jpeg;base64,${menu.organizationLogoBase64}`}
+                  alt={menu.organizationName}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span className="text-2xl font-forum" style={{ color: "var(--gold)" }}>
+                  {menu.organizationName.charAt(0)}
+                </span>
+              )}
+            </div>
+            <div className="pointer-events-none absolute inset-0 -z-10 scale-125 rounded-full border border-[var(--gold)]/30 blur-[1px]" />
+          </div>
+          <div className="space-y-1.5 sm:space-y-2">
+            <h1 className="font-forum text-3xl sm:text-4xl md:text-5xl tracking-tight text-white">
+              {menu.organizationName}
+            </h1>
+            <p
+              className="text-[0.7rem] sm:text-xs font-semibold uppercase tracking-[0.3em]"
+              style={{ color: "var(--gold)" }}
+            >
+              {t("menu", locale)}
+            </p>
+            <p className="font-forum text-xl sm:text-2xl tracking-tight text-white/90">
+              {menu.title}
+            </p>
+            {menu.description && (
+              <p
+                className="mx-auto mt-2 max-w-xl text-sm md:text-base leading-relaxed"
+                style={{ color: "var(--quick-silver)" }}
               >
-                {localeLabels[lang]}
-              </button>
-            ))}
+                {menu.description}
+              </p>
+            )}
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-4 py-12">
-        {/* Titre menu */}
-        <p
-          className="mb-2 text-center text-sm font-bold uppercase tracking-[0.3em]"
-          style={{ color: "var(--gold)" }}
-        >
-          {t("menu", locale)}
-        </p>
-        <div
-          className="mx-auto mb-4 h-1 w-24"
-          style={{ backgroundColor: "var(--gold)" }}
-        />
-        <h1 className="font-forum text-center text-4xl tracking-tight md:text-5xl">
-          {menu.title}
-        </h1>
-        {menu.description && (
-          <p
-            className="mx-auto mt-4 max-w-2xl text-center text-base leading-relaxed"
-            style={{ color: "var(--quick-silver)" }}
-          >
-            {menu.description}
-          </p>
-        )}
+      <main className="mx-auto max-w-4xl px-3 pb-10 pt-4 sm:px-4 sm:pb-12 sm:pt-6">
 
-        {/* Liste des produits – cartes style Graine-de-cafe */}
-        <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {(menu.items ?? []).map((item) => (
-            <article
-              key={item.id}
-              className="group flex flex-col overflow-hidden rounded-3xl border-2 transition hover:border-[var(--gold)]"
-              style={{
-                backgroundColor: "var(--eerie-black-2)",
-                borderColor: "var(--white-alpha-20)",
-              }}
-            >
-              {item.imageUrl ? (
-                <div className="relative aspect-square overflow-hidden bg-[var(--eerie-black-4)]">
-                  <img
-                    src={item.imageUrl}
-                    alt=""
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
+        {/* Regrouper les produits par section (catégorie) */}
+        <div className="mt-10 space-y-8 sm:mt-14 sm:space-y-10">
+          {Object.entries(
+            (menu.items ?? []).reduce<Record<string, typeof menu.items>>(
+              (acc, item) => {
+                const key = (item.section || "").trim() || "_no_section";
+                if (!acc[key]) acc[key] = [];
+                acc[key].push(item);
+                return acc;
+              },
+              {}
+            )
+          ).map(([sectionKey, items]) => (
+            <section key={sectionKey}>
+              {sectionKey !== "_no_section" && (
+                <>
+                  <h2 className="font-forum text-2xl uppercase tracking-[0.3em] text-center md:text-left" style={{ color: "var(--gold)" }}>
+                    {sectionKey}
+                  </h2>
                   <div
-                    className="absolute inset-0 opacity-0 transition group-hover:opacity-100"
-                    style={{
-                      background:
-                        "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 100%)",
-                    }}
+                    className="mt-2 mb-4 h-px w-24 md:w-32"
+                    style={{ backgroundColor: "var(--gold)" }}
                   />
-                </div>
-              ) : (
-                <div
-                  className="flex aspect-square items-center justify-center"
-                  style={{
-                    backgroundColor: "var(--eerie-black-4)",
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                  }}
-                />
+                </>
               )}
-              <div className="flex flex-1 flex-col p-6 text-center">
-                <h2 className="font-forum text-2xl leading-tight text-white">
-                  {item.name}
-                </h2>
-                {item.description && (
-                  <p
-                    className="mt-2 flex-1 text-sm leading-relaxed"
-                    style={{ color: "var(--quick-silver)" }}
+              <div className="space-y-4">
+                {items.map((item) => (
+                  <article
+                    key={item.id}
+                    className="rounded-2xl border border-[var(--white-alpha-20)]/80 bg-[var(--eerie-black-2)]/90 px-4 py-3 md:px-6 md:py-4 shadow-sm shadow-black/50"
                   >
-                    {item.description}
-                  </p>
-                )}
-                {item.price != null && (
-                  <p
-                    className="mt-4 font-forum text-2xl font-medium"
-                    style={{ color: "var(--gold)" }}
-                  >
-                    {Number(item.price).toFixed(2)} €
-                  </p>
-                )}
+                    <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+                      <h3 className="font-forum text-xl text-white md:text-2xl">
+                        {item.name}
+                      </h3>
+                      {item.price != null && (
+                        <p
+                          className="font-forum text-lg md:text-xl"
+                          style={{ color: "var(--gold)" }}
+                        >
+                          {Number(item.price).toFixed(2)} €
+                        </p>
+                      )}
+                    </div>
+                    {item.description && (
+                      <p
+                        className="mt-1 text-sm leading-relaxed"
+                        style={{ color: "var(--quick-silver)" }}
+                      >
+                        {item.description}
+                      </p>
+                    )}
+                  </article>
+                ))}
               </div>
-            </article>
+            </section>
           ))}
         </div>
 

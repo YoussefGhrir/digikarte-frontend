@@ -1,89 +1,70 @@
 "use client";
 
-import { menuQrUrl } from "@/lib/api";
-import QRCode from "qrcode";
-import { useCallback, useEffect, useState } from "react";
+import { t } from "@/lib/i18n";
+import { useLanguage } from "@/lib/language-context";
 
-type QrModel = "classic" | "compact" | "high" | "rounded";
-
-const MODELS: { id: QrModel; label: string; size: number; level: "L" | "M" | "Q" | "H" }[] = [
-  { id: "classic", label: "Classique", size: 256, level: "M" },
-  { id: "compact", label: "Compact", size: 180, level: "L" },
-  { id: "high", label: "Haute redondance", size: 256, level: "H" },
-  { id: "rounded", label: "Grand format", size: 320, level: "M" },
-];
-
-interface QrDisplayProps {
+type QrDisplayProps = {
   menuId: number;
-  menuSlug?: string;
-}
+  menuSlug: string;
+};
 
-export function QrDisplay({ menuId, menuSlug }: QrDisplayProps) {
-  const [url, setUrl] = useState<string | null>(null);
-  const [error, setError] = useState("");
+export function QrDisplay({ menuSlug }: QrDisplayProps) {
+  const { locale } = useLanguage();
 
-  useEffect(() => {
-    menuQrUrl(menuId)
-      .then((res) => setUrl(res.url))
-      .catch(() => setError("Impossible de charger l'URL du QR"));
-  }, [menuId]);
+  const origin =
+    typeof window !== "undefined" && window.location.origin
+      ? window.location.origin
+      : "https://digikarte.de";
 
-  if (error) return <p className="text-sm text-red-600">{error}</p>;
-  if (!url) return <p className="text-stone-500">Chargement…</p>;
+  const url = `${origin}/menu/${menuSlug}`;
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(
+    url
+  )}`;
+
+  const handleOpenNewTab = () => {
+    if (typeof window !== "undefined") {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  };
 
   return (
-    <div className="space-y-6">
-      <h3 className="font-semibold text-stone-800">Modèles de QR</h3>
-      <p className="text-sm text-stone-500">
-        Les clients scannent le QR pour afficher le menu. Choisissez un modèle à imprimer ou partager.
-      </p>
-      <div className="grid gap-6 sm:grid-cols-2">
-        {MODELS.map((model) => (
-          <QrCard key={model.id} url={url} model={model} />
-        ))}
+    <section className="rounded-3xl border border-neutral-800 bg-gradient-to-r from-neutral-900/80 via-neutral-950/90 to-neutral-900/80 p-6 shadow-inner shadow-black/50">
+      <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h2 className="font-forum text-2xl text-neutral-50">
+            {t("menuQrTitle", locale)}
+          </h2>
+          <p className="mt-2 max-w-md text-sm text-neutral-300">
+            {t("menuQrSubtitle", locale)}
+          </p>
+          <div className="mt-4 flex flex-col gap-2">
+            <div className="rounded-2xl bg-neutral-950/70 px-3 py-2 text-xs text-emerald-200 border border-emerald-500/40">
+              <span className="font-mono text-[11px] break-all">{url}</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleOpenNewTab}
+              className="inline-flex cursor-pointer items-center justify-center rounded-full border border-amber-500/80 bg-amber-500/10 px-4 py-1.5 text-[11px] font-semibold text-amber-200 hover:bg-amber-500 hover:text-neutral-950 transition"
+            >
+              {t("menuQrOpenLink", locale)}
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-4 flex flex-col items-center gap-3 md:mt-0">
+          <div className="rounded-2xl border border-neutral-800 bg-neutral-950/90 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.8)]">
+            <img
+              src={qrSrc}
+              alt={t("menuQrTitle", locale)}
+              className="h-56 w-56 rounded-xl bg-white p-2"
+            />
+          </div>
+          <p className="text-xs text-neutral-500">
+            {t("menuQrScanHint", locale)}
+          </p>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
-function QrCard({
-  url,
-  model,
-}: {
-  url: string;
-  model: (typeof MODELS)[0];
-}) {
-  const [dataUrl, setDataUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    const opts = {
-      width: model.size,
-      margin: 1,
-      errorCorrectionLevel: model.level,
-      color: { dark: "#171717", light: "#ffffff" },
-    };
-    QRCode.toDataURL(url, opts).then(setDataUrl);
-  }, [url, model.size, model.level]);
-
-  if (!dataUrl) return <div className="aspect-square animate-pulse rounded-xl bg-stone-200" />;
-
-  const isRounded = model.id === "rounded";
-
-  return (
-    <div className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
-      <p className="mb-3 text-sm font-medium text-stone-600">{model.label}</p>
-      <div
-        className={`mx-auto flex aspect-square max-w-[280px] items-center justify-center bg-white ${
-          isRounded ? "rounded-3xl p-4" : "p-2"
-        }`}
-      >
-        <img
-          src={dataUrl}
-          alt={`QR ${model.label}`}
-          className="h-full w-full object-contain"
-        />
-      </div>
-      <p className="mt-2 break-all text-xs text-stone-400">{url}</p>
-    </div>
-  );
-}
