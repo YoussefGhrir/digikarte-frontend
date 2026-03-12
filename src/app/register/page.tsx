@@ -1,0 +1,344 @@
+"use client";
+
+import { useAuth } from "@/lib/auth-context";
+import { localeLabels, t, type Locale } from "@/lib/i18n";
+import { useLanguage } from "@/lib/language-context";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+
+export default function RegisterPage() {
+  const { register, token } = useAuth();
+  const { locale, setLocale } = useLanguage();
+  const router = useRouter();
+  const [nom, setNom] = useState("");
+  const [prenom, setPrenom] = useState("");
+  const [email, setEmail] = useState("");
+  const [telephone, setTelephone] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const languages: Locale[] = ["de", "fr", "en"];
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false);
+      }
+    }
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
+  function FlagIcon({ code }: { code: Locale }) {
+    if (code === "de") {
+      return (
+        <span className="inline-flex h-3.5 w-5 overflow-hidden rounded-[2px] ring-1 ring-neutral-800">
+          <span className="h-full w-1/3 bg-black" />
+          <span className="h-full w-1/3 bg-red-600" />
+          <span className="h-full w-1/3 bg-yellow-400" />
+        </span>
+      );
+    }
+    if (code === "fr") {
+      return (
+        <span className="inline-flex h-3.5 w-5 overflow-hidden rounded-[2px] ring-1 ring-neutral-800">
+          <span className="h-full w-1/3 bg-blue-600" />
+          <span className="h-full w-1/3 bg-white" />
+          <span className="h-full w-1/3 bg-red-600" />
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex h-3.5 w-5 overflow-hidden rounded-[2px] bg-blue-700 ring-1 ring-neutral-800">
+        <span className="relative h-full w-full">
+          <span className="absolute inset-y-0 left-1/2 w-1 bg-white -translate-x-1/2" />
+          <span className="absolute inset-x-0 top-1/2 h-1 bg-white -translate-y-1/2" />
+          <span className="absolute inset-y-0 left-1/2 w-0.5 bg-red-600 -translate-x-1/2" />
+          <span className="absolute inset-x-0 top-1/2 h-0.5 bg-red-600 -translate-y-1/2" />
+        </span>
+      </span>
+    );
+  }
+
+  useEffect(() => {
+    if (token) {
+      router.replace("/dashboard");
+    }
+  }, [token, router]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      await register({ nom, prenom, email, telephone, password });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erreur d'inscription");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="relative min-h-screen bg-neutral-950 text-neutral-50">
+      {/* Sélecteur de langue global, toujours visible en haut à droite */}
+      <div className="pointer-events-none absolute right-4 top-4 z-30 flex justify-end md:right-6 md:top-5">
+        <div
+          ref={langRef}
+          className="pointer-events-auto relative"
+        >
+          <button
+            type="button"
+            onClick={() => setLangOpen((o) => !o)}
+            className="flex items-center gap-1.5 rounded-full border border-neutral-800 bg-black/75 px-3 py-1.5 text-[11px] text-neutral-200 shadow-lg shadow-black/40 backdrop-blur transition hover:border-amber-400/70 hover:text-neutral-50"
+            aria-haspopup="true"
+            aria-expanded={langOpen}
+          >
+            <FlagIcon code={locale} />
+            <span className="hidden sm:inline">
+              {localeLabels[locale]}
+            </span>
+            <span className="text-[9px] sm:text-[10px]" aria-hidden>
+              {langOpen ? "▲" : "▼"}
+            </span>
+          </button>
+
+          {langOpen && (
+            <div className="absolute right-0 z-40 mt-1 w-40 rounded-2xl border border-neutral-800 bg-neutral-950/95 p-1 text-[11px] shadow-xl shadow-black/60">
+              {languages.map((lang) => (
+                <button
+                  key={lang}
+                  type="button"
+                  onClick={() => {
+                    setLocale(lang);
+                    setLangOpen(false);
+                  }}
+                  className={`flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-left transition ${
+                    locale === lang
+                      ? "bg-amber-500/15 text-amber-200"
+                      : "text-neutral-300 hover:bg-neutral-900 hover:text-neutral-50"
+                  }`}
+                >
+                  <FlagIcon code={lang} />
+                  <span>{localeLabels[lang]}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="grid min-h-screen grid-cols-1 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+        {/* Bandeau visuel gauche */}
+        <div className="relative hidden overflow-hidden border-b border-neutral-900 bg-black/90 md:block md:border-b-0 md:border-r">
+          <Image
+            src="/bg-menu-dark.png"
+            alt="Fond DigiKarte"
+            fill
+            priority
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover opacity-70"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/40 to-amber-900/30" />
+          <div className="relative flex h-full flex-col justify-between px-8 py-10 md:px-10 lg:px-14">
+            <div className="space-y-8 md:space-y-10">
+              <div className="flex items-center gap-5 md:gap-6">
+                <div className="relative h-20 w-20 md:h-24 md:w-24 overflow-hidden rounded-[2.4rem] border border-amber-400/80 bg-black/70">
+                  <Image
+                    src="/digikarte-logo.png"
+                    alt="Logo DigiKarte"
+                    fill
+                    sizes="96px"
+                    className="object-contain p-2.5 md:p-3"
+                  />
+                </div>
+                <div className="leading-tight">
+                  <p className="font-forum text-3xl md:text-4xl tracking-[0.22em] text-amber-300">
+                    DIGIKARTE
+                  </p>
+                  <p className="mt-2 text-[10px] md:text-[11px] uppercase tracking-[0.32em] text-neutral-400">
+                    Plateforme menu digital
+                  </p>
+                </div>
+              </div>
+              <div className="max-w-md space-y-3">
+                <p className="font-forum text-2xl md:text-[2rem] text-neutral-50">
+                  {t("heroSubtitle", locale)}
+                </p>
+                <p className="text-sm text-neutral-400">
+                  {t("feature3Text", locale)}
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 text-[10px] md:text-xs text-neutral-500">
+              <p>{t("authRegisterFooter", locale)}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Formulaire droite */}
+        <div className="flex items-center justify-center px-6 py-10 md:px-8 lg:px-10">
+          <div className="w-full max-w-md">
+            <div className="mb-8 flex items-center gap-3 md:hidden">
+              <div className="relative h-12 w-12 overflow-hidden rounded-3xl border border-amber-400/70 bg-neutral-900">
+                <Image
+                  src="/digikarte-logo.png"
+                  alt="DigiKarte"
+                  fill
+                  sizes="48px"
+                  className="object-contain p-2"
+                />
+              </div>
+              <div>
+                <p className="font-forum text-2xl tracking-[0.24em] text-amber-300">
+                  DIGIKARTE
+                </p>
+                <p className="text-[10px] uppercase tracking-[0.28em] text-neutral-500">
+                  Création de compte
+                </p>
+              </div>
+            </div>
+
+            <div className="mb-8 space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-300">
+                {t("authRegisterKicker", locale)}
+              </p>
+              <h1 className="font-forum text-3xl text-neutral-50">
+                {t("authRegisterTitle", locale)}
+              </h1>
+              <p className="text-sm text-neutral-400">
+                {t("authRegisterSubtitle", locale)}
+              </p>
+            </div>
+
+            {error && (
+              <div className="mb-4 rounded-2xl border border-red-900/70 bg-red-950/70 px-4 py-3 text-sm text-red-200">
+                {error}
+              </div>
+            )}
+
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-5 rounded-3xl border border-neutral-900 bg-neutral-950/80 p-6 shadow-[0_18px_45px_rgba(0,0,0,0.75)]"
+            >
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label
+                    htmlFor="prenom"
+                    className="mb-1.5 block text-xs font-medium uppercase tracking-[0.2em] text-neutral-400"
+                  >
+                    {t("authFirstName", locale)}
+                  </label>
+                  <input
+                    id="prenom"
+                    value={prenom}
+                    onChange={(e) => setPrenom(e.target.value)}
+                    required
+                    className="w-full rounded-xl border border-neutral-800 bg-neutral-900/70 px-3 py-2.5 text-sm text-neutral-50 outline-none ring-0 placeholder:text-neutral-500 focus:border-amber-400 focus:bg-neutral-900 focus:shadow-[0_0_0_1px_rgba(251,191,36,0.6)]"
+                    placeholder="Youssef"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="nom"
+                    className="mb-1.5 block text-xs font-medium uppercase tracking-[0.2em] text-neutral-400"
+                  >
+                    {t("authLastName", locale)}
+                  </label>
+                  <input
+                    id="nom"
+                    value={nom}
+                    onChange={(e) => setNom(e.target.value)}
+                    required
+                    className="w-full rounded-xl border border-neutral-800 bg-neutral-900/70 px-3 py-2.5 text-sm text-neutral-50 outline-none ring-0 placeholder:text-neutral-500 focus:border-amber-400 focus:bg-neutral-900 focus:shadow-[0_0_0_1px_rgba(251,191,36,0.6)]"
+                    placeholder="Ghrir"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="mb-1.5 block text-xs font-medium uppercase tracking-[0.2em] text-neutral-400"
+                  >
+                    {t("authBusinessEmail", locale)}
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full rounded-xl border border-neutral-800 bg-neutral-900/70 px-3 py-2.5 text-sm text-neutral-50 outline-none ring-0 placeholder:text-neutral-500 focus:border-amber-400 focus:bg-neutral-900 focus:shadow-[0_0_0_1px_rgba(251,191,36,0.6)]"
+                    placeholder="vous@restaurant.ch"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="telephone"
+                    className="mb-1.5 block text-xs font-medium uppercase tracking-[0.2em] text-neutral-400"
+                  >
+                    {t("authPhone", locale)}
+                  </label>
+                  <input
+                    id="telephone"
+                    type="tel"
+                    value={telephone}
+                    onChange={(e) => setTelephone(e.target.value)}
+                    required
+                    className="w-full rounded-xl border border-neutral-800 bg-neutral-900/70 px-3 py-2.5 text-sm text-neutral-50 outline-none ring-0 placeholder:text-neutral-500 focus:border-amber-400 focus:bg-neutral-900 focus:shadow-[0_0_0_1px_rgba(251,191,36,0.6)]"
+                    placeholder="+41 79 000 00 00"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="mb-1.5 block text-xs font-medium uppercase tracking-[0.2em] text-neutral-400"
+                  >
+                    {t("authPasswordHint", locale)}
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    className="w-full rounded-xl border border-neutral-800 bg-neutral-900/70 px-3 py-2.5 text-sm text-neutral-50 outline-none ring-0 placeholder:text-neutral-500 focus:border-amber-400 focus:bg-neutral-900 focus:shadow-[0_0_0_1px_rgba(251,191,36,0.6)]"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-2 inline-flex w-full items-center justify-center rounded-2xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-lg shadow-amber-500/40 hover:bg-amber-300 disabled:cursor-wait disabled:opacity-60"
+              >
+                {loading
+                  ? t("authCreating", locale)
+                  : t("authRegisterButton", locale)}
+              </button>
+
+              <p className="pt-3 text-center text-xs text-neutral-500">
+                {t("authHasAccount", locale)}{" "}
+                <Link
+                  href="/login"
+                  className="font-medium text-amber-300 hover:text-amber-200"
+                >
+                  {t("authGoLogin", locale)}
+                </Link>
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
