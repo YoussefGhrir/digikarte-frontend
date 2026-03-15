@@ -279,6 +279,41 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Section explication : ajouter et personnaliser (visuels du projet) */}
+        <section className="space-y-10">
+          <div className="text-center md:text-left">
+            <h2 className="font-forum text-2xl text-neutral-900 dark:text-neutral-50 md:text-3xl">
+              {t("explainHowTitle", locale)}
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+              {t("explainHowSubtitle", locale)}
+            </p>
+          </div>
+          <div className="grid gap-8 md:grid-cols-3">
+            <ExplainCard
+              locale={locale}
+              step={1}
+              title={t("explainAddOrgTitle", locale)}
+              text={t("explainAddOrgText", locale)}
+              variant="org"
+            />
+            <ExplainCard
+              locale={locale}
+              step={2}
+              title={t("explainPersonalizeTitle", locale)}
+              text={t("explainPersonalizeText", locale)}
+              variant="menu"
+            />
+            <ExplainCard
+              locale={locale}
+              step={3}
+              title={t("explainQrTitle", locale)}
+              text={t("explainQrText", locale)}
+              variant="qr"
+            />
+          </div>
+        </section>
+
         {/* Call to action final */}
         <section className="overflow-hidden rounded-3xl border border-amber-500/20 bg-gradient-to-r from-neutral-100 via-neutral-50 to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-950 px-6 py-8 shadow-lg md:px-10 md:py-10">
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
@@ -360,6 +395,89 @@ function StepCard({
       </p>
       <h3 className="mt-2 font-forum text-lg text-neutral-900 dark:text-neutral-50">{title}</h3>
       <p className="mt-2 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">{text}</p>
+    </div>
+  );
+}
+
+function ExplainCard({
+  locale,
+  step,
+  title,
+  text,
+  variant,
+}: {
+  locale: Locale;
+  step: number;
+  title: string;
+  text: string;
+  variant: "org" | "menu" | "qr";
+}) {
+  return (
+    <div className="group relative overflow-hidden rounded-2xl border border-neutral-300 dark:border-neutral-800 bg-white/90 dark:bg-neutral-950/90 p-5 shadow-lg transition hover:border-amber-500/30 dark:hover:border-amber-500/30 hover:shadow-xl">
+      <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 bg-gradient-to-bl from-amber-400/10 to-transparent dark:from-amber-400/5" />
+      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/20 text-xs font-bold text-amber-700 dark:text-amber-200">
+        {step}
+      </span>
+      <div className="mt-4 flex min-h-[100px] items-center justify-center rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/80 p-3">
+        {variant === "org" && <ExplainVisualOrg />}
+        {variant === "menu" && <ExplainVisualMenu locale={locale} />}
+        {variant === "qr" && <ExplainVisualQr />}
+      </div>
+      <h3 className="mt-4 font-forum text-lg text-neutral-900 dark:text-neutral-50">{title}</h3>
+      <p className="mt-2 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">{text}</p>
+    </div>
+  );
+}
+
+function ExplainVisualOrg() {
+  return (
+    <div className="flex w-full items-center gap-3">
+      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white shadow-sm">
+        <Image
+          src="/digikarte-logo.png"
+          alt=""
+          fill
+          sizes="48px"
+          className="object-contain p-1.5"
+        />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-[11px] font-semibold text-neutral-800 dark:text-neutral-200">Mon Restaurant</p>
+        <p className="text-[10px] text-neutral-500 dark:text-neutral-400">1 menu · QR actif</p>
+      </div>
+    </div>
+  );
+}
+
+function ExplainVisualMenu({ locale }: { locale: Locale }) {
+  return (
+    <div className="w-full space-y-1.5 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 p-2">
+      <div className="flex justify-between gap-2">
+        <span className="text-[10px] font-medium text-neutral-700 dark:text-neutral-300">{t("heroCardItem1Title", locale)}</span>
+        <span className="text-[10px] font-forum text-amber-600 dark:text-amber-400">4,90 €</span>
+      </div>
+      <div className="flex justify-between gap-2">
+        <span className="text-[10px] font-medium text-neutral-700 dark:text-neutral-300">{t("heroCardItem2Title", locale)}</span>
+        <span className="text-[10px] font-forum text-emerald-600 dark:text-emerald-400">9,50 €</span>
+      </div>
+    </div>
+  );
+}
+
+function ExplainVisualQr() {
+  const origin =
+    typeof window !== "undefined" && window.location?.origin
+      ? window.location.origin
+      : "https://digikarte.de";
+  const url = `${origin}/menu/demo`;
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(url)}`;
+
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <div className="rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white p-1 shadow-sm">
+        <img src={qrSrc} alt="" className="h-14 w-14 rounded-md" />
+      </div>
+      <span className="text-[9px] uppercase tracking-wider text-neutral-500 dark:text-neutral-400">QR</span>
     </div>
   );
 }

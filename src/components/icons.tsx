@@ -132,3 +132,121 @@ export function IconMenuList({ className }: { className?: string }) {
     </svg>
   );
 }
+
+/** Icône flèche vers le haut (monter / déplacer avant). */
+export function IconArrowUp({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
+      <path d="m18 15-6-6-6 6" />
+    </svg>
+  );
+}
+
+/** Icône flèche vers le bas (descendre / déplacer après). */
+export function IconArrowDown({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+/** Plus (ajout). */
+export function IconPlus({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      className={className}
+      aria-hidden
+    >
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+
+/** Grille / puzzle (réorganiser). */
+export function IconReorderTiles({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden
+    >
+      <rect x="3" y="3" width="7" height="7" rx="1.5" className="opacity-90" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" className="opacity-70" />
+      <rect x="3" y="14" width="7" height="7" rx="1.5" className="opacity-70" />
+      <rect x="14" y="14" width="7" height="7" rx="1.5" className="opacity-90" />
+    </svg>
+  );
+}
+
+/** Icône poignée de déplacement (drag handle) - 6 points verticaux. */
+export function IconGripVertical({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden
+    >
+      <circle cx="9" cy="6" r="1.5" />
+      <circle cx="9" cy="12" r="1.5" />
+      <circle cx="9" cy="18" r="1.5" />
+      <circle cx="15" cy="6" r="1.5" />
+      <circle cx="15" cy="12" r="1.5" />
+      <circle cx="15" cy="18" r="1.5" />
+    </svg>
+  );
+}
+
+/** Icône QR code (grille type QR). */
+export function IconQr({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
+      <rect x="3" y="3" width="7" height="7" />
+      <rect x="14" y="3" width="7" height="7" />
+      <rect x="3" y="14" width="4" height="4" />
+      <rect x="9" y="14" width="4" height="4" />
+      <rect x="14" y="14" width="7" height="7" />
+      <path d="M14 14h2v2" />
+    </svg>
+  );
+}

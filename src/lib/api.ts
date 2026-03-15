@@ -149,6 +149,14 @@ export interface OrganizationDto {
   id: number;
   name: string;
   description?: string;
+  /** Slogan du restaurant (affiché sur le menu public). */
+  slogan?: string | null;
+  addressLine1?: string | null;
+  addressPostalCode?: string | null;
+  addressCity?: string | null;
+  country?: string | null;
+  phone?: string | null;
+  email?: string | null;
   /** Logo encodé en Base64 (JPEG), pour affichage et menu public. */
   organizationLogoBase64?: string | null;
 }
@@ -157,7 +165,16 @@ export function orgList() {
   return api<OrganizationDto[]>("/api/organizations");
 }
 
-export function orgCreate(data: { name: string; description?: string }) {
+export function orgCreate(data: {
+  name: string;
+  slogan?: string;
+  addressLine1?: string;
+  addressPostalCode?: string;
+  addressCity?: string;
+  country?: string;
+  phone?: string;
+  email?: string;
+}) {
   return api<OrganizationDto>("/api/organizations", {
     method: "POST",
     body: JSON.stringify(data),
@@ -168,7 +185,19 @@ export function orgGet(id: number) {
   return api<OrganizationDto>(`/api/organizations/${id}`);
 }
 
-export function orgUpdate(id: number, data: { name?: string; description?: string }) {
+export function orgUpdate(
+  id: number,
+  data: {
+    name?: string;
+    slogan?: string;
+    addressLine1?: string;
+    addressPostalCode?: string;
+    addressCity?: string;
+    country?: string;
+    phone?: string;
+    email?: string;
+  }
+) {
   return api<OrganizationDto>(`/api/organizations/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
@@ -217,6 +246,8 @@ export interface MenuItemDto {
   imageUrl?: string;
   section?: string;
   sortOrder?: number;
+  /** Sous-produit rattaché à ce plat parent */
+  parentItemId?: number | null;
 }
 
 export interface MenuDto {
@@ -225,6 +256,10 @@ export interface MenuDto {
   description?: string;
   slug: string;
   organizationId: number;
+  /** Template d'affichage: classic, cafe, bistro, minimal, cards, elegant */
+  displayTemplate?: string | null;
+  /** Unité des prix (devise) : EUR, USD, TND, GBP, CHF, etc. Défaut EUR. */
+  priceCurrency?: string | null;
   items: MenuItemDto[];
 }
 
@@ -234,8 +269,10 @@ export function menuList(organizationId: number) {
 
 export function menuCreate(data: {
   organizationId: number;
-  title: string;
+  title?: string;
   description?: string;
+  /** Unité des prix (obligatoire). Ex: EUR, USD, TND. Défaut recommandé: EUR. */
+  priceCurrency: string;
 }) {
   return api<MenuDto>("/api/menus", {
     method: "POST",
@@ -247,7 +284,7 @@ export function menuGet(id: number) {
   return api<MenuDto>(`/api/menus/${id}`);
 }
 
-export function menuUpdate(id: number, data: { title?: string; description?: string }) {
+export function menuUpdate(id: number, data: { title?: string; description?: string; displayTemplate?: string | null; priceCurrency?: string | null }) {
   return api<MenuDto>(`/api/menus/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
@@ -267,6 +304,7 @@ export function menuAddItem(
     imageUrl?: string;
     section?: string;
     sortOrder?: number;
+    parentItemId?: number;
   }
 ) {
   return api<MenuDto>(`/api/menus/${menuId}/items`, {
@@ -316,8 +354,18 @@ export interface MenuPublicDto {
   title: string;
   description?: string;
   organizationName: string;
+  /** Slogan du restaurant (affiché sous le nom). */
+  organizationSlogan?: string | null;
   /** Logo de l'organisation en Base64 pour affichage en tête du menu. */
   organizationLogoBase64?: string | null;
+  /** Adresse formatée pour footer (café/resto, Allemagne). */
+  organizationAddress?: string | null;
+  organizationPhone?: string | null;
+  organizationEmail?: string | null;
+  /** Template d'affichage: classic, cafe, bistro, minimal, cards, elegant */
+  displayTemplate?: string | null;
+  /** Unité des prix (devise) : EUR, USD, TND, etc. Défaut EUR. */
+  priceCurrency?: string | null;
   items: MenuItemDto[];
 }
 

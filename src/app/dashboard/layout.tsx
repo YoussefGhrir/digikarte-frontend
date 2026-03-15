@@ -1,19 +1,19 @@
 "use client";
 
-import { IconBuilding, IconHome, IconLogout, IconMenuList } from "@/components/icons";
+import { IconBuilding, IconHome, IconLogout, IconMenuList, IconQr } from "@/components/icons";
 import { useAuth } from "@/lib/auth-context";
 import { localeLabels, t, type Locale } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
 import { orgList, type OrganizationDto, isApiError } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 function navItems(_locale: Locale) {
   return [
-    { href: "/dashboard", labelKey: "dashboardNavDashboard" as const, Icon: IconHome },
-    { href: "/dashboard", labelKey: "dashboardNavOrganisations" as const, Icon: IconBuilding },
+    { href: "/dashboard", labelKey: "dashboardNavDashboard" as const, Icon: IconHome, view: null as string | null },
+    { href: "/dashboard?view=organisations", labelKey: "dashboardNavOrganisations" as const, Icon: IconBuilding, view: "organisations" },
   ];
 }
 
@@ -95,7 +95,9 @@ export default function DashboardLayout({
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  const searchParams = useSearchParams();
   const path = pathname ?? "";
+  const dashboardView = path === "/dashboard" ? searchParams.get("view") : null;
   let activeOrgId: number | null = null;
   const match = path.match(/^\/dashboard\/organisations\/(\d+)/);
   if (match) {
@@ -264,14 +266,12 @@ export default function DashboardLayout({
 
         <nav className="flex-1 space-y-1 text-sm font-medium">
           {navItems(locale).map((item) => {
-            const active =
-              item.href === "/dashboard"
-                ? pathname === "/dashboard" && !pathname?.startsWith("/dashboard/organisations/")
-                : pathname === item.href;
+            const isDashboardPage = pathname === "/dashboard" && !pathname?.startsWith("/dashboard/organisations/");
+            const active = isDashboardPage && (item.view === null ? dashboardView !== "organisations" : dashboardView === "organisations");
             const isProfile = pathname === "/dashboard/profile";
             return (
               <Link
-                key={item.href + item.labelKey}
+                key={item.href + (item.view ?? "")}
                 href={item.href}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
                   active && !isProfile
@@ -285,23 +285,43 @@ export default function DashboardLayout({
             );
           })}
           {currentOrg && (
-            <Link
-              href={`/dashboard/organisations/${currentOrg.id}`}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
-                pathname === `/dashboard/organisations/${currentOrg.id}` ||
-                pathname?.startsWith(`/dashboard/organisations/${currentOrg.id}/`)
-                  ? "bg-amber-500/15 text-amber-300"
-                  : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-100"
-              }`}
-            >
-              <IconMenuList className="h-5 w-5 shrink-0" aria-hidden />
-              <div className="min-w-0 flex-1">
-                <span className="block truncate">{t("dashboardNavMenusOfOrg", locale)}</span>
-                <span className="block truncate text-[11px] font-normal text-neutral-500">
-                  {currentOrg.name}
-                </span>
-              </div>
-            </Link>
+            <>
+              <Link
+                href={`/dashboard/organisations/${currentOrg.id}`}
+                className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
+                  (pathname === `/dashboard/organisations/${currentOrg.id}` ||
+                    (pathname?.startsWith(`/dashboard/organisations/${currentOrg.id}/menus/`) &&
+                      !pathname?.endsWith("/qr")))
+                    ? "bg-amber-500/15 text-amber-300"
+                    : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-100"
+                }`}
+              >
+                <IconMenuList className="h-5 w-5 shrink-0" aria-hidden />
+                <div className="min-w-0 flex-1">
+                  <span className="block truncate">{t("dashboardNavMenusOfOrg", locale)}</span>
+                  <span className="block truncate text-[11px] font-normal text-neutral-500">
+                    {currentOrg.name}
+                  </span>
+                </div>
+              </Link>
+              <Link
+                href={`/dashboard/organisations/${currentOrg.id}/qr`}
+                className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
+                  pathname === `/dashboard/organisations/${currentOrg.id}/qr` ||
+                  (pathname?.startsWith(`/dashboard/organisations/${currentOrg.id}/`) && pathname?.includes("/qr"))
+                    ? "bg-amber-500/15 text-amber-300"
+                    : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-100"
+                }`}
+              >
+                <IconQr className="h-5 w-5 shrink-0" aria-hidden />
+                <div className="min-w-0 flex-1">
+                  <span className="block truncate">{t("menuQrTab", locale)}</span>
+                  <span className="block truncate text-[11px] font-normal text-neutral-500">
+                    {currentOrg.name}
+                  </span>
+                </div>
+              </Link>
+            </>
           )}
         </nav>
 
@@ -497,7 +517,11 @@ export default function DashboardLayout({
         </header>
 
         <main className="flex-1 overflow-y-auto bg-neutral-950/95 px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
-          <div className="mx-auto max-w-6xl">{children}</div>
+          {pathname?.match(/\/dashboard\/organisations\/[^/]+\/menus\/[^/]+/) ? (
+            <div className="w-full min-w-0">{children}</div>
+          ) : (
+            <div className="mx-auto max-w-6xl">{children}</div>
+          )}
         </main>
       </div>
     </div>

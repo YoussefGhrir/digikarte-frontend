@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Forum, DM_Sans } from "next/font/google";
+import { Inter, JetBrains_Mono, Forum, DM_Sans, Dancing_Script } from "next/font/google";
 import { AuthProvider } from "@/lib/auth-context";
 import { LanguageProvider } from "@/lib/language-context";
 import Footer from "@/components/Footer";
@@ -27,6 +27,12 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 });
 
+const dancingScript = Dancing_Script({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-menu-script",
+});
+
 export const metadata: Metadata = {
   title: "DigiKarte – Menu digital",
   description: "Créez et gérez vos menus digitaux avec codes QR",
@@ -44,7 +50,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${forum.variable} ${dmSans.variable} antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${forum.variable} ${dmSans.variable} ${dancingScript.variable} antialiased`}
       >
         <AuthProvider>
           <LanguageProvider>

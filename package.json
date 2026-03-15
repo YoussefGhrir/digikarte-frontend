@@ -11,8 +11,11 @@
     "clean": "node -e \"const fs=require('fs'),p='.next';fs.existsSync(p)&&fs.rmSync(p,{recursive:true});console.log('Cleaned .next')\""
   },
   "dependencies": {
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.0",
     "next": "14.2.21",
     "qrcode": "^1.5.4",
+    "qrcode.react": "^4.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

@@ -1,20 +1,20 @@
 "use client";
 
-import { IconEdit, IconTrash } from "@/components/icons";
+import { IconTrash } from "@/components/icons";
 import Link from "next/link";
 import {
   menuCreate,
   menuDelete,
   menuList,
-  menuUpdate,
   orgGet,
   orgUpdatePhoto,
   type MenuDto,
   type OrganizationDto,
   isApiError,
 } from "@/lib/api";
+import { PRICE_CURRENCY_CODES } from "@/components/menu-templates";
 import { useAuth } from "@/lib/auth-context";
-import { t, locales, localeLabels, type Locale } from "@/lib/i18n";
+import { t, locales, localeLabels, translations, type Locale } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -28,18 +28,14 @@ export default function OrganisationPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [editingMenu, setEditingMenu] = useState<MenuDto | null>(null);
-  const [editMenuTitle, setEditMenuTitle] = useState("");
-  const [editMenuDescription, setEditMenuDescription] = useState("");
   const [deletingMenu, setDeletingMenu] = useState<MenuDto | null>(null);
   const [deleteMenuSubmitting, setDeleteMenuSubmitting] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
   const [logoError, setLogoError] = useState("");
   const { logout } = useAuth();
   const [menuLocale, setMenuLocale] = useState<Locale>(locale);
+  const [menuPriceCurrency, setMenuPriceCurrency] = useState<string>("EUR");
 
   const load = useCallback(async () => {
     if (!id || isNaN(id)) return;
@@ -71,34 +67,9 @@ export default function OrganisationPage() {
     setError("");
     setSubmitting(true);
     try {
-      await menuCreate({ organizationId: org.id, title, description });
-      // Fixer la langue de travail du menu sur celle choisie à la création
+      await menuCreate({ organizationId: org.id, priceCurrency: menuPriceCurrency || "EUR" });
       setLocale(menuLocale);
-      setTitle("");
-      setDescription("");
       setShowForm(false);
-      await load();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Erreur");
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  function openEditMenu(menu: MenuDto) {
-    setEditingMenu(menu);
-    setEditMenuTitle(menu.title);
-    setEditMenuDescription(menu.description ?? "");
-  }
-
-  async function handleUpdateMenu(e: React.FormEvent) {
-    e.preventDefault();
-    if (!editingMenu) return;
-    setError("");
-    setSubmitting(true);
-    try {
-      await menuUpdate(editingMenu.id, { title: editMenuTitle, description: editMenuDescription || undefined });
-      setEditingMenu(null);
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur");
@@ -174,6 +145,30 @@ export default function OrganisationPage() {
                 {org.description}
               </p>
             )}
+            {(org.addressLine1 || org.addressPostalCode || org.addressCity || org.country || org.phone || org.email) && (
+              <div className="mt-4 space-y-1 text-sm text-neutral-400 mx-auto md:mx-0">
+                {(org.addressLine1 || org.addressPostalCode || org.addressCity || org.country) && (
+                  <p>
+                    {[org.addressLine1, [org.addressPostalCode, org.addressCity].filter(Boolean).join(" "), org.country].filter(Boolean).join(", ")}
+                  </p>
+                )}
+                {org.phone && (
+                  <p>
+                    {t("menuFooterPhone", locale)}{" "}
+                    <a href={`tel:${org.phone.replace(/\s/g, "")}`} className="text-amber-400 hover:underline">
+                      {org.phone}
+                    </a>
+                  </p>
+                )}
+                {org.email && (
+                  <p>
+                    <a href={`mailto:${org.email}`} className="text-amber-400 hover:underline">
+                      {org.email}
+                    </a>
+                  </p>
+                )}
+              </div>
+            )}
           </div>
           <div className="shrink-0 flex flex-col items-center md:items-end gap-3">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-400">
@@ -237,30 +232,6 @@ export default function OrganisationPage() {
             className="mb-8 rounded-2xl border border-neutral-800 bg-neutral-950/60 p-6 shadow"
           >
           <div className="mb-4">
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-neutral-400">
-              {t("orgMenuTitleLabel", locale)}
-            </label>
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-lg border border-stone-300 px-4 py-2"
-            />
-            <p className="mt-1 text-xs text-neutral-500">
-              {t("orgMenuTitleOptionalInfo", locale)}
-            </p>
-          </div>
-          <div className="mb-4">
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-neutral-400">
-              {t("orgMenuDescLabel", locale)}
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={2}
-              className="w-full rounded-lg border border-stone-300 px-4 py-2"
-            />
-          </div>
-          <div className="mb-4">
             <label className="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-neutral-400">
               {t("menuLanguageLabel", locale)}
             </label>
@@ -278,6 +249,26 @@ export default function OrganisationPage() {
             </select>
             <p className="mt-1 text-xs text-neutral-500">
               {t("menuLanguageHint", locale)}
+            </p>
+          </div>
+          <div className="mb-4">
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-neutral-400">
+              {t("priceUnitLabel", locale)} *
+            </label>
+            <select
+              value={menuPriceCurrency}
+              onChange={(e) => setMenuPriceCurrency(e.target.value)}
+              required
+              className="w-full rounded-full border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-neutral-100"
+            >
+              {PRICE_CURRENCY_CODES.map((code) => (
+                <option key={code} value={code}>
+                  {t(`currency${code}` as keyof typeof translations, locale)}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-neutral-500">
+              {t("priceUnitHint", locale)}
             </p>
           </div>
             <button
@@ -299,21 +290,9 @@ export default function OrganisationPage() {
           {menus.map((menu) => (
             <div
               key={menu.id}
-              className="group relative overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950/40 p-5 shadow-sm shadow-black/30 transition hover:border-amber-400/70 hover:bg-neutral-900"
+              className="group relative overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950/40 shadow-sm shadow-black/30 transition hover:border-amber-400/70 hover:bg-neutral-900 flex flex-col"
             >
               <div className="absolute right-3 top-3 z-10 flex gap-1.5 opacity-0 transition group-hover:opacity-100">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    openEditMenu(menu);
-                  }}
-                  className="cursor-pointer rounded-lg bg-orange-500 p-1.5 text-white shadow hover:bg-orange-400"
-                  title={t("menuEditButton", locale)}
-                  aria-label={t("menuEditButton", locale)}
-                >
-                  <IconEdit className="h-4 w-4" />
-                </button>
                 <button
                   type="button"
                   onClick={(e) => {
@@ -327,15 +306,27 @@ export default function OrganisationPage() {
                   <IconTrash className="h-4 w-4" />
                 </button>
               </div>
-              <div className="block pr-24">
+              <div className="w-full h-[180px] rounded-t-2xl overflow-hidden border-b border-neutral-800 bg-neutral-200 relative shrink-0">
+                <div
+                  className="absolute top-0 left-0 origin-top-left"
+                  style={{
+                    width: "500%",
+                    height: 1000,
+                    transform: "scale(0.2)",
+                  }}
+                >
+                  <iframe
+                    src={`/menu/${menu.slug}`}
+                    title={menu.title?.trim() || t("menu", locale)}
+                    className="w-full border-0 pointer-events-none"
+                    style={{ width: "100%", height: 1000 }}
+                  />
+                </div>
+              </div>
+              <div className="block p-4 pr-24 flex-1">
                 <h3 className="font-forum text-xl text-neutral-50">
-                  {menu.title}
+                  {menu.title?.trim() || t("menu", locale)}
                 </h3>
-                {menu.description && (
-                  <p className="mt-1 line-clamp-2 text-sm text-neutral-400">
-                    {menu.description}
-                  </p>
-                )}
                 <p className="mt-2 text-xs uppercase tracking-[0.18em] text-neutral-500">
                   {menu.items?.length ?? 0} {t("orgItemsCount", locale)}
                 </p>
@@ -351,64 +342,6 @@ export default function OrganisationPage() {
         </div>
       )}
 
-      {/* Modal édition menu */}
-      {editingMenu && (
-        <form
-          onSubmit={handleUpdateMenu}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-          onClick={() => setEditingMenu(null)}
-        >
-          <div
-            className="w-full max-w-lg rounded-3xl border border-neutral-800 bg-neutral-950 p-6 shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="font-forum text-xl text-neutral-50">
-              {t("menuEditTitle", locale)}
-            </h2>
-            <div className="mt-4 space-y-4">
-              <div>
-                <label className="mb-1 block text-xs font-medium uppercase tracking-[0.18em] text-neutral-400">
-                  {t("orgMenuTitleLabel", locale)}
-                </label>
-                <input
-                  value={editMenuTitle}
-                  onChange={(e) => setEditMenuTitle(e.target.value)}
-                  required
-                  className="w-full rounded-xl border border-neutral-800 bg-neutral-900/60 px-3 py-2 text-sm text-neutral-50 focus:border-amber-500"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-medium uppercase tracking-[0.18em] text-neutral-400">
-                  {t("orgMenuDescLabel", locale)}
-                </label>
-                <textarea
-                  value={editMenuDescription}
-                  onChange={(e) => setEditMenuDescription(e.target.value)}
-                  rows={3}
-                  className="w-full rounded-xl border border-neutral-800 bg-neutral-900/60 px-3 py-2 text-sm text-neutral-50 focus:border-amber-500"
-                />
-              </div>
-            </div>
-            <div className="mt-6 flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setEditingMenu(null)}
-                className="cursor-pointer rounded-xl bg-neutral-600 px-4 py-2 text-sm text-white hover:bg-neutral-500"
-              >
-                {t("dashboardCancel", locale)}
-              </button>
-              <button
-                type="submit"
-                disabled={submitting}
-                className="cursor-pointer rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-400 disabled:opacity-60"
-              >
-                {submitting ? t("dashboardSaving", locale) : t("profileSave", locale)}
-              </button>
-            </div>
-          </div>
-        </form>
-      )}
-
       {/* Modal confirmation suppression menu */}
       {deletingMenu && (
         <div
@@ -420,7 +353,7 @@ export default function OrganisationPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="font-forum text-xl text-neutral-50">
-              {t("dashboardDeleteOrg", locale)}: {deletingMenu.title}
+              {t("dashboardDeleteOrg", locale)}: {deletingMenu.title?.trim() || t("menu", locale)}
             </h2>
             <p className="mt-3 text-sm text-neutral-400">
               {t("menuDeleteConfirm", locale)}
