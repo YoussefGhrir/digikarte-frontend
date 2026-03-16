@@ -44,8 +44,8 @@ export async function api<T>(
       // ignore JSON parse errors
     }
 
-    // In case of unauthorized from protected endpoints, clear token
-    if (res.status === 401 && typeof window !== "undefined") {
+    // In case of unauthorized/forbidden from protected endpoints, clear token
+    if ((res.status === 401 || res.status === 403) && typeof window !== "undefined") {
       localStorage.removeItem("token");
     }
 
@@ -373,5 +373,95 @@ export function menuPublicBySlug(slug: string) {
   return fetch(`${API_BASE}/api/public/menu/${slug}`).then((r) => {
     if (!r.ok) throw new Error("Menu non trouvé");
     return r.json() as Promise<MenuPublicDto>;
+  });
+}
+
+// Billing / Subscription
+export type SubscriptionPlan = "MONTHLY" | "SEMIANNUAL" | "YEARLY";
+
+export type SubscriptionStatus = "TRIALING" | "ACTIVE" | "EXPIRED" | "CANCELLED";
+
+export interface SubscriptionDto {
+  plan: SubscriptionPlan;
+  status: SubscriptionStatus;
+  /** Date de fin d'essai (ISO) si TRIALING. */
+  trialEnd?: string | null;
+  /** Début de la période de facturation courante (ISO). */
+  currentPeriodStart?: string | null;
+  /** Fin de la période de facturation courante (ISO). */
+  currentPeriodEnd?: string | null;
+  /** Prochaine tentative de paiement automatique (ISO). */
+  nextPaymentAt?: string | null;
+  /** Renouvellement automatique activé ? */
+  autoRenew: boolean;
+  /** Devise (ex: EUR). */
+  currency: string;
+  /** Montant de la période (ex: 9.99). */
+  amount: number;
+}
+
+export interface InvoiceDto {
+  id: string;
+  amount: number;
+  currency: string;
+  status: "PAID" | "PENDING" | "FAILED";
+  createdAt: string;
+  paidAt?: string | null;
+  invoiceUrl?: string | null;
+}
+
+/** Récupère l'abonnement courant de l'utilisateur connecté. */
+export function subscriptionGetMe() {
+  return api<SubscriptionDto | null>("/api/billing/me/subscription");
+}
+
+/** Récupère les dernières factures de l'utilisateur connecté. */
+export function subscriptionListInvoices() {
+  return api<InvoiceDto[]>("/api/billing/me/invoices");
+}
+
+/**
+ * Crée une session de paiement (ex: Stripe Checkout) pour un plan donné.
+ * Le backend doit renvoyer une URL de redirection.
+ */
+export function subscriptionCreateCheckoutSession(plan: SubscriptionPlan, locale: Locale) {
+  return api<{ checkoutUrl: string }>("/api/billing/checkout", {
+    method: "POST",
+    body: JSON.stringify({ plan, locale }),
+  });
+}
+
+/** Annule l'abonnement courant (utilisé pour arrêter un essai ou un abonnement). */
+export function subscriptionCancel() {
+  return api<void>("/api/billing/me/subscription/cancel", {
+    method: "POST",
+  });
+}
+
+/** Termine l'essai immédiatement et active le plan payant. */
+export function subscriptionSkipTrial() {
+  return api<SubscriptionDto>("/api/billing/me/subscription/skip-trial", {
+    method: "POST",
+  });
+}
+
+/** Demande l'annulation à la fin de la période en cours (cancel_at_period_end=true). */
+export function subscriptionCancelAtPeriodEnd() {
+  return api<SubscriptionDto>("/api/billing/me/subscription/cancel-at-period-end", {
+    method: "POST",
+  });
+}
+
+/** Réactive le renouvellement automatique d'un abonnement encore actif. */
+export function subscriptionReactivate() {
+  return api<SubscriptionDto>("/api/billing/me/subscription/reactivate", {
+    method: "POST",
+  });
+}
+
+/** Ouvre le portail de facturation Stripe (gestion de carte / paiement). */
+export function subscriptionOpenPaymentPortal() {
+  return api<{ url: string }>("/api/billing/me/payment-portal", {
+    method: "POST",
   });
 }

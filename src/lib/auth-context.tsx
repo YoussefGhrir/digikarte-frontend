@@ -110,7 +110,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }) => {
       const res = await authRegister(data);
       persist(res);
-      router.push("/dashboard");
+      // Après création de compte, forcer le passage par la page d'abonnement
+      // pour démarrer l'essai avec carte bancaire.
+      router.push("/dashboard/subscription");
     },
     [persist, router]
   );

@@ -73,7 +73,7 @@ export default function DashboardPage() {
         setTotalMenus(0);
       }
     } catch (e) {
-      if (isApiError(e) && (e.status === 401 || e.status === 404)) {
+      if (isApiError(e) && (e.status === 401 || e.status === 403 || e.status === 404)) {
         logout({ redirectTo: "/" });
         return;
       }

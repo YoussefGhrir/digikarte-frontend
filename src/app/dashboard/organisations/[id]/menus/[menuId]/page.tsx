@@ -610,10 +610,11 @@ export default function MenuDetailPage() {
                       type="button"
                       disabled={bulkDeleteSubmitting}
                       onClick={() => handleBulkDelete()}
-                      className="flex cursor-pointer items-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-red-500 disabled:opacity-50"
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500 text-white shadow-lg shadow-red-900/50 ring-2 ring-red-400/60 hover:bg-red-400 hover:ring-red-300 disabled:opacity-50 disabled:shadow-none transition"
+                      title={t("menuBulkDeleteSelection", locale)}
+                      aria-label={t("menuBulkDeleteSelection", locale)}
                     >
                       <IconTrash className="h-4 w-4" />
-                      {t("menuBulkDeleteSelection", locale)}
                     </button>
                   )}
                   <button
@@ -639,10 +640,9 @@ export default function MenuDetailPage() {
                 <div key={sectionKey} className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4">
                   <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                     <div className="flex min-w-0 flex-1 items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={selectedSectionKeys.has(sectionKey)}
-                        onChange={() => {
+                      <button
+                        type="button"
+                        onClick={() => {
                           setSelectedSectionKeys((prev) => {
                             const next = new Set(prev);
                             if (next.has(sectionKey)) next.delete(sectionKey);
@@ -651,8 +651,15 @@ export default function MenuDetailPage() {
                           });
                         }}
                         title={t("menuSelectForDelete", locale)}
-                        className="h-4 w-4 shrink-0 rounded-md border border-neutral-500/80 bg-neutral-800/80 text-amber-500 transition focus:ring-2 focus:ring-amber-500/40 focus:ring-offset-0"
-                      />
+                        aria-pressed={selectedSectionKeys.has(sectionKey)}
+                        className={`flex h-5 w-5 items-center justify-center rounded-full border transition ${
+                          selectedSectionKeys.has(sectionKey)
+                            ? "border-amber-300 bg-amber-400/60 shadow-[0_0_0_1px_rgba(251,191,36,0.7)]"
+                            : "border-neutral-500 bg-neutral-900/70 hover:border-amber-300 hover:bg-neutral-800"
+                        }`}
+                      >
+                        {/* cercle plein / vide sans texte */}
+                      </button>
                       <span
                         className="flex h-8 min-w-[2rem] shrink-0 items-center justify-center rounded-lg bg-amber-500/25 px-2 text-sm font-bold text-amber-200 ring-1 ring-amber-500/30"
                         title={`${t("menuSectionOrderLabel", locale)} ${sectionIndex + 1}`}
@@ -668,11 +675,11 @@ export default function MenuDetailPage() {
                         <button
                           type="button"
                           onClick={() => setSectionToDelete(sectionKey)}
-                          className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-red-500/50 bg-red-950/40 px-3 py-2 text-xs font-semibold text-red-200 hover:bg-red-900/50"
+                          className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-red-500 text-white shadow-md shadow-red-900/50 ring-1 ring-red-300 hover:bg-red-400 hover:ring-red-200 transition"
                           title={t("menuDeleteSection", locale)}
+                          aria-label={t("menuDeleteSection", locale)}
                         >
-                          <IconTrash className="h-3.5 w-3.5" />
-                          {t("menuDeleteSection", locale)}
+                          <IconTrash className="h-4 w-4" />
                         </button>
                       )}
                       {items.length >= 2 && (
@@ -710,10 +717,9 @@ export default function MenuDetailPage() {
                         >
                           {/* Produit principal (taille grande) */}
                           <div className="flex items-start justify-between gap-2 p-3 border-b border-neutral-800/80">
-                            <input
-                              type="checkbox"
-                              checked={selectedItemIds.has(item.id)}
-                              onChange={() => {
+                            <button
+                              type="button"
+                              onClick={() => {
                                 setSelectedItemIds((prev) => {
                                   const next = new Set(prev);
                                   if (next.has(item.id)) next.delete(item.id);
@@ -722,8 +728,15 @@ export default function MenuDetailPage() {
                                 });
                               }}
                               title={t("menuSelectForDelete", locale)}
-                              className="mt-1 h-4 w-4 shrink-0 rounded-md border border-neutral-500/80 bg-neutral-800/80 text-amber-500 transition focus:ring-2 focus:ring-amber-500/40 focus:ring-offset-0"
-                            />
+                              aria-pressed={selectedItemIds.has(item.id)}
+                              className={`mt-1 flex h-5 w-5 items-center justify-center rounded-full border transition ${
+                                selectedItemIds.has(item.id)
+                                  ? "border-amber-300 bg-amber-400/60 shadow-[0_0_0_1px_rgba(251,191,36,0.7)]"
+                                  : "border-neutral-500 bg-neutral-900/70 hover:border-amber-300 hover:bg-neutral-800"
+                              }`}
+                            >
+                              {/* cercle plein / vide sans texte */}
+                            </button>
                             {item.imageUrl && (
                               <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-neutral-800">
                                 <img src={item.imageUrl} alt="" className="h-full w-full object-cover" />

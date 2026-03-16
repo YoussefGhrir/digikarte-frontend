@@ -2,7 +2,7 @@
 
 import { QrDoorPoster, QrTableSticker } from "@/components/qr-print";
 import { QR_THEME_IDS, type QrThemeId } from "@/components/qr-display/constants";
-import { menuGet, orgGet, type MenuDto, type OrganizationDto } from "@/lib/api";
+import { menuGet, menuQrUrl, orgGet, type MenuDto, type OrganizationDto } from "@/lib/api";
 import {
   captureElementAsPng,
   generatePosterPdfFromDom,
@@ -131,6 +131,7 @@ export default function MenuQrPage() {
   const menuId = Number(params.menuId);
   const [menu, setMenu] = useState<MenuDto | null>(null);
   const [org, setOrg] = useState<OrganizationDto | null>(null);
+  const [menuUrl, setMenuUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -189,8 +190,9 @@ export default function MenuQrPage() {
   const load = useCallback(async () => {
     if (!menuId || isNaN(menuId)) return;
     try {
-      const data = await menuGet(menuId);
+      const [data, qr] = await Promise.all([menuGet(menuId), menuQrUrl(menuId)]);
       setMenu(data);
+      setMenuUrl(qr.url);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur");
     } finally {
@@ -215,11 +217,11 @@ export default function MenuQrPage() {
       .catch(() => setOrg(null));
   }, [menu?.organizationId]);
 
-
-  const menuUrl =
-    typeof window !== "undefined"
+  const effectiveMenuUrl =
+    menuUrl ??
+    (typeof window !== "undefined"
       ? `${window.location.origin}/menu/${menu?.slug ?? ""}`
-      : `https://digikarte.de/menu/${menu?.slug ?? ""}`;
+      : `https://digikarte.de/menu/${menu?.slug ?? ""}`);
 
   /** Capture la couche impression (taille réelle) pour éviter recadrage et artefacts. */
   const handleDownloadStickerImage = useCallback(async () => {
@@ -386,7 +388,7 @@ export default function MenuQrPage() {
               >
                 <div ref={stickerPrintRef}>
                   <QrTableSticker
-                  qrValue={menuUrl}
+                  qrValue={effectiveMenuUrl}
                   restaurantName={org.name}
                   logoUrl={org.organizationLogoBase64 ?? undefined}
                   accentColor={accentColor}
@@ -407,7 +409,7 @@ export default function MenuQrPage() {
               >
                 <div ref={posterPrintRef}>
                   <QrDoorPoster
-                    qrValue={menuUrl}
+                    qrValue={effectiveMenuUrl}
                     restaurantName={org.name}
                     discoverOur={t("menuQrPosterDiscoverOur", locale)}
                     menuTitle={t("menuQrPosterMenu", locale)}
@@ -518,7 +520,7 @@ export default function MenuQrPage() {
                   <div className="flex items-center justify-center w-[220px] h-[240px] shrink-0" aria-hidden>
                     <div ref={stickerPreviewRef} className="flex items-center justify-center origin-center" style={{ transform: "scale(0.62)" }}>
                       <QrTableSticker
-                        qrValue={menuUrl}
+                        qrValue={effectiveMenuUrl}
                         restaurantName={org.name}
                         logoUrl={org.organizationLogoBase64 ?? undefined}
                         accentColor={accentColor}
@@ -722,7 +724,7 @@ export default function MenuQrPage() {
                     type="button"
                     onClick={async () => {
                       try {
-                        await navigator.clipboard.writeText(menuUrl);
+                        await navigator.clipboard.writeText(effectiveMenuUrl);
                         setError("");
                         setSuccessMessage(t("menuQrCopyLinkSuccess", locale));
                       } catch {
@@ -744,7 +746,9 @@ export default function MenuQrPage() {
                     type="button"
                     onClick={async () => {
                       try {
-                        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(menuUrl)}&format=png`;
+                        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(
+                          effectiveMenuUrl
+                        )}&format=png`;
                         const res = await fetch(qrApiUrl);
                         const blob = await res.blob();
                         const url = URL.createObjectURL(blob);

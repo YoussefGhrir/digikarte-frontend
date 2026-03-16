@@ -47,7 +47,7 @@ export default function OrganisationPage() {
       setOrg(orgData);
       setMenus(menusData);
     } catch (e) {
-      if (isApiError(e) && e.status === 401) {
+      if (isApiError(e) && (e.status === 401 || e.status === 403)) {
         logout({ redirectTo: "/" });
         return;
       }
@@ -175,15 +175,15 @@ export default function OrganisationPage() {
               {t("orgLogo", locale)}
             </p>
             <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center">
-              <div className="relative h-24 w-24 sm:h-28 sm:w-28 overflow-hidden rounded-full border-[3px] border-amber-400/80 bg-neutral-950 shadow-xl shadow-black/60">
+              <div className="relative h-20 w-28 sm:h-24 sm:w-32 overflow-hidden rounded-2xl border-[3px] border-amber-400/80 bg-neutral-50 shadow-xl shadow-black/60">
                 {org.organizationLogoBase64 ? (
                   <img
                     src={`data:image/jpeg;base64,${org.organizationLogoBase64}`}
                     alt=""
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-contain"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-2xl font-forum text-amber-300">
+                  <div className="flex h-full w-full items-center justify-center text-2xl font-forum text-amber-500">
                     {org.name.charAt(0)}
                   </div>
                 )}

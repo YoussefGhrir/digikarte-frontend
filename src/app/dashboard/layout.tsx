@@ -4,7 +4,7 @@ import { IconBuilding, IconHome, IconLogout, IconMenuList, IconQr } from "@/comp
 import { useAuth } from "@/lib/auth-context";
 import { localeLabels, t, type Locale } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
-import { orgList, type OrganizationDto, isApiError } from "@/lib/api";
+import { orgList, type OrganizationDto, isApiError, subscriptionGetMe, type SubscriptionDto } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -14,6 +14,7 @@ function navItems(_locale: Locale) {
   return [
     { href: "/dashboard", labelKey: "dashboardNavDashboard" as const, Icon: IconHome, view: null as string | null },
     { href: "/dashboard?view=organisations", labelKey: "dashboardNavOrganisations" as const, Icon: IconBuilding, view: "organisations" },
+    { href: "/dashboard/subscription", labelKey: "subscriptionNav", Icon: IconQr, view: null as string | null },
   ];
 }
 
@@ -69,6 +70,8 @@ export default function DashboardLayout({
   const [orgsError, setOrgsError] = useState("");
   const [orgDropdownOpen, setOrgDropdownOpen] = useState(false);
   const [currentOrgId, setCurrentOrgId] = useState<number | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionDto | null>(null);
+  const [subscriptionChecked, setSubscriptionChecked] = useState(false);
 
   useEffect(() => {
     if (!loading && !token) router.replace("/");
@@ -77,6 +80,53 @@ export default function DashboardLayout({
   useEffect(() => {
     if (token && user) refreshUser();
   }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Chargement de l'abonnement et redirection si expiré / inexistant
+  useEffect(() => {
+    let cancelled = false;
+    async function loadSubscription() {
+      if (!token) return;
+      try {
+        const sub = await subscriptionGetMe();
+        if (cancelled) return;
+        setSubscription(sub);
+        // Si pas d'abonnement ou expiré/annulé, forcer la page abonnement
+        const status = sub?.status;
+        const needsPaywall =
+          !sub ||
+          status === "EXPIRED" ||
+          status === "CANCELLED";
+        if (needsPaywall && !pathname?.startsWith("/dashboard/subscription")) {
+          router.replace("/dashboard/subscription");
+        }
+      } catch (e) {
+        if (cancelled) return;
+        if (isApiError(e)) {
+          if (e.status === 401 || e.status === 403) {
+            logout({ redirectTo: "/" });
+            return;
+          }
+          // Toute autre erreur API (404, 500, etc.) = pas d'abonnement actif
+          setSubscription(null);
+          if (!pathname?.startsWith("/dashboard/subscription")) {
+            router.replace("/dashboard/subscription");
+          }
+        } else {
+          // Erreur inconnue: se comporter comme aucun abonnement
+          setSubscription(null);
+          if (!pathname?.startsWith("/dashboard/subscription")) {
+            router.replace("/dashboard/subscription");
+          }
+        }
+      } finally {
+        if (!cancelled) setSubscriptionChecked(true);
+      }
+    }
+    loadSubscription();
+    return () => {
+      cancelled = true;
+    };
+  }, [token, pathname, router, logout]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -143,7 +193,7 @@ export default function DashboardLayout({
           router.replace(`/dashboard/organisations/${initialId}`);
         }
       } catch (e) {
-        if (isApiError(e) && (e.status === 401 || e.status === 404)) {
+        if (isApiError(e) && (e.status === 401 || e.status === 403 || e.status === 404)) {
           logout({ redirectTo: "/" });
           return;
         }
@@ -180,6 +230,30 @@ export default function DashboardLayout({
   }
 
   if (!token) return null;
+
+  // Tant que nous n'avons pas vérifié l'abonnement (et qu'on n'est pas déjà
+  // sur la page d'abonnement), afficher un écran de chargement.
+  if (!subscriptionChecked && !pathname?.startsWith("/dashboard/subscription")) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-neutral-950">
+        <p className="text-sm tracking-[0.3em] text-neutral-400 uppercase">
+          {t("subscriptionLoading", locale)}
+        </p>
+      </div>
+    );
+  }
+
+  // Si l'abonnement est inexistant / expiré / annulé et que l'on n'est pas
+  // déjà sur la page d'abonnement, on laisse la redirection de l'effet se
+  // faire et on n'affiche rien ici pour éviter de voir le dashboard.
+  const subStatus = subscription?.status;
+  const needsPaywall =
+    !subscription ||
+    subStatus === "EXPIRED" ||
+    subStatus === "CANCELLED";
+  if (subscriptionChecked && needsPaywall && !pathname?.startsWith("/dashboard/subscription")) {
+    return null;
+  }
 
   const currentOrg =
     currentOrgId != null

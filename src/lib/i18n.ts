@@ -236,6 +236,42 @@ export const translations = {
     fr: "Aucun paiement requis pour démarrer.",
     en: "No payment required to get started.",
   },
+  // Pricing / subscriptions on landing
+  pricingTitle: {
+    de: "Ein einfaches Abo, drei Rhythmen.",
+    fr: "Un seul abonnement, trois rythmes.",
+    en: "One simple plan, three rhythms.",
+  },
+  pricingSubtitle: {
+    de: "Starten Sie mit 3 Tagen Testphase – danach wählen Sie monatlich, halbjährlich oder jährlich.",
+    fr: "Commencez avec 3 jours d’essai, puis choisissez mensuel, semestriel ou annuel.",
+    en: "Start with a 3‑day trial, then choose monthly, semi‑annual or yearly.",
+  },
+  pricingTrialNote: {
+    de: "Essai mit Karte: Die Karte wird erst nach der 3‑tägigen Testphase belastet. Sie können jederzeit vor Ablauf kündigen.",
+    fr: "Essai avec carte bancaire : la carte n’est débitée qu’après les 3 jours d’essai. Vous pouvez annuler avant la fin.",
+    en: "Trial with card: your card is only charged after the 3‑day trial. You can cancel before it ends.",
+  },
+  pricingPerMonthShort: {
+    de: "/ Monat",
+    fr: "/ mois",
+    en: "/ month",
+  },
+  pricingPer6MonthsShort: {
+    de: "/ 6 Monate",
+    fr: "/ 6 mois",
+    en: "/ 6 months",
+  },
+  pricingPerYearShort: {
+    de: "/ Jahr",
+    fr: "/ an",
+    en: "/ year",
+  },
+  pricingCtaChoosePlan: {
+    de: "Essai gratuit 3 Tage",
+    fr: "3 jours d’essai gratuit",
+    en: "Start 3‑day free trial",
+  },
   // Section « Comment ajouter et personnaliser »
   explainHowTitle: {
     de: "So fügst du hinzu und personalisierst",
@@ -478,6 +514,11 @@ export const translations = {
     de: "Organisationen",
     fr: "Organisations",
     en: "Organisations",
+  },
+  subscriptionNav: {
+    de: "Abonnement",
+    fr: "Abonnement",
+    en: "Subscription",
   },
   dashboardNavMenusOfOrg: {
     de: "Menüs dieser Organisation",
@@ -1784,6 +1825,326 @@ export const translations = {
     de: "Laden…",
     fr: "Chargement…",
     en: "Loading…",
+  },
+  // Subscription / Billing
+  subscriptionKicker: {
+    de: "ABONNEMENT",
+    fr: "ABONNEMENT",
+    en: "SUBSCRIPTION",
+  },
+  subscriptionTitle: {
+    de: "Verwalten Sie Ihr DigiKarte-Abo.",
+    fr: "Gérez votre abonnement DigiKarte.",
+    en: "Manage your DigiKarte subscription.",
+  },
+  subscriptionSubtitle: {
+    de: "3 Tage kostenlos testen, dann ein einziges einfaches Abo – monatlich, halbjährlich oder jährlich.",
+    fr: "3 jours d’essai gratuits, puis un seul abonnement simple – mensuel, semestriel ou annuel.",
+    en: "3 days free trial, then one simple subscription – monthly, semi-annual or yearly.",
+  },
+  subscriptionLoading: {
+    de: "Laden des Abonnements…",
+    fr: "Chargement de l'abonnement…",
+    en: "Loading subscription…",
+  },
+  subscriptionPlanMonthly: {
+    de: "Monatlich",
+    fr: "Mensuel",
+    en: "Monthly",
+  },
+  subscriptionPlanSemiannual: {
+    de: "Halbjährlich",
+    fr: "Semestriel",
+    en: "Semi-annual",
+  },
+  subscriptionPlanYearly: {
+    de: "Jährlich",
+    fr: "Annuel",
+    en: "Yearly",
+  },
+  subscriptionPerMonth: {
+    de: "pro Monat (ohne Bindung)",
+    fr: "par mois (sans engagement)",
+    en: "per month (no commitment)",
+  },
+  subscriptionPer6Months: {
+    de: "alle 6 Monate",
+    fr: "tous les 6 mois",
+    en: "every 6 months",
+  },
+  subscriptionPerYear: {
+    de: "pro Jahr",
+    fr: "par an",
+    en: "per year",
+  },
+  subscriptionMonthlyHint: {
+    de: "Ideal zum Starten, kündbar jederzeit.",
+    fr: "Idéal pour démarrer, résiliable à tout moment.",
+    en: "Perfect to start, cancel anytime.",
+  },
+  subscriptionSemiannualHint: {
+    de: "Für Cafés, die sich für eine Saison engagieren möchten.",
+    fr: "Pour les cafés qui veulent s’engager sur une saison.",
+    en: "For venues happy to commit for a season.",
+  },
+  subscriptionYearlyHint: {
+    de: "Bestes Preis-Leistungs-Verhältnis auf das Jahr.",
+    fr: "Le meilleur rapport qualité/prix à l’année.",
+    en: "Best value over the year.",
+  },
+  subscriptionSemiannualSaving: {
+    de: "≈ 18 % günstiger als monatlich.",
+    fr: "≈ 18 % d’économie vs mensuel.",
+    en: "≈ 18% cheaper than monthly.",
+  },
+  subscriptionYearlySaving: {
+    de: "≈ 26 % günstiger als monatlich.",
+    fr: "≈ 26 % d’économie vs mensuel.",
+    en: "≈ 26% cheaper than monthly.",
+  },
+  subscriptionFeatureUnlimitedMenus: {
+    de: "Unbegrenzte Organisationen & Menüs.",
+    fr: "Organisations & menus illimités.",
+    en: "Unlimited organisations & menus.",
+  },
+  subscriptionFeatureQr: {
+    de: "Unbegrenzte QR-Codes & Vorlagen.",
+    fr: "QR codes & modèles illimités.",
+    en: "Unlimited QR codes & templates.",
+  },
+  subscriptionFeatureSupport: {
+    de: "Support par E-Mail inclus.",
+    fr: "Support par email inclus.",
+    en: "Email support included.",
+  },
+  subscriptionChoosePlan: {
+    de: "Diesen Plan wählen",
+    fr: "Choisir ce plan",
+    en: "Choose this plan",
+  },
+  subscriptionProcessing: {
+    de: "Weiterleitung zum Bezahlen…",
+    fr: "Redirection vers le paiement…",
+    en: "Redirecting to payment…",
+  },
+  subscriptionBadgePopular: {
+    de: "Beliebt",
+    fr: "Populaire",
+    en: "Popular",
+  },
+  subscriptionBadgeBest: {
+    de: "Beste Wahl",
+    fr: "Meilleure offre",
+    en: "Best value",
+  },
+  subscriptionStatusLabel: {
+    de: "Status",
+    fr: "Statut",
+    en: "Status",
+  },
+  subscriptionPlanLabel: {
+    de: "Plan",
+    fr: "Offre",
+    en: "Plan",
+  },
+  subscriptionStatusTrial: {
+    de: "Kostenloser Test",
+    fr: "Essai gratuit",
+    en: "Free trial",
+  },
+  subscriptionStatusActive: {
+    de: "Aktiv",
+    fr: "Actif",
+    en: "Active",
+  },
+  subscriptionStatusExpired: {
+    de: "Abgelaufen",
+    fr: "Expiré",
+    en: "Expired",
+  },
+  subscriptionStatusCancelled: {
+    de: "Gekündigt",
+    fr: "Résilié",
+    en: "Cancelled",
+  },
+  subscriptionCurrentPlanTitle: {
+    de: "Ihr aktueller Plan",
+    fr: "Votre offre actuelle",
+    en: "Your current plan",
+  },
+  subscriptionCurrentPlanSubtitle: {
+    de: "Details zum aktuellen Abrechnungszeitraum und zur nächsten Abbuchung.",
+    fr: "Détails sur votre période en cours et le prochain prélèvement.",
+    en: "Details about your current period and next charge.",
+  },
+  subscriptionCurrentPeriodEnd: {
+    de: "Ende der aktuellen Periode",
+    fr: "Fin de la période en cours",
+    en: "End of current period",
+  },
+  subscriptionNextPaymentLabel: {
+    de: "Nächste Zahlung",
+    fr: "Prochain paiement",
+    en: "Next payment",
+  },
+  subscriptionNextPayment: {
+    de: "Nächste Abbuchung am",
+    fr: "Prochain prélèvement le",
+    en: "Next automatic payment on",
+  },
+  subscriptionAutoRenewLabel: {
+    de: "Automatische Verlängerung",
+    fr: "Renouvellement automatique",
+    en: "Automatic renewal",
+  },
+  subscriptionAutoRenewOn: {
+    de: "Aktiviert",
+    fr: "Activé",
+    en: "Enabled",
+  },
+  subscriptionAutoRenewOff: {
+    de: "Deaktiviert",
+    fr: "Désactivé",
+    en: "Disabled",
+  },
+  subscriptionInvoicesTitle: {
+    de: "Rechnungen",
+    fr: "Factures",
+    en: "Invoices",
+  },
+  subscriptionInvoicesSubtitle: {
+    de: "Letzte Zahlungen für Ihre DigiKarte-Lizenz.",
+    fr: "Derniers paiements pour votre licence DigiKarte.",
+    en: "Latest payments for your DigiKarte license.",
+  },
+  subscriptionNoInvoices: {
+    de: "Noch keine Rechnung verfügbar.",
+    fr: "Aucune facture pour l’instant.",
+    en: "No invoices yet.",
+  },
+  subscriptionInvoiceStatusPaid: {
+    de: "Bezahlt",
+    fr: "Payée",
+    en: "Paid",
+  },
+  subscriptionInvoiceStatusPending: {
+    de: "En attente",
+    fr: "En attente",
+    en: "Pending",
+  },
+  subscriptionInvoiceStatusFailed: {
+    de: "Fehlgeschlagen",
+    fr: "Échouée",
+    en: "Failed",
+  },
+  subscriptionInvoiceDownload: {
+    de: "Rechnung (PDF)",
+    fr: "Facture (PDF)",
+    en: "Invoice (PDF)",
+  },
+  subscriptionLegalNote: {
+    de: "Alle Preise zzgl. ggf. gesetzlicher Mehrwertsteuer. Abonnement automatisch verlängerbar, kündbar vor dem nächsten Abrechnungsdatum.",
+    fr: "Tous les prix sont hors taxes éventuelles. Abonnement renouvelé automatiquement, résiliable avant la prochaine échéance.",
+    en: "All prices exclude applicable taxes. Subscription renews automatically and can be cancelled before the next billing date.",
+  },
+  subscriptionTrialRemaining: {
+    de: "Noch {days} Tage kostenlos testen.",
+    fr: "Encore {days} jours d’essai gratuit.",
+    en: "{days} days of free trial remaining.",
+  },
+  subscriptionTrialEnded: {
+    de: "Ihr Test ist beendet – wählen Sie einen Plan, um DigiKarte weiter zu nutzen.",
+    fr: "Votre essai est terminé – choisissez une offre pour continuer à utiliser DigiKarte.",
+    en: "Your trial has ended – choose a plan to keep using DigiKarte.",
+  },
+  // Bandeau récap abonnement (essai / actif / inactif)
+  subscriptionBannerTrialContinue: {
+    de: "Kostenlose Testphase aktiv. Ihr Abonnement startet automatisch nach dem Ende des Tests.",
+    fr: "Essai gratuit en cours. Votre abonnement payant commencera automatiquement à la fin de l’essai.",
+    en: "Free trial is active. Your paid subscription will start automatically when the trial ends.",
+  },
+  subscriptionBannerActiveUntil: {
+    de: "Ihr Abonnement ist aktiv bis",
+    fr: "Votre abonnement est actif jusqu’au",
+    en: "Your subscription is active until",
+  },
+  subscriptionBannerInactive: {
+    de: "Kein aktives Abonnement. Wählen Sie einen Plan, um DigiKarte weiter zu nutzen.",
+    fr: "Aucun abonnement actif. Choisissez une offre pour continuer à utiliser DigiKarte.",
+    en: "No active subscription. Choose a plan to continue using DigiKarte.",
+  },
+  subscriptionDaysRemaining: {
+    de: "Tage verbleiben vor der Verlängerung.",
+    fr: "jours restants avant le renouvellement.",
+    en: "days left before renewal.",
+  },
+  subscriptionDayRemaining: {
+    de: "Tag verbleibt vor der Verlängerung.",
+    fr: "jour restant avant le renouvellement.",
+    en: "day left before renewal.",
+  },
+  subscriptionStopTrialInfo: {
+    de: "Um das Testabo zu beenden, fügen wir später eine Schaltfläche zur Kündigung direkt mit Stripe hinzu. Aktuell bleibt das Testabo nur in der Stripe-Konsole verwaltet.",
+    fr: "Pour arrêter l’essai / l’abonnement, nous ajouterons plus tard un bouton de résiliation connecté à Stripe. Pour l’instant, la gestion se fait uniquement depuis le tableau de bord Stripe.",
+    en: "To stop the trial / subscription, we’ll later add a cancel button wired to Stripe. For now, management is only from the Stripe dashboard.",
+  },
+  // Actions pendant l'essai (boutons skip / annuler)
+  subscriptionTrialActionsHint: {
+    de: "Sie sind in der kostenlosen Testphase. Sie können den Test jederzeit abbrechen oder direkt zum bezahlten Plan wechseln.",
+    fr: "Vous êtes en période d’essai. Vous pouvez arrêter l’essai à tout moment ou passer directement à l’offre payante.",
+    en: "You are currently in the trial period. You can stop the trial at any time or jump straight to the paid plan.",
+  },
+  subscriptionSkipTrialCta: {
+    de: "Test überspringen und aktivieren",
+    fr: "Passer l’essai et activer",
+    en: "Skip trial and activate",
+  },
+  subscriptionSkipTrialProcessing: {
+    de: "Aktivierung läuft…",
+    fr: "Activation…",
+    en: "Activating…",
+  },
+  subscriptionCancelTrialCta: {
+    de: "Test abbrechen und kündigen",
+    fr: "Arrêter l’essai et résilier",
+    en: "Stop trial and cancel",
+  },
+  subscriptionCancelTrialProcessing: {
+    de: "Kündigung läuft…",
+    fr: "Résiliation…",
+    en: "Cancelling…",
+  },
+  // Annulation / réactivation d'un abonnement actif
+  subscriptionCancelAtEndCta: {
+    de: "Kündigung zum Periodenende planen",
+    fr: "Annuler à la fin de la période",
+    en: "Cancel at period end",
+  },
+  subscriptionCancelAtEndProcessing: {
+    de: "Kündigung geplant…",
+    fr: "Planification de l’annulation…",
+    en: "Scheduling cancellation…",
+  },
+  subscriptionReactivateCta: {
+    de: "Automatische Verlängerung wieder aktivieren",
+    fr: "Réactiver le renouvellement automatique",
+    en: "Reactivate auto‑renew",
+  },
+  subscriptionReactivateProcessing: {
+    de: "Reaktivierung…",
+    fr: "Réactivation…",
+    en: "Reactivating…",
+  },
+  subscriptionCancelScheduledNote: {
+    de: "Ihre Kündigung ist geplant: Ihr Zugang bleibt bis zum Ende der aktuellen Periode aktiv, danach wird das Abonnement beendet.",
+    fr: "Votre résiliation est programmée : vous gardez l’accès jusqu’à la fin de la période actuelle, puis l’abonnement sera arrêté.",
+    en: "Your cancellation is scheduled: you keep access until the end of the current period, then the subscription will end.",
+  },
+  // Gestion du moyen de paiement (Billing Portal)
+  subscriptionManagePaymentMethod: {
+    de: "Zahlungsmethode verwalten",
+    fr: "Gérer mon moyen de paiement",
+    en: "Manage payment method",
   },
 } as const;
 
