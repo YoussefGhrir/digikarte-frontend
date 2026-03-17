@@ -9,8 +9,8 @@ import { MenuLogoFrame } from "./MenuLogoFrame";
 import { MenuDividerGravure } from "./MenuDividerGravure";
 import { MenuSectionTitle } from "./MenuSectionTitle";
 
-const ACCENT = "#0d9488";
-const ACCENT_TEAL = "#14b8a6";
+const ACCENT = "#6366f1"; // indigo
+const ACCENT_SOFT = "#e0e7ff";
 
 /**
  * Asymmetric Grid + Big Imagery – Magazine culinaire moderne, Instagramable.
@@ -26,14 +26,14 @@ export function MenuTemplateCards({
   const sections = groupSectionBlocks(menu.items ?? []);
 
   return (
-    <div className="menu-bg-herbe-soie min-h-screen font-dm text-[#1c2522]">
+    <div className="menu-bg-herbe-soie min-h-screen font-dm text-slate-900">
       <div
         className="menu-page-outer min-h-screen"
         style={{ ["--menu-page-border" as string]: "rgba(13,148,136,0.2)" }}
       >
         <div className="menu-page-inner">
           <header className="relative z-10 px-4 pt-10 pb-6 sm:px-6">
-            <div className="mx-auto flex max-w-4xl flex-col sm:flex-row sm:items-center gap-6 text-left">
+            <div className="mx-auto flex max-w-4xl flex-col gap-6 text-left sm:flex-row sm:items-center">
               {menu.organizationLogoBase64 && (
                 <MenuLogoFrame
                   accentColor={ACCENT}
@@ -51,21 +51,23 @@ export function MenuTemplateCards({
               )}
               <div className="min-w-0 flex-1">
                 {!menu.organizationLogoBase64 && menu.organizationName && (
-                  <h1 className="text-2xl font-semibold text-[#1c2522] sm:text-3xl">
+                  <h1 className="font-forum text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                     {menu.organizationName}
                   </h1>
                 )}
                 {menu.organizationSlogan && (
-                  <p className="mt-0.5 text-sm italic text-[#0d9488]">
+                  <p className="mt-0.5 text-sm italic text-slate-600">
                     {menu.organizationSlogan}
                   </p>
                 )}
-                <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-[#0d9488]">
+                <p className="mt-3 inline-flex items-center rounded-full bg-white/60 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-slate-700 shadow-sm">
                   {t("menu", locale)}
                 </p>
-                <p className="text-lg text-[#2d3d36] mt-0.5">{menu.title}</p>
+                <p className="mt-2 font-forum text-xl text-slate-900 sm:text-2xl">
+                  {menu.title}
+                </p>
                 {menu.description && (
-                  <p className="mt-2 max-w-md text-sm text-[#4a5c54]">
+                  <p className="mt-2 max-w-md text-sm text-slate-600">
                     {menu.description}
                   </p>
                 )}
@@ -79,7 +81,7 @@ export function MenuTemplateCards({
               className="menu-contour-outer menu-contour-subtle mt-6"
               style={{ ["--menu-contour-color" as string]: ACCENT }}
             >
-              <div className="menu-contour-inner bg-white/30 py-8 sm:py-10">
+              <div className="menu-contour-inner bg-white/80 py-9 sm:py-11">
                 <div className="space-y-10">
                   {sections.map(([sectionKey, blocks]) => (
                     <section key={sectionKey}>
@@ -91,69 +93,64 @@ export function MenuTemplateCards({
                           {sectionKey}
                         </MenuSectionTitle>
                       )}
-                      <div className="columns-1 gap-6 space-y-6 md:columns-2 lg:columns-3">
-                        {blocks.map(({ root: item, children: subItems }) => (
-                          <div key={item.id} className="break-inside-avoid space-y-0">
-                            {item.imageUrl ? (
-                              <CardWithImage item={item} menu={menu} />
-                            ) : (
-                              <div className="rounded-xl border border-stone-200/60 bg-white/50 px-4 py-3 shadow-sm transition-shadow duration-300 hover:shadow-md">
-                                <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
-                                  <span className="font-semibold text-[#1c2522]">
-                                    {item.name}
+                      <div className="space-y-4">
+                        {blocks.map(({ root: item, children: subItems }) => {
+                          const content = (
+                            <div className="rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                              <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                                <span className="font-medium text-slate-900">
+                                  {item.name}
+                                </span>
+                                {item.price != null && (
+                                  <span className="tabular-nums text-sm font-semibold text-indigo-500 whitespace-nowrap">
+                                    {Number(item.price).toFixed(2)}{" "}
+                                    {formatPriceSymbol(menu.priceCurrency)}
                                   </span>
-                                  {item.price != null && (
-                                    <span className="text-[#0d9488] tabular-nums font-medium whitespace-nowrap">
-                                      {Number(item.price).toFixed(2)}{" "}
-                                      {formatPriceSymbol(menu.priceCurrency)}
-                                    </span>
-                                  )}
-                                </div>
-                                {item.description && (
-                                  <p className="mt-0.5 text-xs font-normal text-[#1c2522]/90 leading-snug">
-                                    {item.description}
-                                  </p>
-                                )}
-                                {subItems.length > 0 && (
-                                  <ul className="mt-3 space-y-1.5 border-l-2 border-[#0d9488]/40 pl-3">
-                                    {subItems.map((sub) => (
-                                      <li key={sub.id} className="flex flex-wrap items-baseline justify-between gap-2 text-base font-medium text-[#1c2522]">
-                                        <span>↳ {sub.name}</span>
-                                        {sub.price != null && (
-                                          <span className="tabular-nums font-medium text-[#0d9488]/90">
-                                            {Number(sub.price).toFixed(2)} {formatPriceSymbol(menu.priceCurrency)}
-                                          </span>
-                                        )}
-                                      </li>
-                                    ))}
-                                  </ul>
                                 )}
                               </div>
-                            )}
-                            {item.imageUrl && subItems.length > 0 && (
-                              <ul className="mt-2 rounded-lg border border-stone-200/50 bg-white/40 px-3 py-2">
-                                {subItems.map((sub) => (
-                                  <li key={sub.id} className="flex flex-wrap items-baseline justify-between gap-2 text-base font-medium text-white/95">
-                                    <span>↳ {sub.name}</span>
-                                    {sub.price != null && (
-                                      <span className="tabular-nums font-medium text-[#0d9488]/90">
-                                        {Number(sub.price).toFixed(2)} {formatPriceSymbol(menu.priceCurrency)}
-                                      </span>
-                                    )}
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        ))}
+                              {item.description && (
+                                <p className="mt-0.5 text-xs font-normal leading-snug text-slate-500">
+                                  {item.description}
+                                </p>
+                              )}
+                              {subItems.length > 0 && (
+                                <ul className="mt-3 space-y-1.5 border-l-2 border-indigo-400/30 pl-3">
+                                  {subItems.map((sub) => (
+                                    <li key={sub.id} className="flex flex-wrap items-baseline justify-between gap-2 text-sm font-medium text-slate-900">
+                                      <span>↳ {sub.name}</span>
+                                      {sub.price != null && (
+                                        <span className="tabular-nums font-medium text-indigo-500">
+                                          {Number(sub.price).toFixed(2)} {formatPriceSymbol(menu.priceCurrency)}
+                                        </span>
+                                      )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          );
+
+                          return (
+                            <div key={item.id} className="w-full">
+                              {item.imageUrl ? (
+                                <>
+                                  <CardWithImage item={item} menu={menu} />
+                                  {content}
+                                </>
+                              ) : (
+                                content
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     </section>
                   ))}
                 </div>
 
                 {(!menu.items || menu.items.length === 0) && (
-                  <div className="rounded-2xl border-2 border-dashed border-teal-300/50 bg-white/50 p-12 text-center">
-                    <p className="text-[#4a5c54]">{t("noItems", locale)}</p>
+                  <div className="rounded-2xl border-2 border-dashed border-indigo-200/80 bg-white/70 p-12 text-center">
+                    <p className="text-sm text-slate-500">{t("noItems", locale)}</p>
                   </div>
                 )}
               </div>

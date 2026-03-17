@@ -58,9 +58,22 @@ export const MENU_TEMPLATE_IDS = [
   "elegant",
   "restaurant",
   "terrasse",
+  "lounge",
+  "cafeResto",
 ] as const;
 
 export type MenuTemplateId = (typeof MENU_TEMPLATE_IDS)[number];
+
+/** Thèmes de couleur globaux applicables aux modèles (fond + accents). */
+export const MENU_COLOR_THEME_IDS = [
+  "default",
+  "amber",
+  "emerald",
+  "bordeaux",
+  "slate",
+] as const;
+
+export type MenuColorThemeId = (typeof MENU_COLOR_THEME_IDS)[number];
 
 export function getDefaultTemplateId(): MenuTemplateId {
   return "classic";

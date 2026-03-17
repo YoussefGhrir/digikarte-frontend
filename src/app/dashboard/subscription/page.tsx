@@ -316,7 +316,7 @@ export default function SubscriptionPage() {
       {!loading && (!sub || isCancelled || isExpired) && (
       <section className="grid gap-5 md:grid-cols-3">
         {/* Mensuel */}
-        <article className="relative flex flex-col overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-950/80 p-5 shadow-lg shadow-black/40">
+        <article className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-neutral-600/70 bg-gradient-to-br from-neutral-950 via-neutral-925 to-neutral-900 p-5 shadow-xl shadow-emerald-500/15">
           <div className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-neutral-500">
             {t("subscriptionPlanMonthly", locale)}
           </div>
@@ -340,7 +340,7 @@ export default function SubscriptionPage() {
             type="button"
             onClick={() => handleChoosePlan("MONTHLY")}
             disabled={checkoutLoading !== null}
-            className="mt-6 inline-flex w-full cursor-pointer items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(16,185,129,0.5)] transition hover:-translate-y-0.5 hover:bg-emerald-300 disabled:cursor-wait disabled:opacity-60"
+            className="mt-6 inline-flex w-full cursor-pointer items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(16,185,129,0.55)] transition hover:-translate-y-0.5 hover:bg-emerald-300 disabled:cursor-wait disabled:opacity-60 md:mt-auto"
           >
             {checkoutLoading === "MONTHLY"
               ? t("subscriptionProcessing", locale)
@@ -351,7 +351,7 @@ export default function SubscriptionPage() {
         </article>
 
         {/* Semestriel */}
-        <article className="relative flex flex-col overflow-hidden rounded-3xl border border-amber-500/60 bg-neutral-950/90 p-5 shadow-xl shadow-amber-500/10">
+        <article className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-amber-500/60 bg-neutral-950/90 p-5 shadow-xl shadow-amber-500/10">
           <div className="absolute right-3 top-3 rounded-full bg-amber-500 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-900">
             {t("subscriptionBadgePopular", locale)}
           </div>
@@ -381,7 +381,7 @@ export default function SubscriptionPage() {
             type="button"
             onClick={() => handleChoosePlan("SEMIANNUAL")}
             disabled={checkoutLoading !== null}
-            className="mt-6 inline-flex w-full cursor-pointer items-center justify-center rounded-2xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(251,191,36,0.5)] transition hover:-translate-y-0.5 hover:bg-amber-300 disabled:cursor-wait disabled:opacity-60"
+            className="mt-6 inline-flex w-full cursor-pointer items-center justify-center rounded-2xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(251,191,36,0.5)] transition hover:-translate-y-0.5 hover:bg-amber-300 disabled:cursor-wait disabled:opacity-60 md:mt-auto"
           >
             {checkoutLoading === "SEMIANNUAL"
               ? t("subscriptionProcessing", locale)
@@ -392,7 +392,7 @@ export default function SubscriptionPage() {
         </article>
 
         {/* Annuel */}
-        <article className="relative flex flex-col overflow-hidden rounded-3xl border border-emerald-500/70 bg-gradient-to-br from-neutral-950 to-neutral-900 p-5 shadow-lg shadow-emerald-500/15">
+        <article className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-emerald-500/70 bg-gradient-to-br from-neutral-950 to-neutral-900 p-5 shadow-lg shadow-emerald-500/15">
           <div className="absolute right-3 top-3 rounded-full bg-emerald-500 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-900">
             {t("subscriptionBadgeBest", locale)}
           </div>
@@ -422,7 +422,7 @@ export default function SubscriptionPage() {
             type="button"
             onClick={() => handleChoosePlan("YEARLY")}
             disabled={checkoutLoading !== null}
-            className="mt-6 inline-flex w-full cursor-pointer items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(16,185,129,0.5)] transition hover:-translate-y-0.5 hover:bg-emerald-300 disabled:cursor-wait disabled:opacity-60"
+            className="mt-6 inline-flex w-full cursor-pointer items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(16,185,129,0.5)] transition hover:-translate-y-0.5 hover:bg-emerald-300 disabled:cursor-wait disabled:opacity-60 md:mt-auto"
           >
             {checkoutLoading === "YEARLY"
               ? t("subscriptionProcessing", locale)

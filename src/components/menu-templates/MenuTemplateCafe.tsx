@@ -118,7 +118,7 @@ export function MenuTemplateCafe({
           </div>
         )}
 
-        <MenuPublicFooter menu={menu} locale={locale} />
+        <MenuPublicFooter menu={menu} locale={locale} variant="light" />
 
         <p className="mt-8 text-center text-xs tracking-widest text-[#8b5a2b]/80">
           {t("digikarte", locale)}

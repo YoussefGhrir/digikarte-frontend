@@ -19,9 +19,11 @@ import {
 } from "@/lib/api";
 import {
   MENU_TEMPLATE_IDS,
+  MENU_COLOR_THEME_IDS,
   normalizeTemplateId,
   formatPriceSymbol,
   type MenuTemplateId,
+  type MenuColorThemeId,
 } from "@/components/menu-templates";
 import { t } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
@@ -31,7 +33,16 @@ import Link from "next/link";
 
 const MENU_TEMPLATE_LABELS: Record<
   MenuTemplateId,
-  "menuTemplateClassic" | "menuTemplateCafe" | "menuTemplateBistro" | "menuTemplateMinimal" | "menuTemplateCards" | "menuTemplateElegant" | "menuTemplateRestaurant" | "menuTemplateTerrasse"
+  | "menuTemplateClassic"
+  | "menuTemplateCafe"
+  | "menuTemplateBistro"
+  | "menuTemplateMinimal"
+  | "menuTemplateCards"
+  | "menuTemplateElegant"
+  | "menuTemplateRestaurant"
+  | "menuTemplateTerrasse"
+  | "menuTemplateLounge"
+  | "menuTemplateCafeResto"
 > = {
   classic: "menuTemplateClassic",
   cafe: "menuTemplateCafe",
@@ -41,6 +52,8 @@ const MENU_TEMPLATE_LABELS: Record<
   elegant: "menuTemplateElegant",
   restaurant: "menuTemplateRestaurant",
   terrasse: "menuTemplateTerrasse",
+  lounge: "menuTemplateLounge",
+  cafeResto: "menuTemplateCafeResto",
 };
 
 function formatOrgAddress(org: OrganizationDto): string | null {
@@ -71,6 +84,7 @@ function buildPreviewMenu(menu: MenuDto, org: OrganizationDto | null): MenuPubli
     organizationPhone: org.phone ?? null,
     organizationEmail: org.email ?? null,
     displayTemplate: menu.displayTemplate ?? undefined,
+    colorTheme: menu.colorTheme ?? undefined,
     priceCurrency: menu.priceCurrency ?? "EUR",
     items: menu.items ?? [],
   };
@@ -118,6 +132,9 @@ export default function MenuDetailPage() {
   const [bulkDeleteSubmitting, setBulkDeleteSubmitting] = useState(false);
   const [sectionToDelete, setSectionToDelete] = useState<string | null>(null);
   const [deleteSectionSubmitting, setDeleteSectionSubmitting] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [showExplainModal, setShowExplainModal] = useState(false);
+  const [showColorThemeModal, setShowColorThemeModal] = useState(false);
 
   /** Liste des items déjà triée par le backend (sortOrder ASC). */
   const sortedItems = useMemo(() => menu?.items ?? [], [menu?.items]);
@@ -185,6 +202,19 @@ export default function MenuDetailPage() {
     [menu, org]
   );
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsDesktop(e.matches);
+    };
+    setIsDesktop(mq.matches);
+    mq.addEventListener("change", handleChange);
+    return () => {
+      mq.removeEventListener("change", handleChange);
+    };
+  }, []);
+
   const load = useCallback(async () => {
     if (!menuId || isNaN(menuId)) return;
     try {
@@ -211,11 +241,22 @@ export default function MenuDetailPage() {
       .catch(() => setOrg(null));
   }, [menu?.organizationId]);
 
+  // Auto-save slogan quelques millisecondes après la frappe (sans bouton, sans clic ailleurs)
+  useEffect(() => {
+    if (!org) return;
+    const current = org.slogan ?? "";
+    if (orgSlogan === current) return;
+    const id = window.setTimeout(() => {
+      void handleSaveSlogan();
+    }, 800);
+    return () => window.clearTimeout(id);
+  }, [orgSlogan, org]);
+
 
   //’ouverture du modal pour aperçu live
 
   useEffect(() => {
-    if (!resizing) return;
+    if (!resizing || !isDesktop) return;
     const minAside = 280;
     const maxAside = typeof window !== "undefined" ? Math.min(800, window.innerWidth * 0.7) : 700;
     function onMove(e: MouseEvent) {
@@ -231,7 +272,7 @@ export default function MenuDetailPage() {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
     };
-  }, [resizing]);
+  }, [resizing, isDesktop]);
 
   async function handleSaveSlogan() {
     if (!org) return;
@@ -378,14 +419,15 @@ export default function MenuDetailPage() {
     });
   }
 
-  async function handleUpdateItemTitleDesc(itemId: number, name: string, description: string) {
+  async function handleUpdateItemFields(itemId: number, name: string, description: string, price: string) {
     if (!menu) return;
     setError("");
     setEditModalSaving(true);
     try {
       const updated = await menuUpdateItem(menu.id, itemId, {
         name: name.trim(),
-        description: description.trim(),
+        description: description.trim() || undefined,
+        price: price ? Number(price) : undefined,
       });
       setMenu(updated);
       setEditModalItem(null);
@@ -485,7 +527,7 @@ export default function MenuDetailPage() {
     return (item.section || "").trim() || "_no_section";
   }
 
-  if (loading) return <p className="text-stone-500 p-4">{t("orgLoading", locale)}</p>;
+  if (loading) return <p className="p-4 text-stone-500">{t("orgLoading", locale)}</p>;
   if (!menu) {
     return (
       <div className="rounded-2xl border border-red-500/40 bg-red-950/40 p-6 text-sm text-red-200 m-4">
@@ -495,10 +537,10 @@ export default function MenuDetailPage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-5rem)] min-h-[560px] w-full min-w-0 overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 shadow-xl">
+    <div className="flex h-auto min-h-[560px] w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 shadow-xl lg:h-[calc(100vh-5rem)] lg:flex-row">
       <aside
-        className="flex shrink-0 flex-col border-r border-neutral-800 bg-neutral-900/80"
-        style={{ width: asideWidth }}
+        className="flex shrink-0 flex-col border-b border-neutral-800 bg-neutral-900/80 lg:border-b-0 lg:border-r"
+        style={{ width: isDesktop ? asideWidth : "100%" }}
       >
         <div className="flex items-center justify-between border-b border-neutral-800 px-4 py-3">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-400">
@@ -530,14 +572,11 @@ export default function MenuDetailPage() {
                 className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-neutral-100"
                 placeholder={t("menuSloganPlaceholder", locale)}
               />
-              <button
-                type="button"
-                onClick={handleSaveSlogan}
-                disabled={sloganSaving}
-                className="cursor-pointer rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-neutral-900 hover:bg-amber-400 disabled:opacity-60"
-              >
-                {sloganSaving ? t("dashboardSaving", locale) : t("menuSave", locale)}
-              </button>
+              {sloganSaving && (
+                <p className="text-[11px] text-neutral-500">
+                  {t("dashboardSaving", locale)}
+                </p>
+              )}
             </section>
           )}
 
@@ -579,6 +618,62 @@ export default function MenuDetailPage() {
             </div>
           </section>
 
+          {/* Thème de couleur global du modèle */}
+          <section className="space-y-2">
+            <label className="block text-[10px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
+              {t("menuColorThemeLabel" as any, locale)}
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {MENU_COLOR_THEME_IDS.map((id) => {
+                const isActive = (menu.colorTheme ?? "default") === id || (!menu.colorTheme && id === "default");
+                const colorClass =
+                  id === "amber"
+                    ? "bg-amber-500"
+                    : id === "emerald"
+                      ? "bg-emerald-500"
+                      : id === "bordeaux"
+                        ? "bg-rose-800"
+                        : id === "slate"
+                          ? "bg-slate-600"
+                          : "bg-neutral-500";
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    disabled={templateSaving}
+                    onClick={async () => {
+                      const value: MenuColorThemeId = id;
+                      try {
+                        setTemplateSaving(true);
+                        setError("");
+                        const updated = await menuUpdate(menu.id, {
+                          colorTheme: value === "default" ? null : value,
+                        });
+                        setMenu(updated);
+                      } catch (e) {
+                        setError(e instanceof Error ? e.message : "Erreur");
+                      } finally {
+                        setTemplateSaving(false);
+                      }
+                    }}
+                    className={`flex cursor-pointer items-center gap-2 rounded-full border px-2.5 py-1 text-[11px] font-medium capitalize transition ${
+                      isActive
+                        ? "border-amber-400 bg-amber-500/15 text-amber-100"
+                        : "border-neutral-600 bg-neutral-900/70 text-neutral-300 hover:border-amber-400/60"
+                    }`}
+                  >
+                    <span className={`h-4 w-4 rounded-full ${colorClass}`} />
+                    <span>
+                      {id === "default"
+                        ? t("menuColorThemeDefault" as any, locale)
+                        : t(`menuColorTheme_${id}` as any, locale)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
           {/* Blocs (catégories) et plats */}
           <section className="space-y-4">
             <div className="space-y-2">
@@ -587,6 +682,13 @@ export default function MenuDetailPage() {
                   {t("menuItemsTitle", locale)}
                 </label>
                 <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowExplainModal(true)}
+                    className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-sky-400/60 bg-sky-500/10 px-4 py-2 text-xs font-semibold text-sky-200 hover:bg-sky-500/20"
+                  >
+                    {t("menuExplainButton", locale)}
+                  </button>
                   {itemsBySection.filter(([, it]) => it.length > 0).length >= 2 && (
                     <button
                       type="button"
@@ -898,29 +1000,40 @@ export default function MenuDetailPage() {
       </aside>
 
       {/* Poignée redimensionnable entre Menüinhalt et Live-Vorschau */}
-      <div
-        role="separator"
-        aria-label="Redimensionner"
-        title="Redimensionner : glisser pour agrandir Menüinhalt ou Live-Vorschau"
-        onMouseDown={() => setResizing(true)}
-        className={`flex shrink-0 w-2 cursor-col-resize select-none flex-col items-center justify-center border-l border-r border-neutral-700 bg-neutral-800/80 hover:bg-amber-500/20 transition-colors ${resizing ? "bg-amber-500/30" : ""}`}
-      >
-        <div className="flex flex-col gap-0.5">
-          <span className="text-neutral-500 text-xs select-none">◀</span>
-          <span className="text-neutral-500 text-xs select-none">▶</span>
+      {isDesktop && (
+        <div
+          role="separator"
+          aria-label="Redimensionner"
+          title="Redimensionner : glisser pour agrandir Menüinhalt ou Live-Vorschau"
+          onMouseDown={() => setResizing(true)}
+          className={`flex w-2 shrink-0 cursor-col-resize select-none flex-col items-center justify-center border-l border-r border-neutral-700 bg-neutral-800/80 transition-colors hover:bg-amber-500/20 ${resizing ? "bg-amber-500/30" : ""}`}
+        >
+          <div className="flex flex-col gap-0.5">
+            <span className="select-none text-xs text-neutral-500">◀</span>
+            <span className="select-none text-xs text-neutral-500">▶</span>
+          </div>
         </div>
-      </div>
+      )}
 
       <main className="flex min-w-0 flex-1 flex-col border-l border-neutral-800/80 bg-neutral-950">
         <div className="border-b border-neutral-800 px-4 py-2 flex items-center justify-between shrink-0">
-          <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-            {t("menuPreviewLive", locale)}
-          </span>
-          {previewMenu && (
-            <span className="text-[10px] text-neutral-600">
-              {t(MENU_TEMPLATE_LABELS[normalizeTemplateId(menu.displayTemplate)], locale)}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+              {t("menuPreviewLive", locale)}
             </span>
-          )}
+            {previewMenu && (
+              <span className="text-[10px] text-neutral-600">
+                {t(MENU_TEMPLATE_LABELS[normalizeTemplateId(menu.displayTemplate)], locale)}
+              </span>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowColorThemeModal(true)}
+            className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-amber-500/60 bg-amber-500/10 px-3 py-1.5 text-[11px] font-semibold text-amber-200 hover:bg-amber-500/20"
+          >
+            {t("menuColorThemeLabel" as any, locale)}
+          </button>
         </div>
         <div className="flex-1 overflow-auto overflow-x-hidden">
           {previewMenu ? (
@@ -1189,6 +1302,91 @@ export default function MenuDetailPage() {
         </div>
       )}
 
+      {/* Modal choix du thème couleur global du menu */}
+      {showColorThemeModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          onClick={() => setShowColorThemeModal(false)}
+        >
+          <div
+            className="w-full max-w-xl rounded-3xl border border-amber-500/40 bg-neutral-950 p-6 shadow-[0_22px_70px_rgba(15,23,42,0.95)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-400">
+                  {t("menuColorThemeLabel" as any, locale)}
+                </p>
+                <h2 className="mt-1 font-forum text-2xl text-neutral-50">
+                  {t("menuDisplayTemplate", locale)}
+                </h2>
+                <p className="mt-1 text-xs text-neutral-400">
+                  {t("menuColorThemeDefault" as any, locale)}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowColorThemeModal(false)}
+                className="cursor-pointer rounded-lg bg-neutral-700 px-3 py-1.5 text-xs text-white hover:bg-neutral-600"
+              >
+                {t("dashboardCancel", locale)}
+              </button>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {MENU_COLOR_THEME_IDS.map((id) => {
+                const isActive = (menu.colorTheme ?? "default") === id || (!menu.colorTheme && id === "default");
+                const colorClass =
+                  id === "amber"
+                    ? "bg-amber-500"
+                    : id === "emerald"
+                      ? "bg-emerald-500"
+                      : id === "bordeaux"
+                        ? "bg-rose-800"
+                        : id === "slate"
+                          ? "bg-slate-600"
+                          : "bg-neutral-500";
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    disabled={templateSaving}
+                    onClick={async () => {
+                      const value: MenuColorThemeId = id;
+                      try {
+                        setTemplateSaving(true);
+                        setError("");
+                        const updated = await menuUpdate(menu.id, {
+                          colorTheme: value === "default" ? null : value,
+                        });
+                        setMenu(updated);
+                      } catch (e) {
+                        setError(e instanceof Error ? e.message : "Erreur");
+                      } finally {
+                        setTemplateSaving(false);
+                      }
+                    }}
+                    className={`flex cursor-pointer items-center justify-between gap-3 rounded-2xl border px-3 py-2.5 text-left text-xs font-medium transition ${
+                      isActive
+                        ? "border-amber-400 bg-amber-500/15 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.5)]"
+                        : "border-neutral-700 bg-neutral-900 text-neutral-200 hover:border-amber-400/60"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className={`h-6 w-6 rounded-full ${colorClass}`} />
+                      <span>
+                        {id === "default"
+                          ? t("menuColorThemeDefault" as any, locale)
+                          : t(`menuColorTheme_${id}` as any, locale)}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal confirmation suppression bloc */}
       {sectionToDelete && (
         <div
@@ -1264,6 +1462,72 @@ export default function MenuDetailPage() {
         </div>
       )}
 
+      {showExplainModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          onClick={() => setShowExplainModal(false)}
+        >
+          <div
+            className="w-full max-w-xl rounded-3xl border border-sky-500/40 bg-gradient-to-br from-neutral-950 via-neutral-950 to-slate-950 p-6 shadow-[0_20px_60px_rgba(8,47,73,0.9)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="font-forum text-xl text-sky-100">
+              {t("menuExplainTitle", locale)}
+            </h2>
+            <p className="mt-2 text-sm text-neutral-100">
+              {t("menuExplainIntro", locale)}
+            </p>
+            <div className="mt-4 grid gap-4 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1.2fr)]">
+              <div className="space-y-3 rounded-2xl bg-gradient-to-br from-sky-900/80 via-slate-900/80 to-indigo-900/80 p-4 text-xs text-sky-50">
+                <p>{t("menuExplainExample", locale)}</p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-sky-200">
+                  1 · Name → links
+                </p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-200">
+                  2 · Prix / Preis → rechts
+                </p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-200">
+                  3 · Description / composition → en dessous
+                </p>
+                <div className="mt-2 rounded-2xl border border-sky-400/80 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 p-4 text-xs text-neutral-100 shadow-[0_18px_40px_rgba(15,23,42,0.9)]">
+                  <div className="mb-2 flex items-baseline justify-between gap-2">
+                    <span className="font-forum text-base font-semibold text-white">
+                      {locale === "de"
+                        ? "Brezel Deluxe"
+                        : locale === "fr"
+                          ? "Croissant au beurre"
+                          : "Margherita pizza"}
+                    </span>
+                    <span className="text-sm font-semibold text-amber-300 tabular-nums">
+                      {locale === "en" ? "9.90 €" : "4.90 €"}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-100">
+                    {locale === "de" &&
+                      "Laugenbrezel, Butter, Schnittlauch, Meersalz…"}
+                    {locale === "fr" &&
+                      "Pâte feuilletée pur beurre, croustillant, doré au four…"}
+                    {locale === "en" &&
+                      "Tomato sauce, mozzarella, basil, extra virgin olive oil…"}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="mt-5 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowExplainModal(false)}
+                className="cursor-pointer rounded-xl bg-amber-400 px-4 py-2 text-sm font-semibold text-neutral-900 hover:bg-amber-300"
+              >
+                {t("menuOk", locale)}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {editModalItem && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
@@ -1283,7 +1547,8 @@ export default function MenuDetailPage() {
                 const fd = new FormData(e.currentTarget);
                 const name = (fd.get("edit-name") as string) || "";
                 const desc = (fd.get("edit-desc") as string) || "";
-                void handleUpdateItemTitleDesc(editModalItem.id, name, desc);
+                const price = (fd.get("edit-price") as string) || "";
+                void handleUpdateItemFields(editModalItem.id, name, desc, price);
               }}
             >
               <div>
@@ -1295,14 +1560,30 @@ export default function MenuDetailPage() {
                   className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-neutral-400">{t("description", locale)}</label>
-                <textarea
-                  name="edit-desc"
-                  defaultValue={editModalItem.description ?? ""}
-                  rows={4}
-                  className="mt-1 w-full resize-y rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100"
-                />
+              <div className="grid gap-3 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+                <div>
+                  <label className="block text-xs font-semibold text-neutral-400">
+                    {t("menuItemDescPlaceholder", locale)}
+                  </label>
+                  <textarea
+                    name="edit-desc"
+                    defaultValue={editModalItem.description ?? ""}
+                    rows={4}
+                    className="mt-1 w-full resize-y rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-neutral-400">
+                    {t("menuItemPrice", locale)}
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    name="edit-price"
+                    defaultValue={editModalItem.price ?? ""}
+                    className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100"
+                  />
+                </div>
               </div>
               <div className="flex flex-wrap justify-end gap-2 pt-2">
                 <button

@@ -248,9 +248,9 @@ export const translations = {
     en: "Start with a 3‑day trial, then choose monthly, semi‑annual or yearly.",
   },
   pricingTrialNote: {
-    de: "Essai mit Karte: Die Karte wird erst nach der 3‑tägigen Testphase belastet. Sie können jederzeit vor Ablauf kündigen.",
-    fr: "Essai avec carte bancaire : la carte n’est débitée qu’après les 3 jours d’essai. Vous pouvez annuler avant la fin.",
-    en: "Trial with card: your card is only charged after the 3‑day trial. You can cancel before it ends.",
+  de: "Testphase mit Karte: Die Karte wird erst nach der 3‑tägigen Testphase belastet. Sie können jederzeit vor Ablauf kündigen.",
+  fr: "Essai avec carte bancaire : la carte n’est débitée qu’après les 3 jours d’essai. Vous pouvez annuler avant la fin.",
+  en: "Trial with card: your card is only charged after the 3‑day trial. You can cancel before it ends.",
   },
   pricingPerMonthShort: {
     de: "/ Monat",
@@ -268,9 +268,9 @@ export const translations = {
     en: "/ year",
   },
   pricingCtaChoosePlan: {
-    de: "Essai gratuit 3 Tage",
-    fr: "3 jours d’essai gratuit",
-    en: "Start 3‑day free trial",
+  de: "Jetzt 3 Tage kostenlos testen",
+  fr: "Essayer gratuitement pendant 3 jours",
+  en: "Try free for 3 days",
   },
   // Section « Comment ajouter et personnaliser »
   explainHowTitle: {
@@ -1229,6 +1229,16 @@ export const translations = {
     fr: "Terrasse (café)",
     en: "Terrace (café)",
   },
+  menuTemplateLounge: {
+    de: "Lounge (Dark Neon)",
+    fr: "Lounge (dark néon)",
+    en: "Lounge (dark neon)",
+  },
+  menuTemplateCafeResto: {
+    de: "Café-Restaurant (hybrid)",
+    fr: "Café-Restaurant (hybride)",
+    en: "Cafe-Restaurant (hybrid)",
+  },
   menuPreviewLive: {
     de: "Live-Vorschau",
     fr: "Aperçu en direct",
@@ -1813,8 +1823,28 @@ export const translations = {
   },
   menuItemDescPlaceholder: {
     de: "Beschreibung",
-    fr: "Description",
-    en: "Description",
+    fr: "Description / composition",
+    en: "Description / composition",
+  },
+  menuExplainButton: {
+    de: "Wie wird ein Gericht angezeigt?",
+    fr: "Comment s’affiche un plat ?",
+    en: "How is a dish displayed?",
+  },
+  menuExplainTitle: {
+    de: "Beispiel: Name, Preis und Beschreibung",
+    fr: "Exemple : nom, prix et description",
+    en: "Example: name, price and description",
+  },
+  menuExplainIntro: {
+    de: "Jedes Gericht hat einen Namen, optional einen Preis und eine Beschreibung/Komposition. Der Name erscheint links, der Preis rechts, und die Beschreibung immer unter dem Namen – so bleibt alles klar für den Gast.",
+    fr: "Chaque plat a un nom, éventuellement un prix et une description/une composition. Le nom apparaît à gauche, le prix à droite, et la description toujours en dessous du nom – tout reste clair pour le client.",
+    en: "Each dish has a name, an optional price and a description/composition. The name appears on the left, the price on the right, and the description always under the name – everything stays clear for your guest.",
+  },
+  menuExplainExample: {
+    de: "Beispiel: « Brezel Deluxe » mit Preis 4,90 € und Beschreibung « Laugenbrezel, Butter, Schnittlauch, Meersalz… ». Auf der Karte: der Name links, 4,90 € rechts und die Zutaten kleiner darunter.",
+    fr: "Exemple : « Croissant au beurre » avec prix 2,90 € et description « Pâte feuilletée pur beurre, doré au four, croustillant… ». Sur la carte : le nom à gauche, 2,90 € à droite et la composition en dessous.",
+    en: "Example: “Margherita pizza” with price €9.90 and description “Tomato sauce, mozzarella, basil, olive oil…”. On the menu: name on the left, €9.90 on the right and the ingredients below.",
   },
   menuOk: {
     de: "OK",
@@ -1883,7 +1913,7 @@ export const translations = {
     en: "Perfect to start, cancel anytime.",
   },
   subscriptionSemiannualHint: {
-    de: "Für Cafés, die sich für eine Saison engagieren möchten.",
+    de: "Für Cafés mit saisonalem Betrieb.",
     fr: "Pour les cafés qui veulent s’engager sur une saison.",
     en: "For venues happy to commit for a season.",
   },
@@ -1913,7 +1943,7 @@ export const translations = {
     en: "Unlimited QR codes & templates.",
   },
   subscriptionFeatureSupport: {
-    de: "Support par E-Mail inclus.",
+    de: "E-Mail-Support inklusive.",
     fr: "Support par email inclus.",
     en: "Email support included.",
   },
@@ -2146,13 +2176,49 @@ export const translations = {
     fr: "Gérer mon moyen de paiement",
     en: "Manage payment method",
   },
+  // Thème de couleur des modèles de menu
+  menuColorThemeLabel: {
+    de: "Farbthema des Menüs",
+    fr: "Couleur du modèle",
+    en: "Menu color theme",
+  },
+  menuColorThemeDefault: {
+    de: "Standardfarben",
+    fr: "Couleurs par défaut",
+    en: "Default colors",
+  },
+  menuColorTheme_amber: {
+    de: "Ambiance dorée",
+    fr: "Ambiance dorée",
+    en: "Golden / amber",
+  },
+  menuColorTheme_emerald: {
+    de: "Vert émeraude",
+    fr: "Vert émeraude",
+    en: "Emerald green",
+  },
+  menuColorTheme_bordeaux: {
+    de: "Rouge bordeaux",
+    fr: "Rouge bordeaux",
+    en: "Bordeaux red",
+  },
+  menuColorTheme_slate: {
+    de: "Gris bleuté",
+    fr: "Gris bleuté",
+    en: "Slate grey",
+  },
 } as const;
 
-export function t<K extends keyof typeof translations>(
+export function t<K extends keyof typeof translations | string>(
   key: K,
   locale: Locale
 ): string {
-  return translations[key][locale];
+  const dict = (translations as any)[key];
+  if (!dict) {
+    return String(key);
+  }
+  const value = dict[locale];
+  return value ?? dict.en ?? String(key);
 }
 
 const errorCodeToKey: Record<string, keyof typeof translations> = {

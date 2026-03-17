@@ -33,46 +33,49 @@ export function MenuTemplateTerrasse({
         style={{ ["--menu-page-border" as string]: "rgba(45,90,74,0.2)" }}
       >
         <div className="menu-page-inner">
-          <header className="relative z-10 flex min-h-[40vh] flex-col items-center justify-center px-8 py-16 text-center sm:px-12 sm:py-20">
-            <div className="mx-auto flex max-w-xl flex-col items-center gap-5">
+          <header className="relative z-10 flex min-h-[32vh] flex-col items-center justify-center px-8 py-10 text-center sm:px-12 sm:py-12">
+            <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center sm:flex-row sm:items-center sm:text-left">
               {menu.organizationLogoBase64 && (
-                <MenuLogoFrame
-                  accentColor={TERRASSE_GREEN}
-                  accentOpacity={0.6}
-                  sizeRem={14}
-                  innerBgClassName="bg-[#f8fbf9]"
-                  className="mb-2"
-                >
-                  <img
-                    src={`data:image/jpeg;base64,${menu.organizationLogoBase64}`}
-                    alt={menu.organizationName}
-                    className="h-full w-full object-contain"
-                  />
-                </MenuLogoFrame>
+                <div className="shrink-0">
+                  <MenuLogoFrame
+                    accentColor={TERRASSE_GREEN}
+                    accentOpacity={0.6}
+                    sizeRem={14}
+                    innerBgClassName="bg-[#f8fbf9]"
+                  >
+                    <img
+                      src={`data:image/jpeg;base64,${menu.organizationLogoBase64}`}
+                      alt={menu.organizationName}
+                      className="h-full w-full object-contain"
+                    />
+                  </MenuLogoFrame>
+                </div>
               )}
-              {!menu.organizationLogoBase64 && menu.organizationName && (
-                <h1 className="font-forum text-3xl font-bold tracking-tight text-[#1c2522] sm:text-4xl md:text-5xl">
-                  {menu.organizationName}
-                </h1>
-              )}
-              {menu.organizationSlogan && (
-                <p className="text-base text-[#2d5a4a] sm:text-lg">{menu.organizationSlogan}</p>
-              )}
-              <div className="flex items-center gap-3">
-                <span className="h-px w-8 bg-[#6b8f71]/50" aria-hidden />
-                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#2d5a4a]">
-                  {t("menu", locale)}
+              <div className="min-w-0 flex-1">
+                {!menu.organizationLogoBase64 && menu.organizationName && (
+                  <h1 className="font-forum text-3xl font-bold tracking-tight text-[#1c2522] sm:text-4xl md:text-5xl">
+                    {menu.organizationName}
+                  </h1>
+                )}
+                {menu.organizationSlogan && (
+                  <p className="text-base text-[#2d5a4a] sm:text-lg">{menu.organizationSlogan}</p>
+                )}
+                <div className="mt-3 flex items-center gap-3">
+                  <span className="h-px w-8 bg-[#6b8f71]/50" aria-hidden />
+                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#2d5a4a]">
+                    {t("menu", locale)}
+                  </p>
+                  <span className="h-px w-8 bg-[#6b8f71]/50" aria-hidden />
+                </div>
+                <p className="mt-2 font-forum text-xl text-[#2d3d36] sm:text-2xl md:text-3xl">
+                  {menu.title}
                 </p>
-                <span className="h-px w-8 bg-[#6b8f71]/50" aria-hidden />
+                {menu.description && (
+                  <p className="mt-2 max-w-md text-sm leading-relaxed text-[#4a5c54]">
+                    {menu.description}
+                  </p>
+                )}
               </div>
-              <p className="font-forum text-xl text-[#2d3d36] sm:text-2xl md:text-3xl">
-                {menu.title}
-              </p>
-              {menu.description && (
-                <p className="mt-2 max-w-md text-sm leading-relaxed text-[#4a5c54]">
-                  {menu.description}
-                </p>
-              )}
             </div>
           </header>
 

@@ -10,6 +10,8 @@ import {
   PRICE_CURRENCY_CODES,
   type MenuTemplateId,
   MENU_TEMPLATE_IDS,
+  MENU_COLOR_THEME_IDS,
+  type MenuColorThemeId,
 } from "./utils";
 import { MenuTemplateClassic } from "./MenuTemplateClassic";
 import { MenuTemplateCafe } from "./MenuTemplateCafe";
@@ -19,9 +21,11 @@ import { MenuTemplateCards } from "./MenuTemplateCards";
 import { MenuTemplateElegant } from "./MenuTemplateElegant";
 import { MenuTemplateRestaurant } from "./MenuTemplateRestaurant";
 import { MenuTemplateTerrasse } from "./MenuTemplateTerrasse";
+import { MenuTemplateLounge } from "./MenuTemplateLounge";
+import { MenuTemplateCafeResto } from "./MenuTemplateCafeResto";
 
-export { MENU_TEMPLATE_IDS, normalizeTemplateId, getDefaultTemplateId, getDemoMenuPublicDto, formatPriceSymbol, PRICE_CURRENCY_CODES };
-export type { MenuTemplateId };
+export { MENU_TEMPLATE_IDS, MENU_COLOR_THEME_IDS, normalizeTemplateId, getDefaultTemplateId, getDemoMenuPublicDto, formatPriceSymbol, PRICE_CURRENCY_CODES };
+export type { MenuTemplateId, MenuColorThemeId };
 export { TemplateDemoModal } from "./TemplateDemoModal";
 
 /** Props communes à tous les modèles d'affichage : mêmes données menu (MenuPublicDto), seul le rendu change. */
@@ -39,6 +43,8 @@ const TEMPLATES: Record<MenuTemplateId, (props: MenuTemplateProps) => JSX.Elemen
   elegant: MenuTemplateElegant,
   restaurant: MenuTemplateRestaurant,
   terrasse: MenuTemplateTerrasse,
+  lounge: MenuTemplateLounge,
+  cafeResto: MenuTemplateCafeResto,
 };
 
 /**

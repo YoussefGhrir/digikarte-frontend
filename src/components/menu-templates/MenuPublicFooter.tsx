@@ -29,41 +29,42 @@ export function MenuPublicFooter({
 
   if (isLight) {
     return (
-      <footer className="mx-auto max-w-4xl border-t border-[#5c4033]/30 px-3 pb-8 pt-6 mt-8">
-        <p className="font-menu-script text-center text-xl font-semibold tracking-wide text-[#1a1512] mb-4">
-          {t("menuFooterContact", locale)}
-        </p>
+      <footer className="mx-auto mt-10 max-w-4xl rounded-3xl border border-black/5 bg-white/70 px-4 pb-6 pt-5 shadow-[0_14px_40px_rgba(15,23,42,0.08)]">
         <div className="flex flex-col items-center gap-2 text-center">
           {menu.organizationName && (
-            <p className="font-menu-script text-lg font-bold text-[#1a1512]">
+            <p className="font-forum text-lg font-semibold tracking-wide text-neutral-900">
               {menu.organizationName}
             </p>
           )}
           {menu.organizationAddress && (
-            <p className="text-sm font-bold text-[#2c2420]">
+            <p className="text-xs text-neutral-700">
               {menu.organizationAddress}
             </p>
           )}
-          {menu.organizationPhone && (
-            <p className="text-sm font-bold text-[#2c2420]">
-              {t("menuFooterPhone", locale)}{" "}
-              <a
-                href={`tel:${menu.organizationPhone.replace(/\s/g, "")}`}
-                className="text-[#1a1512] underline decoration-[#5c4033]/60 hover:decoration-[#5c4033]"
-              >
-                {menu.organizationPhone}
-              </a>
-            </p>
-          )}
-          {menu.organizationEmail && (
-            <p className="text-sm font-bold text-[#2c2420]">
-              <a
-                href={`mailto:${menu.organizationEmail}`}
-                className="text-[#1a1512] underline decoration-[#5c4033]/60 hover:decoration-[#5c4033]"
-              >
-                {menu.organizationEmail}
-              </a>
-            </p>
+          {(menu.organizationPhone || menu.organizationEmail) && (
+            <div className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-neutral-800">
+              {menu.organizationPhone && (
+                <span>
+                  {t("menuFooterPhone", locale)}{" "}
+                  <a
+                    href={`tel:${menu.organizationPhone.replace(/\s/g, "")}`}
+                    className="font-semibold text-neutral-900 underline decoration-neutral-400/70 underline-offset-2 hover:decoration-neutral-700"
+                  >
+                    {menu.organizationPhone}
+                  </a>
+                </span>
+              )}
+              {menu.organizationEmail && (
+                <span>
+                  <a
+                    href={`mailto:${menu.organizationEmail}`}
+                    className="font-semibold text-neutral-900 underline decoration-neutral-400/70 underline-offset-2 hover:decoration-neutral-700"
+                  >
+                    {menu.organizationEmail}
+                  </a>
+                </span>
+              )}
+            </div>
           )}
         </div>
       </footer>

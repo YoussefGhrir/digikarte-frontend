@@ -38,58 +38,61 @@ export function MenuTemplateRestaurant({
       >
         <div className="menu-page-inner w-full bg-[#080807]/98">
           <header className="relative z-10 border-b border-white/[0.06] px-4 py-6 sm:px-6 sm:py-8">
-            <div className="mx-auto flex max-w-2xl flex-col items-center gap-3 text-center">
+            <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:text-left">
               {menu.organizationLogoBase64 && (
-                <MenuLogoFrame
-                  accentColor={COPPER}
-                  accentOpacity={0.85}
-                  sizeRem={8}
-                  innerBgClassName="bg-[#0f0e0d]"
-                  className="mb-1"
+                <div className="shrink-0">
+                  <MenuLogoFrame
+                    accentColor={COPPER}
+                    accentOpacity={0.85}
+                    sizeRem={8}
+                    innerBgClassName="bg-[#0f0e0d]"
+                  >
+                    <img
+                      src={`data:image/jpeg;base64,${menu.organizationLogoBase64}`}
+                      alt={menu.organizationName}
+                      className="h-full w-full object-contain"
+                    />
+                  </MenuLogoFrame>
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                {/* Titre organisation uniquement sans logo (le nom est souvent déjà sur le logo) */}
+                {!menu.organizationLogoBase64 && menu.organizationName && (
+                  <h1
+                    className="font-forum text-2xl font-bold lowercase tracking-[0.3em] sm:text-3xl md:text-4xl"
+                    style={{ color: ROSE_GOLD }}
+                  >
+                    {menu.organizationName}
+                  </h1>
+                )}
+                {menu.organizationSlogan && (
+                  <p className="text-xs italic" style={{ color: WARM_BEIGE }}>
+                    {menu.organizationSlogan}
+                  </p>
+                )}
+                <div
+                  className="mt-3 h-px w-16 opacity-60 sm:mt-4"
+                  style={{ backgroundColor: GOLD }}
+                  aria-hidden
+                />
+                <p
+                  className="mt-2 text-[0.6rem] font-semibold uppercase tracking-[0.45em]"
+                  style={{ color: COPPER }}
                 >
-                  <img
-                    src={`data:image/jpeg;base64,${menu.organizationLogoBase64}`}
-                    alt={menu.organizationName}
-                    className="h-full w-full object-contain"
-                  />
-                </MenuLogoFrame>
-              )}
-              {/* Titre organisation uniquement sans logo (le nom est souvent déjà sur le logo) */}
-              {!menu.organizationLogoBase64 && menu.organizationName && (
-                <h1
-                  className="font-forum text-2xl font-bold lowercase tracking-[0.3em] sm:text-3xl md:text-4xl"
-                  style={{ color: ROSE_GOLD }}
+                  {t("menu", locale)}
+                </p>
+                <p
+                  className="font-forum text-lg lowercase tracking-[0.18em] sm:text-xl"
+                  style={{ color: CREAM }}
                 >
-                  {menu.organizationName}
-                </h1>
-              )}
-              {menu.organizationSlogan && (
-                <p className="text-xs italic" style={{ color: WARM_BEIGE }}>
-                  {menu.organizationSlogan}
+                  {menu.title}
                 </p>
-              )}
-              <div
-                className="h-px w-16 opacity-60"
-                style={{ backgroundColor: GOLD }}
-                aria-hidden
-              />
-              <p
-                className="text-[0.6rem] font-semibold uppercase tracking-[0.45em]"
-                style={{ color: COPPER }}
-              >
-                {t("menu", locale)}
-              </p>
-              <p
-                className="font-forum text-lg lowercase tracking-[0.18em] sm:text-xl"
-                style={{ color: CREAM }}
-              >
-                {menu.title}
-              </p>
-              {menu.description && (
-                <p className="mt-1.5 max-w-md text-xs leading-relaxed" style={{ color: MUTED }}>
-                  {menu.description}
-                </p>
-              )}
+                {menu.description && (
+                  <p className="mt-1.5 max-w-md text-xs leading-relaxed" style={{ color: MUTED }}>
+                    {menu.description}
+                  </p>
+                )}
+              </div>
             </div>
           </header>
 

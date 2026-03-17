@@ -258,6 +258,12 @@ export interface MenuDto {
   organizationId: number;
   /** Template d'affichage: classic, cafe, bistro, minimal, cards, elegant */
   displayTemplate?: string | null;
+  /**
+   * Thème de couleur du modèle (optionnel).
+   * "default" = couleurs par défaut du template.
+   * Sinon, une clé courte (amber, emerald, bordeaux, etc.).
+   */
+  colorTheme?: string | null;
   /** Unité des prix (devise) : EUR, USD, TND, GBP, CHF, etc. Défaut EUR. */
   priceCurrency?: string | null;
   items: MenuItemDto[];
@@ -284,7 +290,7 @@ export function menuGet(id: number) {
   return api<MenuDto>(`/api/menus/${id}`);
 }
 
-export function menuUpdate(id: number, data: { title?: string; description?: string; displayTemplate?: string | null; priceCurrency?: string | null }) {
+export function menuUpdate(id: number, data: { title?: string; description?: string; displayTemplate?: string | null; priceCurrency?: string | null; colorTheme?: string | null }) {
   return api<MenuDto>(`/api/menus/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
@@ -364,6 +370,11 @@ export interface MenuPublicDto {
   organizationEmail?: string | null;
   /** Template d'affichage: classic, cafe, bistro, minimal, cards, elegant */
   displayTemplate?: string | null;
+  /**
+   * Thème de couleur du modèle (optionnel, même clé que MenuDto.colorTheme).
+   * Si absent → couleurs par défaut du template.
+   */
+  colorTheme?: string | null;
   /** Unité des prix (devise) : EUR, USD, TND, etc. Défaut EUR. */
   priceCurrency?: string | null;
   items: MenuItemDto[];

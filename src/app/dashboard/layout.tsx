@@ -340,9 +340,20 @@ export default function DashboardLayout({
 
         <nav className="flex-1 space-y-1 text-sm font-medium">
           {navItems(locale).map((item) => {
-            const isDashboardPage = pathname === "/dashboard" && !pathname?.startsWith("/dashboard/organisations/");
-            const active = isDashboardPage && (item.view === null ? dashboardView !== "organisations" : dashboardView === "organisations");
             const isProfile = pathname === "/dashboard/profile";
+
+            let active = false;
+            const isDashboardRoot = pathname === "/dashboard";
+            const isOrganisationsView = isDashboardRoot && dashboardView === "organisations";
+
+            if (item.href === "/dashboard") {
+              active = isDashboardRoot && !isOrganisationsView;
+            } else if (item.href === "/dashboard?view=organisations") {
+              active = isOrganisationsView;
+            } else if (item.href === "/dashboard/subscription") {
+              active = pathname?.startsWith("/dashboard/subscription") ?? false;
+            }
+
             return (
               <Link
                 key={item.href + (item.view ?? "")}

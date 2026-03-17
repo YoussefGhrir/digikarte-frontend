@@ -227,7 +227,7 @@ export default function Home() {
         </section>
 
         {/* Section Tarifs / Essai gratuit */}
-        <section className="space-y-6">
+        <section className="space-y-6 border-t border-neutral-200/60 pt-8 dark:border-neutral-800/60 md:border-0 md:pt-0">
           <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div>
               <h2 className="font-forum text-2xl text-neutral-900 dark:text-neutral-50 md:text-3xl">
@@ -244,99 +244,99 @@ export default function Home() {
 
           <div className="grid gap-5 md:grid-cols-3">
             {/* Mensuel */}
-            <article className="relative flex flex-col overflow-hidden rounded-3xl border border-neutral-300 dark:border-neutral-800 bg-white/90 dark:bg-neutral-950/90 p-5 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-neutral-500">
+            <article className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-neutral-600/70 bg-gradient-to-br from-neutral-950 via-neutral-925 to-neutral-900 p-5 shadow-xl shadow-emerald-500/15">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.26em] text-neutral-400">
                 {t("subscriptionPlanMonthly", locale)}
               </p>
-              <div className="mt-2 flex items-baseline gap-1">
-                <span className="font-forum text-3xl text-neutral-900 dark:text-neutral-50">
+              <div className="flex items-baseline gap-1">
+                <span className="font-forum text-3xl text-neutral-50">
                   9,99 €
                 </span>
                 <span className="text-xs text-neutral-500">
                   {t("pricingPerMonthShort", locale)}
                 </span>
               </div>
-              <p className="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+              <p className="mt-2 text-xs text-neutral-400">
                 {t("subscriptionMonthlyHint", locale)}
               </p>
-              <ul className="mt-4 space-y-1.5 text-xs text-neutral-600 dark:text-neutral-300">
+              <ul className="mt-4 space-y-1.5 text-xs text-neutral-300">
                 <li>• {t("subscriptionFeatureUnlimitedMenus", locale)}</li>
                 <li>• {t("subscriptionFeatureQr", locale)}</li>
                 <li>• {t("subscriptionFeatureSupport", locale)}</li>
               </ul>
               <Link
                 href="/register"
-                className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_16px_40px_rgba(16,185,129,0.45)] hover:bg-emerald-300"
+                className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(16,185,129,0.55)] transition hover:-translate-y-0.5 hover:bg-emerald-300 md:mt-auto"
               >
                 {t("pricingCtaChoosePlan", locale)}
               </Link>
             </article>
 
             {/* Semestriel */}
-            <article className="relative flex flex-col overflow-hidden rounded-3xl border border-amber-400/70 bg-white/95 dark:bg-neutral-950/95 p-5 shadow-md shadow-amber-500/10">
-              <div className="absolute right-3 top-3 rounded-full bg-amber-400 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-900">
+            <article className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-amber-500/70 bg-neutral-950/90 p-5 shadow-xl shadow-amber-500/15">
+              <div className="absolute right-3 top-3 rounded-full bg-amber-500 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-900">
                 {t("subscriptionBadgePopular", locale)}
               </div>
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-amber-600 dark:text-amber-300">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-amber-300">
                 {t("subscriptionPlanSemiannual", locale)}
               </p>
-              <div className="mt-2 flex items-baseline gap-1">
-                <span className="font-forum text-3xl text-neutral-900 dark:text-neutral-50">
+              <div className="flex items-baseline gap-1">
+                <span className="font-forum text-3xl text-neutral-50">
                   49 €
                 </span>
-                <span className="text-xs text-neutral-500">
+                <span className="text-xs text-neutral-400">
                   {t("pricingPer6MonthsShort", locale)}
                 </span>
               </div>
-              <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-300">
+              <p className="mt-1 text-xs text-emerald-300">
                 {t("subscriptionSemiannualSaving", locale)}
               </p>
-              <p className="mt-1 text-xs text-neutral-600 dark:text-neutral-400">
+              <p className="mt-1 text-xs text-neutral-400">
                 {t("subscriptionSemiannualHint", locale)}
               </p>
-              <ul className="mt-4 space-y-1.5 text-xs text-neutral-700 dark:text-neutral-300">
+              <ul className="mt-4 space-y-1.5 text-xs text-neutral-300">
                 <li>• {t("subscriptionFeatureUnlimitedMenus", locale)}</li>
                 <li>• {t("subscriptionFeatureQr", locale)}</li>
                 <li>• {t("subscriptionFeatureSupport", locale)}</li>
               </ul>
               <Link
                 href="/register"
-                className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_16px_40px_rgba(251,191,36,0.55)] hover:bg-amber-300"
+                className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(251,191,36,0.5)] transition hover:-translate-y-0.5 hover:bg-amber-300 md:mt-auto"
               >
                 {t("pricingCtaChoosePlan", locale)}
               </Link>
             </article>
 
             {/* Annuel */}
-            <article className="relative flex flex-col overflow-hidden rounded-3xl border border-emerald-500/70 bg-gradient-to-br from-neutral-100 to-white dark:from-neutral-950 dark:to-neutral-900 p-5 shadow-md shadow-emerald-500/15">
-              <div className="absolute right-3 top-3 rounded-full bg-emerald-400 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-900">
+            <article className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-emerald-500/80 bg-gradient-to-br from-neutral-950 to-neutral-900 p-5 shadow-lg shadow-emerald-500/20">
+              <div className="absolute right-3 top-3 rounded-full bg-emerald-500 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-900">
                 {t("subscriptionBadgeBest", locale)}
               </div>
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-emerald-700 dark:text-emerald-300">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-300">
                 {t("subscriptionPlanYearly", locale)}
               </p>
-              <div className="mt-2 flex items-baseline gap-1">
-                <span className="font-forum text-3xl text-neutral-900 dark:text-neutral-50">
+              <div className="flex items-baseline gap-1">
+                <span className="font-forum text-3xl text-neutral-50">
                   89 €
                 </span>
-                <span className="text-xs text-neutral-500">
+                <span className="text-xs text-neutral-400">
                   {t("pricingPerYearShort", locale)}
                 </span>
               </div>
-              <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-300">
+              <p className="mt-1 text-xs text-emerald-300">
                 {t("subscriptionYearlySaving", locale)}
               </p>
-              <p className="mt-1 text-xs text-neutral-600 dark:text-neutral-400">
+              <p className="mt-1 text-xs text-neutral-400">
                 {t("subscriptionYearlyHint", locale)}
               </p>
-              <ul className="mt-4 space-y-1.5 text-xs text-neutral-700 dark:text-neutral-300">
+              <ul className="mt-4 space-y-1.5 text-xs text-neutral-300">
                 <li>• {t("subscriptionFeatureUnlimitedMenus", locale)}</li>
                 <li>• {t("subscriptionFeatureQr", locale)}</li>
                 <li>• {t("subscriptionFeatureSupport", locale)}</li>
               </ul>
               <Link
                 href="/register"
-                className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_16px_40px_rgba(16,185,129,0.55)] hover:bg-emerald-300"
+                className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(16,185,129,0.5)] transition hover:-translate-y-0.5 hover:bg-emerald-300 md:mt-auto"
               >
                 {t("pricingCtaChoosePlan", locale)}
               </Link>
