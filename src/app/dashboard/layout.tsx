@@ -106,7 +106,8 @@ export default function DashboardLayout({
     let cancelled = false;
     async function loadSubscription() {
       if (!token || !profileChecked) return;
-      if (isAdmin || user?.subscriptionBypass) {
+      const subscriptionBypass = Boolean((user as any)?.subscriptionBypass);
+      if (isAdmin || subscriptionBypass) {
         // Accès direct => ne pas rediriger vers /dashboard/subscription
         setSubscription(null);
         setSubscriptionChecked(true);
@@ -152,7 +153,7 @@ export default function DashboardLayout({
     return () => {
       cancelled = true;
     };
-  }, [token, pathname, router, logout, profileChecked, user?.subscriptionBypass, isAdmin]);
+  }, [token, pathname, router, logout, profileChecked, (user as any)?.subscriptionBypass, isAdmin]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -281,7 +282,7 @@ export default function DashboardLayout({
     subscriptionChecked &&
     needsPaywall &&
     !isAdmin &&
-    !user?.subscriptionBypass &&
+    !Boolean((user as any)?.subscriptionBypass) &&
     !pathname?.startsWith("/dashboard/subscription")
   ) {
     return null;
