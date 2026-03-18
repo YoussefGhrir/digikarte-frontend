@@ -150,6 +150,8 @@ export default function AdminUsersPage() {
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
 
+  const [viewUser, setViewUser] = useState<AdminUserDto | null>(null);
+
   const [actionUser, setActionUser] = useState<AdminUserDto | null>(null);
   const [actionMode, setActionMode] = useState<"require" | "vip" | null>(null);
   const [actionSubmitting, setActionSubmitting] = useState(false);
@@ -492,12 +494,21 @@ export default function AdminUsersPage() {
                       >
                         {u.subscriptionBypass ? "Accès direct" : "Exige abonnement"}
                       </span>
+                      <div className="mt-2">
+                        <button
+                          type="button"
+                          onClick={() => openAccessAction(u)}
+                          className="rounded-lg border border-neutral-800 bg-neutral-950/30 px-2.5 py-1 text-[11px] font-semibold text-neutral-200 hover:bg-neutral-900"
+                        >
+                          {u.subscriptionBypass ? "Exiger abonnement" : "Rendre VIP"}
+                        </button>
+                      </div>
                     </td>
                     <td className="py-3">
                       <div className="flex flex-wrap gap-2">
                         <button
                           type="button"
-                          onClick={() => openAccessAction(u)}
+                          onClick={() => setViewUser(u)}
                           className="rounded-xl bg-neutral-900/40 px-3 py-2 text-xs font-semibold text-neutral-200 hover:bg-neutral-900"
                           aria-label="Voir"
                         >
@@ -763,6 +774,107 @@ export default function AdminUsersPage() {
                 disabled={resetSubmitting}
               >
                 {resetSubmitting ? "Reset…" : "Reset"}
+              </button>
+            </div>
+          </div>
+        </ModalShell>
+      )}
+
+      {/* View user modal */}
+      {viewUser && (
+        <ModalShell
+          title={`Voir user #${viewUser.userId}`}
+          onClose={() => {
+            setViewUser(null);
+          }}
+        >
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              {viewUser.profilePhotoBase64 ? (
+                <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border border-amber-500/40 bg-neutral-800">
+                  <img
+                    src={`data:image/jpeg;base64,${viewUser.profilePhotoBase64}`}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-neutral-800 text-sm font-semibold text-amber-300">
+                  {(viewUser.prenom?.[0] ?? viewUser.nom?.[0] ?? "?").toUpperCase()}
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="font-forum text-lg text-neutral-50">
+                  {viewUser.prenom} {viewUser.nom}
+                </p>
+                <p className="mt-1 text-xs text-neutral-400">{viewUser.email}</p>
+                <p className="mt-1 text-xs text-neutral-500">{viewUser.telephone}</p>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 px-3 py-2">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-500">
+                  Pays
+                </p>
+                <p className="mt-1 text-sm text-neutral-200">{viewUser.country ?? "—"}</p>
+              </div>
+              <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 px-3 py-2">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-500">
+                  Accès
+                </p>
+                <p className="mt-1 text-sm text-neutral-200">
+                  {viewUser.subscriptionBypass ? "VIP (accès direct)" : "Normal (abonnement requis)"}
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 px-3 py-2">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-500">
+                  Organisations
+                </p>
+                <p className="mt-1 text-sm text-neutral-200 tabular-nums">{viewUser.organizationsCount}</p>
+              </div>
+              <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 px-3 py-2">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-500">
+                  Menus
+                </p>
+                <p className="mt-1 text-sm text-neutral-200 tabular-nums">{viewUser.menusCount}</p>
+              </div>
+
+              <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 px-3 py-2 sm:col-span-2">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-500">
+                  Statut abonnement
+                </p>
+                <p className="mt-1 text-sm text-neutral-200">
+                  {viewUser.subscriptionStatus}
+                  {viewUser.subscriptionPlan ? ` • ${viewUser.subscriptionPlan}` : ""}
+                </p>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-neutral-200">
+              Le mot de passe est chiffré côté backend, donc il est impossible d’afficher le mot de passe en clair.
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setViewUser(null);
+                  setResetUser(viewUser);
+                  setResetPassword("");
+                  setResetError("");
+                }}
+                className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-sky-500"
+              >
+                Reset mot de passe
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewUser(null)}
+                className="rounded-xl bg-neutral-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-neutral-600"
+              >
+                Fermer
               </button>
             </div>
           </div>
