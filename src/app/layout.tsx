@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Forum, DM_Sans, Dancing_Script } from "next/font/google";
 import { cookies, headers } from "next/headers";
 import { AuthProvider } from "@/lib/auth-context";
@@ -42,6 +42,11 @@ export const metadata: Metadata = {
     icon: "/digikarte-favicon.png",
     apple: "/digikarte-favicon.png",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
