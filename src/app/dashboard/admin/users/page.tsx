@@ -33,6 +33,15 @@ function isActiveSubscription(status: string) {
   return s === "ACTIVE" || s === "TRIALING";
 }
 
+function subscriptionPlanLabel(plan: string | null) {
+  const p = (plan ?? "").toUpperCase();
+  if (p === "MONTHLY") return "MONTHLY (mensuel)";
+  if (p === "SEMIANNUAL") return "SEMIANNUAL (semestriel)";
+  if (p === "YEARLY") return "YEARLY (annuel)";
+  if (!p) return "—";
+  return plan;
+}
+
 type SortKey =
   | "userId"
   | "prenom"
@@ -116,7 +125,7 @@ export default function AdminUsersPage() {
   const [view, setView] = useState<UsersView>(() => (isNormalRoute ? "normal" : "bypass"));
 
   const [q, setQ] = useState("");
-  const [sortKey, setSortKey] = useState<SortKey>("userId");
+  const [sortKey, setSortKey] = useState<SortKey>("prenom");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
   const [createOpen, setCreateOpen] = useState(false);
@@ -196,7 +205,7 @@ export default function AdminUsersPage() {
     const base = query
       ? viewFiltered.filter((u) => {
           const hay =
-            `${u.userId} ${u.nom} ${u.prenom} ${u.email} ${u.telephone} ${u.country ?? ""}`.toLowerCase();
+            `${u.nom} ${u.prenom} ${u.email} ${u.telephone} ${u.country ?? ""}`.toLowerCase();
           return hay.includes(query);
         })
       : viewFiltered;
@@ -232,10 +241,13 @@ export default function AdminUsersPage() {
 
   function openAccessAction(user: AdminUserDto) {
     setActionError("");
+    if (!user.subscriptionBypass) {
+      setActionError("Cette action n'est disponible que pour les users VIP (accès direct).");
+      return;
+    }
     setActionUser(user);
-    // VIP = subscriptionBypass true => action = Exiger abonnement (require).
-    // Normal = subscriptionBypass false => action = Rendre VIP (vip).
-    setActionMode(user.subscriptionBypass ? "require" : "vip");
+    // VIP = subscriptionBypass true => action = Exiger abonnement.
+    setActionMode("require");
   }
 
   async function confirmAccessAction() {
@@ -296,9 +308,17 @@ export default function AdminUsersPage() {
     setEditSubmitting(true);
     setEditError("");
     try {
-      await adminUpdateUser(editUser.userId, editForm);
+      const updated = await adminUpdateUser(editUser.userId, editForm);
       setEditUser(null);
-      await reload();
+
+      // Si on change subscriptionBypass, rediriger vers la bonne table.
+      if (updated?.subscriptionBypass) {
+        router.push("/dashboard/admin/users");
+      } else {
+        router.push("/dashboard/admin/users/normal");
+      }
+
+      // Pas de reload immédiat : la redirection rechargera la bonne table.
     } catch (e) {
       setEditError(e instanceof Error ? e.message : "Erreur update");
     } finally {
@@ -392,7 +412,6 @@ export default function AdminUsersPage() {
               onChange={(e) => setSortKey(e.target.value as SortKey)}
               className="rounded-xl border border-neutral-800 bg-neutral-950/50 px-3 py-2.5 text-sm text-neutral-200 outline-none"
             >
-              <option value="userId">ID</option>
               <option value="prenom">Prénom</option>
               <option value="nom">Nom</option>
               <option value="email">Email</option>
@@ -427,17 +446,16 @@ export default function AdminUsersPage() {
           <table className="w-full min-w-[1040px] text-sm">
             <thead className="text-xs uppercase tracking-[0.18em] text-neutral-500">
               <tr className="border-b border-neutral-800">
-                <th className="py-3 text-left font-medium">ID</th>
-                <th className="py-3 text-left font-medium">Prénom</th>
-                <th className="py-3 text-left font-medium">Nom</th>
-                <th className="py-3 text-left font-medium">Email</th>
-                <th className="py-3 text-left font-medium">Téléphone</th>
-                <th className="py-3 text-left font-medium">Pays</th>
-                <th className="py-3 text-left font-medium">Org</th>
-                <th className="py-3 text-left font-medium">Menus</th>
-                <th className="py-3 text-left font-medium">Abonnement</th>
-                <th className="py-3 text-left font-medium">Accès</th>
-                <th className="py-3 text-left font-medium">Actions</th>
+                <th className="py-3 text-left font-medium whitespace-nowrap">Prénom</th>
+                <th className="py-3 text-left font-medium whitespace-nowrap">Nom</th>
+                <th className="py-3 text-left font-medium whitespace-nowrap">Email</th>
+                <th className="py-3 text-left font-medium whitespace-nowrap">Téléphone</th>
+                <th className="py-3 text-left font-medium whitespace-nowrap">Pays</th>
+                <th className="py-3 text-left font-medium whitespace-nowrap">Org</th>
+                <th className="py-3 text-left font-medium whitespace-nowrap">Menus</th>
+                <th className="py-3 text-left font-medium whitespace-nowrap">Abonnement</th>
+                <th className="py-3 text-left font-medium whitespace-nowrap">Accès</th>
+                <th className="py-3 text-left font-medium whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-900/60">
@@ -445,31 +463,15 @@ export default function AdminUsersPage() {
                 const active = isActiveSubscription(u.subscriptionStatus);
                 return (
                   <tr key={u.userId} className="hover:bg-neutral-900/40">
-                    <td className="py-3 text-neutral-200 tabular-nums">{u.userId}</td>
                     <td className="py-3">
-                      <div className="flex items-center gap-3">
-                        {u.profilePhotoBase64 ? (
-                          <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-amber-500/40 bg-neutral-800">
-                            <img
-                              src={`data:image/jpeg;base64,${u.profilePhotoBase64}`}
-                              alt=""
-                              className="h-full w-full object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-neutral-800 text-sm font-semibold text-amber-300">
-                            {(u.prenom?.[0] ?? u.nom?.[0] ?? "?").toUpperCase()}
-                          </div>
-                        )}
-                        <span className="font-medium text-neutral-100">{u.prenom}</span>
-                      </div>
+                      <span className="font-medium text-neutral-100 whitespace-nowrap">{u.prenom}</span>
                     </td>
-                    <td className="py-3 text-neutral-200">{u.nom}</td>
-                    <td className="py-3 text-neutral-300">{u.email}</td>
-                    <td className="py-3 text-neutral-300">{u.telephone}</td>
-                    <td className="py-3 text-neutral-300">{u.country ?? "—"}</td>
-                    <td className="py-3 text-neutral-300 tabular-nums">{u.organizationsCount}</td>
-                    <td className="py-3 text-neutral-300 tabular-nums">{u.menusCount}</td>
+                    <td className="py-3 text-neutral-200 whitespace-nowrap">{u.nom}</td>
+                    <td className="py-3 text-neutral-300 whitespace-nowrap">{u.email}</td>
+                    <td className="py-3 text-neutral-300 whitespace-nowrap">{u.telephone}</td>
+                    <td className="py-3 text-neutral-300 whitespace-nowrap">{u.country ?? "—"}</td>
+                    <td className="py-3 text-neutral-300 tabular-nums whitespace-nowrap">{u.organizationsCount}</td>
+                    <td className="py-3 text-neutral-300 tabular-nums whitespace-nowrap">{u.menusCount}</td>
                     <td className="py-3">
                       <div className="flex flex-col">
                         <span
@@ -479,30 +481,30 @@ export default function AdminUsersPage() {
                         >
                           {u.subscriptionStatus}
                         </span>
-                        <span className="mt-1 text-[11px] text-neutral-500">
-                          {u.subscriptionPlan ? `${u.subscriptionPlan}` : active ? "Plan inconnu" : "—"}
-                        </span>
+                        {/* Plan (MONTHLY/YEARLY/...) => uniquement dans le modal */}
                       </div>
                     </td>
                     <td className="py-3">
                       <span
                         className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${
-                          u.subscriptionBypass
+                          active
                             ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
-                            : "bg-amber-500/10 text-amber-200 border-amber-500/30"
+                            : "bg-red-500/10 text-red-300 border-red-500/30"
                         }`}
                       >
-                        {u.subscriptionBypass ? "Accès direct" : "Exige abonnement"}
+                        {active ? "Abonnement actif" : "Abonnement inactif"}
                       </span>
-                      <div className="mt-2">
-                        <button
-                          type="button"
-                          onClick={() => openAccessAction(u)}
-                          className="rounded-lg border border-neutral-800 bg-neutral-950/30 px-2.5 py-1 text-[11px] font-semibold text-neutral-200 hover:bg-neutral-900"
-                        >
-                          {u.subscriptionBypass ? "Exiger abonnement" : "Rendre VIP"}
-                        </button>
-                      </div>
+                      {u.subscriptionBypass && !isNormalRoute && (
+                        <div className="mt-2">
+                          <button
+                            type="button"
+                            onClick={() => openAccessAction(u)}
+                            className="rounded-lg border border-neutral-800 bg-neutral-950/30 px-2.5 py-1 text-[11px] font-semibold text-neutral-200 hover:bg-neutral-900"
+                          >
+                            Exiger abonnement
+                          </button>
+                        </div>
+                      )}
                     </td>
                     <td className="py-3">
                       <div className="flex flex-wrap gap-2">
@@ -512,7 +514,32 @@ export default function AdminUsersPage() {
                           className="rounded-xl bg-neutral-900/40 px-3 py-2 text-xs font-semibold text-neutral-200 hover:bg-neutral-900"
                           aria-label="Voir"
                         >
-                          Voir
+                          <span className="inline-flex items-center gap-2">
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              aria-hidden
+                            >
+                              <path
+                                d="M2 12C2 12 5.5 5 12 5C18.5 5 22 12 22 12C22 12 18.5 19 12 19C5.5 19 2 12 2 12Z"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                            Voir
+                          </span>
                         </button>
                         <button
                           type="button"
@@ -552,7 +579,7 @@ export default function AdminUsersPage() {
               })}
               {filteredSorted.length === 0 && (
                 <tr>
-                  <td colSpan={11} className="py-8 text-center text-neutral-500">
+                  <td colSpan={10} className="py-8 text-center text-neutral-500">
                     Aucun utilisateur trouvé.
                   </td>
                 </tr>
@@ -783,7 +810,7 @@ export default function AdminUsersPage() {
       {/* View user modal */}
       {viewUser && (
         <ModalShell
-          title={`Voir user #${viewUser.userId}`}
+          title={`Voir utilisateur`}
           onClose={() => {
             setViewUser(null);
           }}
@@ -824,7 +851,9 @@ export default function AdminUsersPage() {
                   Accès
                 </p>
                 <p className="mt-1 text-sm text-neutral-200">
-                  {viewUser.subscriptionBypass ? "VIP (accès direct)" : "Normal (abonnement requis)"}
+                  {isActiveSubscription(viewUser.subscriptionStatus)
+                    ? "Abonnement actif"
+                    : "Abonnement inactif"}
                 </p>
               </div>
 
@@ -845,10 +874,12 @@ export default function AdminUsersPage() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-500">
                   Statut abonnement
                 </p>
-                <p className="mt-1 text-sm text-neutral-200">
-                  {viewUser.subscriptionStatus}
-                  {viewUser.subscriptionPlan ? ` • ${viewUser.subscriptionPlan}` : ""}
-                </p>
+                <div className="mt-1 text-sm text-neutral-200 space-y-1">
+                  <p>{viewUser.subscriptionStatus}</p>
+                  <p className="text-neutral-300">
+                    Plan: {subscriptionPlanLabel(viewUser.subscriptionPlan)}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -884,7 +915,7 @@ export default function AdminUsersPage() {
       {/* Action subscription bypass modal */}
       {actionUser && actionMode && (
         <ModalShell
-          title={actionMode === "require" ? "Exiger abonnement" : "Rendre VIP"}
+          title="Exiger abonnement"
           onClose={() => {
             setActionUser(null);
             setActionMode(null);
@@ -899,7 +930,7 @@ export default function AdminUsersPage() {
             )}
 
             <p className="text-sm text-neutral-300">
-              {actionMode === "require" ? "Exiger abonnement pour" : "Rendre VIP pour"}{" "}
+              Exiger abonnement pour{" "}
               <span className="font-semibold text-neutral-100">{actionUser.email}</span>.
             </p>
 
@@ -924,15 +955,13 @@ export default function AdminUsersPage() {
                 type="button"
                 onClick={() => void confirmAccessAction()}
                 className={`rounded-xl px-4 py-2.5 text-sm font-semibold text-white hover:opacity-95 disabled:opacity-60 ${
-                  actionMode === "require" ? "bg-amber-500" : "bg-emerald-500"
+                  "bg-amber-500"
                 }`}
                 disabled={actionSubmitting}
               >
                 {actionSubmitting
                   ? "En cours…"
-                  : actionMode === "require"
-                    ? "Exiger abonnement"
-                    : "Rendre VIP"}
+                  : "Exiger abonnement"}
               </button>
             </div>
           </div>
