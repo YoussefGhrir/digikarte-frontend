@@ -250,7 +250,9 @@ export default function LoginPage() {
                   </label>
                   <input
                     id="email"
-                    type="email"
+                    // L'admin peut se connecter avec "gharghour" (sans "@"),
+                    // donc on évite la validation HTML native "type=email".
+                    type="text"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
