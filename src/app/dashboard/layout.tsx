@@ -72,20 +72,46 @@ export default function DashboardLayout({
   const [currentOrgId, setCurrentOrgId] = useState<number | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionDto | null>(null);
   const [subscriptionChecked, setSubscriptionChecked] = useState(false);
+  const [profileChecked, setProfileChecked] = useState(false);
+
+  const isAdmin =
+    user?.email?.toLowerCase() === "gharghour" ||
+    user?.email?.toLowerCase() === "gharghour@digikarte.local";
 
   useEffect(() => {
     if (!loading && !token) router.replace("/");
   }, [loading, token, router]);
 
+  // On rafraîchit le profil (pour récupérer subscriptionBypass) avant d'appliquer le paywall.
   useEffect(() => {
-    if (token && user) refreshUser();
-  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
+    let cancelled = false;
+    async function run() {
+      if (!token) return;
+      setProfileChecked(false);
+      try {
+        await refreshUser();
+      } finally {
+        if (!cancelled) setProfileChecked(true);
+      }
+    }
+    if (token) run();
+    else setProfileChecked(false);
+    return () => {
+      cancelled = true;
+    };
+  }, [token, refreshUser]);
 
   // Chargement de l'abonnement et redirection si expiré / inexistant
   useEffect(() => {
     let cancelled = false;
     async function loadSubscription() {
-      if (!token) return;
+      if (!token || !profileChecked) return;
+      if (isAdmin || user?.subscriptionBypass) {
+        // Accès direct => ne pas rediriger vers /dashboard/subscription
+        setSubscription(null);
+        setSubscriptionChecked(true);
+        return;
+      }
       try {
         const sub = await subscriptionGetMe();
         if (cancelled) return;
@@ -126,7 +152,7 @@ export default function DashboardLayout({
     return () => {
       cancelled = true;
     };
-  }, [token, pathname, router, logout]);
+  }, [token, pathname, router, logout, profileChecked, user?.subscriptionBypass, isAdmin]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -251,7 +277,13 @@ export default function DashboardLayout({
     !subscription ||
     subStatus === "EXPIRED" ||
     subStatus === "CANCELLED";
-  if (subscriptionChecked && needsPaywall && !pathname?.startsWith("/dashboard/subscription")) {
+  if (
+    subscriptionChecked &&
+    needsPaywall &&
+    !isAdmin &&
+    !user?.subscriptionBypass &&
+    !pathname?.startsWith("/dashboard/subscription")
+  ) {
     return null;
   }
 
@@ -285,7 +317,7 @@ export default function DashboardLayout({
         </div>
 
         {/* Sélecteur d'organisation dans la sidebar (si plusieurs) */}
-        {orgs.length > 0 && (
+        {!isAdmin && orgs.length > 0 && (
           <div ref={orgSidebarRef} className="relative mb-6">
             <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-500">
               {t("dashboardCurrentOrg", locale)}
@@ -339,37 +371,67 @@ export default function DashboardLayout({
         )}
 
         <nav className="flex-1 space-y-1 text-[13px] font-medium">
-          {navItems(locale).map((item) => {
-            const isProfile = pathname === "/dashboard/profile";
+          {!isAdmin &&
+            navItems(locale).map((item) => {
+              const isProfile = pathname === "/dashboard/profile";
 
-            let active = false;
-            const isDashboardRoot = pathname === "/dashboard";
-            const isOrganisationsView = isDashboardRoot && dashboardView === "organisations";
+              let active = false;
+              const isDashboardRoot = pathname === "/dashboard";
+              const isOrganisationsView =
+                isDashboardRoot && dashboardView === "organisations";
 
-            if (item.href === "/dashboard") {
-              active = isDashboardRoot && !isOrganisationsView;
-            } else if (item.href === "/dashboard?view=organisations") {
-              active = isOrganisationsView;
-            } else if (item.href === "/dashboard/subscription") {
-              active = pathname?.startsWith("/dashboard/subscription") ?? false;
-            }
+              if (item.href === "/dashboard") {
+                active = isDashboardRoot && !isOrganisationsView;
+              } else if (item.href === "/dashboard?view=organisations") {
+                active = isOrganisationsView;
+              } else if (item.href === "/dashboard/subscription") {
+                active = pathname?.startsWith("/dashboard/subscription") ?? false;
+              }
 
-            return (
+              return (
+                <Link
+                  key={item.href + (item.view ?? "")}
+                  href={item.href}
+                  className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
+                    active && !isProfile
+                      ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
+                      : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
+                  }`}
+                >
+                  <item.Icon className="h-5 w-5 shrink-0" />
+                  <span className="tracking-wide">{t(item.labelKey, locale)}</span>
+                </Link>
+              );
+            })}
+
+          {isAdmin && (
+            <>
               <Link
-                key={item.href + (item.view ?? "")}
-                href={item.href}
+                href="/dashboard/admin"
                 className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
-                  active && !isProfile
+                  pathname === "/dashboard/admin"
                     ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
                     : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
                 }`}
               >
-                <item.Icon className="h-5 w-5 shrink-0" />
-                <span className="tracking-wide">{t(item.labelKey, locale)}</span>
+                <IconBuilding className="h-5 w-5 shrink-0" />
+                <span className="tracking-wide">Admin</span>
               </Link>
-            );
-          })}
-          {currentOrg && (
+              <Link
+                href="/dashboard/admin/users"
+                className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
+                  pathname === "/dashboard/admin/users"
+                    ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
+                    : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
+                }`}
+              >
+                <IconMenuList className="h-5 w-5 shrink-0" />
+                <span className="tracking-wide">Gestion users</span>
+              </Link>
+            </>
+          )}
+
+          {!isAdmin && currentOrg && (
             <>
               <Link
                 href={`/dashboard/organisations/${currentOrg.id}`}
@@ -476,7 +538,7 @@ export default function DashboardLayout({
               </span>
             </div>
             {/* Nom de l'organisation à gauche (cliquable → dashboard ou page org) */}
-            {!orgsLoading && orgs.length > 0 && currentOrg && (
+            {!isAdmin && !orgsLoading && orgs.length > 0 && currentOrg && (
               <Link
                 href="/dashboard"
                 className="hidden truncate rounded-xl px-3 py-1.5 text-left text-sm font-medium text-neutral-200 transition hover:bg-neutral-900/80 hover:text-amber-200 lg:block"
@@ -486,6 +548,11 @@ export default function DashboardLayout({
                   {t("dashboardCurrentOrg", locale)}
                 </span>
               </Link>
+            )}
+            {isAdmin && (
+              <span className="hidden truncate rounded-xl border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-left text-sm font-semibold text-amber-200 lg:block">
+                Owner / Admin
+              </span>
             )}
           </div>
 
@@ -533,7 +600,8 @@ export default function DashboardLayout({
             </div>
 
             {/* Dropdown organisation (topbar) : gardé pour mobile / multi-org */}
-            <div ref={orgRef} className="relative flex items-center lg:hidden">
+            {!isAdmin && (
+              <div ref={orgRef} className="relative flex items-center lg:hidden">
               {orgsLoading ? (
                 <span className="text-[11px] text-neutral-500">
                   {t("dashboardLoadingOrgs", locale)}
@@ -575,7 +643,8 @@ export default function DashboardLayout({
                   )}
                 </div>
               )}
-            </div>
+              </div>
+            )}
 
             <Link
               href="/dashboard/profile"

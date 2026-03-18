@@ -104,6 +104,7 @@ export interface ProfileDto {
   prenom: string;
   telephone: string;
   profilePhotoBase64: string | null;
+  subscriptionBypass: boolean;
 }
 
 export function authGetProfile() {
@@ -392,6 +393,9 @@ export interface MenuPublicDto {
   /** Unité des prix (devise) : EUR, USD, TND, etc. Défaut EUR. */
   priceCurrency?: string | null;
   items: MenuItemDto[];
+
+  available?: boolean;
+  unavailableReason?: "NO_SUBSCRIPTION" | "SUBSCRIPTION_INACTIVE" | "ERROR" | string | null;
 }
 
 export function menuPublicBySlug(slug: string) {
@@ -489,5 +493,87 @@ export function subscriptionOpenPaymentPortal(locale: Locale) {
   return api<{ url: string }>("/api/billing/me/payment-portal", {
     method: "POST",
     body: JSON.stringify({ locale }),
+  });
+}
+
+// Admin
+export interface AdminUserDto {
+  userId: number;
+  nom: string;
+  prenom: string;
+  email: string;
+  telephone: string;
+  profilePhotoBase64: string | null;
+  country: string | null;
+  organizationsCount: number;
+  menusCount: number;
+  subscriptionStatus: string;
+  subscriptionPlan: string | null;
+  subscriptionBypass: boolean;
+}
+
+export interface AdminCountryMetricsDto {
+  country: string;
+  usersCount: number;
+  menusCount: number;
+  activeSubscriptions: number;
+  trialingSubscriptions: number;
+  expiredSubscriptions: number;
+  cancelledSubscriptions: number;
+  subscriptionRate: number;
+}
+
+export interface AdminMetricsDto {
+  totalUsers: number;
+  activeSubscriptions: number;
+  trialingSubscriptions: number;
+  expiredSubscriptions: number;
+  cancelledSubscriptions: number;
+  subscriptionActiveRate: number;
+  revenuePaid: number;
+  revenueCurrency: string;
+  byCountry: AdminCountryMetricsDto[];
+}
+
+export function adminGetMetrics(days = 30) {
+  return api<AdminMetricsDto>(`/api/admin/metrics?days=${days}`);
+}
+
+export function adminListUsers(q?: string) {
+  const qs = q ? `?q=${encodeURIComponent(q)}` : "";
+  return api<AdminUserDto[]>(`/api/admin/users${qs}`);
+}
+
+export function adminCreateUser(data: {
+  nom: string;
+  prenom: string;
+  email: string;
+  telephone: string;
+  password: string;
+  subscriptionBypass?: boolean;
+}) {
+  return api<AdminUserDto>("/api/admin/users", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function adminUpdateUser(id: number, data: { nom?: string; prenom?: string; telephone?: string; subscriptionBypass?: boolean }) {
+  return api<AdminUserDto>(`/api/admin/users/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+}
+
+export function adminResetPassword(id: number, password: string) {
+  return api<void>(`/api/admin/users/${id}/password`, {
+    method: "POST",
+    body: JSON.stringify({ password }),
+  });
+}
+
+export function adminDeleteUser(id: number) {
+  return api<void>(`/api/admin/users/${id}`, {
+    method: "DELETE",
   });
 }
