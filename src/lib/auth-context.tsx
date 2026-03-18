@@ -10,6 +10,7 @@ interface User {
   nom: string;
   prenom: string;
   profilePhotoBase64?: string | null;
+  subscriptionBypass: boolean;
 }
 
 interface AuthContextValue {
@@ -46,7 +47,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (t && u) {
       setToken(t);
       try {
-        setUser(JSON.parse(u));
+        const parsed = JSON.parse(u) as Partial<User>;
+        setUser({
+          ...(parsed as User),
+          subscriptionBypass: typeof parsed?.subscriptionBypass === "boolean" ? parsed.subscriptionBypass : false,
+        });
       } catch {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(USER_KEY);
@@ -62,6 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: res.email,
       nom: res.nom,
       prenom: res.prenom,
+      subscriptionBypass: false, // remplacé après refreshUser() via /api/auth/me
     };
     setUser(u);
     setToken(res.token);
@@ -80,6 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           nom: profile.nom,
           prenom: profile.prenom,
           profilePhotoBase64: profile.profilePhotoBase64 ?? null,
+          subscriptionBypass: Boolean(profile.subscriptionBypass),
         };
         if (typeof window !== "undefined") {
           localStorage.setItem(USER_KEY, JSON.stringify(next));
@@ -95,7 +102,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (email: string, password: string) => {
       const res = await authLogin({ email, password });
       persist(res);
-      router.push("/dashboard");
+      const isAdmin = email.trim().toLowerCase() === "gharghour";
+      router.push(isAdmin ? "/dashboard/admin" : "/dashboard");
     },
     [persist, router]
   );
