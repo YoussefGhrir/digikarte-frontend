@@ -426,7 +426,18 @@ export default function DashboardLayout({
                 }`}
               >
                 <IconMenuList className="h-5 w-5 shrink-0" />
-                <span className="tracking-wide">Gestion users</span>
+                <span className="tracking-wide">Gestion users VIP</span>
+              </Link>
+              <Link
+                href="/dashboard/admin/users/normal"
+                className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
+                  pathname === "/dashboard/admin/users/normal"
+                    ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
+                    : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
+                }`}
+              >
+                <IconMenuList className="h-5 w-5 shrink-0" />
+                <span className="tracking-wide">Gestion users normal</span>
               </Link>
             </>
           )}

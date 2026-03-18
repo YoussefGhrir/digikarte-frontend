@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   IconEdit,
   IconPlus,
@@ -105,13 +105,15 @@ function ModalShell({
 
 export default function AdminUsersPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const isNormalRoute = pathname?.includes("/dashboard/admin/users/normal") ?? false;
 
   const [users, setUsers] = useState<AdminUserDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   type UsersView = "bypass" | "normal" | "all";
-  const [view, setView] = useState<UsersView>("bypass");
+  const [view, setView] = useState<UsersView>(() => (isNormalRoute ? "normal" : "bypass"));
 
   const [q, setQ] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("userId");
@@ -174,6 +176,11 @@ export default function AdminUsersPage() {
     void reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    // Les routes sont séparées : VIP = /users, Normal = /users/normal.
+    setView(isNormalRoute ? "normal" : "bypass");
+  }, [isNormalRoute]);
 
   const filteredSorted = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -238,9 +245,8 @@ export default function AdminUsersPage() {
       await adminUpdateUser(actionUser.userId, { subscriptionBypass: nextBypass });
       setActionUser(null);
       setActionMode(null);
-
-      setView(nextBypass ? "bypass" : "normal");
-      await reload();
+      const nextPath = nextBypass ? "/dashboard/admin/users" : "/dashboard/admin/users/normal";
+      router.push(nextPath);
     } catch (e) {
       setActionError(e instanceof Error ? e.message : "Erreur action");
     } finally {
@@ -274,11 +280,6 @@ export default function AdminUsersPage() {
         password: "",
         subscriptionBypass: true,
       });
-
-      // Si l'admin désactive "accès direct" à la création, afficher la table
-      // des users normal.
-      if (shouldBypass) setView("bypass");
-      else setView("normal");
 
       await reload();
     } catch (e) {
@@ -339,55 +340,27 @@ export default function AdminUsersPage() {
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">Admin</p>
-          <h1 className="mt-2 font-forum text-3xl tracking-tight text-neutral-50 md:text-4xl">Gestion des utilisateurs</h1>
-          <p className="mt-2 text-sm text-neutral-400">Ajout, modification, recherche, tri et statut abonnement.</p>
+          <h1 className="mt-2 font-forum text-3xl tracking-tight text-neutral-50 md:text-4xl">
+            {isNormalRoute ? "Gestion users normal" : "Gestion users VIP"}
+          </h1>
+          <p className="mt-2 text-sm text-neutral-400">
+            {isNormalRoute
+              ? "Users qui doivent exiger un abonnement."
+              : "Users avec accès direct (sans abonnement requis)."}
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setView("bypass")}
-            className={`inline-flex items-center rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
-              view === "bypass"
-                ? "border-amber-500/50 bg-amber-500/15 text-amber-200"
-                : "border-neutral-800 bg-neutral-950/40 text-neutral-200 hover:bg-neutral-900/60"
-            }`}
-            disabled={loading}
-          >
-            VIP
-          </button>
-          <button
-            type="button"
-            onClick={() => setView("normal")}
-            className={`inline-flex items-center rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
-              view === "normal"
-                ? "border-amber-500/50 bg-amber-500/15 text-amber-200"
-                : "border-neutral-800 bg-neutral-950/40 text-neutral-200 hover:bg-neutral-900/60"
-            }`}
-            disabled={loading}
-          >
-            Normal
-          </button>
-          <button
-            type="button"
-            onClick={() => setView("all")}
-            className={`inline-flex items-center rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
-              view === "all"
-                ? "border-amber-500/50 bg-amber-500/15 text-amber-200"
-                : "border-neutral-800 bg-neutral-950/40 text-neutral-200 hover:bg-neutral-900/60"
-            }`}
-            disabled={loading}
-          >
-            Tous
-          </button>
-          <button
-            type="button"
-            onClick={() => setCreateOpen(true)}
-            className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow hover:bg-amber-400 disabled:opacity-60"
-            disabled={loading}
-          >
-            <IconPlus className="h-4 w-4" />
-            Ajouter user
-          </button>
+          {!isNormalRoute && (
+            <button
+              type="button"
+              onClick={() => setCreateOpen(true)}
+              className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow hover:bg-amber-400 disabled:opacity-60"
+              disabled={loading}
+            >
+              <IconPlus className="h-4 w-4" />
+              Ajouter user
+            </button>
+          )}
           <button
             type="button"
             onClick={() => void reload()}
@@ -519,18 +492,17 @@ export default function AdminUsersPage() {
                       >
                         {u.subscriptionBypass ? "Accès direct" : "Exige abonnement"}
                       </span>
-                      <div className="mt-2">
-                        <button
-                          type="button"
-                          onClick={() => openAccessAction(u)}
-                          className="rounded-lg border border-neutral-800 bg-neutral-950/30 px-2.5 py-1 text-[11px] font-semibold text-neutral-200 hover:bg-neutral-900"
-                        >
-                          {u.subscriptionBypass ? "Exiger abonnement" : "Rendre VIP"}
-                        </button>
-                      </div>
                     </td>
                     <td className="py-3">
                       <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openAccessAction(u)}
+                          className="rounded-xl bg-neutral-900/40 px-3 py-2 text-xs font-semibold text-neutral-200 hover:bg-neutral-900"
+                          aria-label="Voir"
+                        >
+                          Voir
+                        </button>
                         <button
                           type="button"
                           onClick={() => openEdit(u)}
