@@ -1,4 +1,7 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+import type { Locale } from "@/lib/i18n";
+
+// Backend déployé sur Heroku (utilisé partout, plus de localhost)
+const API_BASE = "https://digicarte-043d88a805be.herokuapp.com";
 
 function getToken(): string | null {
   if (typeof window === "undefined") return null;
@@ -121,6 +124,10 @@ export function authUpdateProfile(data: {
 export function authUpdateProfilePhoto(file: File): Promise<void> {
   const token = getToken();
   if (!token) return Promise.reject(new Error("Not authenticated"));
+  // Petit garde-fou côté client: ignorer les fichiers vides
+  if (file.size === 0) {
+    return Promise.reject(new ApiError("Empty file", 400, "EMPTY_FILE"));
+  }
   const formData = new FormData();
   formData.append("file", file);
   return fetch(`${API_BASE}/api/auth/me/photo`, {
@@ -271,6 +278,13 @@ export interface MenuDto {
 
 export function menuList(organizationId: number) {
   return api<MenuDto[]>(`/api/menus?organizationId=${organizationId}`);
+}
+
+/**
+ * Version allégée pour le dashboard (sans items, juste les infos principales).
+ */
+export function menuListSummary(organizationId: number) {
+  return api<MenuDto[]>(`/api/menus/summary?organizationId=${organizationId}`);
 }
 
 export function menuCreate(data: {
@@ -471,8 +485,9 @@ export function subscriptionReactivate() {
 }
 
 /** Ouvre le portail de facturation Stripe (gestion de carte / paiement). */
-export function subscriptionOpenPaymentPortal() {
+export function subscriptionOpenPaymentPortal(locale: Locale) {
   return api<{ url: string }>("/api/billing/me/payment-portal", {
     method: "POST",
+    body: JSON.stringify({ locale }),
   });
 }

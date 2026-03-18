@@ -24,16 +24,26 @@ export function MenuTemplateElegant({
   locale: Locale;
 }) {
   const sections = groupSectionBlocks(menu.items ?? []);
+  const backgroundImage = "/backgrounds/relax.jpg";
 
   return (
-    <div className="menu-bg-rome-elegant min-h-screen font-dm text-[#f5f0e8]">
+    <div
+      className="min-h-screen font-dm text-[#312317] bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage: `url('${backgroundImage}')`,
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center center",
+        backgroundSize: "cover",
+      }}
+    >
+      <div className="min-h-screen bg-black/45">
       <div
         className="menu-page-outer menu-contour-subtle min-h-screen"
-        style={{ ["--menu-page-border" as string]: "rgba(245,158,11,0.25)" }}
+        style={{ ["--menu-page-border" as string]: "rgba(245,158,11,0.32)" }}
       >
         <div className="menu-page-inner">
-          <header className="relative z-10 px-4 pt-10 pb-8 sm:px-6">
-            <div className="mx-auto flex max-w-3xl flex-col sm:flex-row sm:items-center gap-6 text-left">
+          <header className="relative z-10 px-4 pt-10 pb-8 sm:px-6 sm:pt-12 sm:pb-8">
+            <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:text-left">
               {menu.organizationLogoBase64 && (
                 <MenuLogoFrame
                   accentColor={ACCENT}
@@ -51,24 +61,23 @@ export function MenuTemplateElegant({
               )}
               <div className="min-w-0 flex-1">
                 {!menu.organizationLogoBase64 && menu.organizationName && (
-                  <h1 className="font-forum font-ligatures text-3xl font-bold tracking-wide text-[#f5f0e8] sm:text-4xl">
+                  <h1 className="font-forum font-ligatures text-3xl sm:text-4xl font-semibold tracking-wide text-[#f5f0e8]">
                     {menu.organizationName}
                   </h1>
                 )}
                 {menu.organizationSlogan && (
-                  <p className="mt-1 text-sm italic" style={{ color: ACCENT_LIGHT }}>
+                  <p
+                    className="mt-1 font-forum text-2xl sm:text-3xl font-semibold italic tracking-wide"
+                    style={{ color: ACCENT_LIGHT }}
+                  >
                     {menu.organizationSlogan}
                   </p>
                 )}
-                <p
-                  className="mt-2 text-[0.65rem] uppercase tracking-[0.4em]"
-                  style={{ color: ACCENT }}
-                >
-                  {t("menu", locale)}
+                <p className="mt-2 font-forum text-xl sm:text-2xl text-[#f5f0e8] tracking-wide">
+                  {menu.title}
                 </p>
-                <p className="font-forum text-xl text-[#e7e0d4] mt-2">{menu.title}</p>
                 {menu.description && (
-                  <p className="mt-3 max-w-md text-sm leading-relaxed text-[#a8a29e]">
+                  <p className="mt-2 max-w-md text-sm leading-relaxed text-[#d6c7b2]">
                     {menu.description}
                   </p>
                 )}
@@ -77,12 +86,20 @@ export function MenuTemplateElegant({
           </header>
 
           <main className="relative z-10 mx-auto max-w-5xl px-4 pb-14 sm:px-6">
+            <div className="mt-4 flex justify-center">
+              <p
+                className="font-forum text-sm sm:text-base font-semibold uppercase tracking-[0.4em]"
+                style={{ color: ACCENT }}
+              >
+                {t("menu", locale)}
+              </p>
+            </div>
             <MenuDividerGravure color={ACCENT} className="px-2" />
             <div
               className="menu-contour-outer menu-contour-subtle mt-8"
               style={{ ["--menu-contour-color" as string]: ACCENT }}
             >
-              <div className="menu-contour-inner bg-black/5 py-10 sm:py-14">
+              <div className="menu-contour-inner bg-[#f8efe2]/95 py-10 sm:py-14 shadow-xl shadow-black/30">
                 <div className="space-y-16 sm:space-y-20">
                   {sections.map(([sectionKey, blocks]) => (
                     <section key={sectionKey}>
@@ -102,29 +119,32 @@ export function MenuTemplateElegant({
                           >
                             <div className="flex justify-between items-baseline gap-4">
                               <div className="min-w-0">
-                                <h3 className="font-forum font-ligatures text-3xl font-bold tracking-tight text-[#f5f0e8] transition-colors duration-300 group-hover:text-amber-400 sm:text-4xl lg:text-5xl">
+                                <h3 className="font-forum font-ligatures text-2xl sm:text-3xl font-semibold tracking-tight text-[#2b2117] transition-colors duration-300 group-hover:text-amber-600">
                                   {item.name}
                                 </h3>
                                 {item.description && (
-                                  <p className="mt-0.5 text-xs font-normal leading-snug text-[#f5f0e8]/85">
+                                  <p className="mt-1 text-xs font-normal leading-snug text-[#6b5a49]">
                                     {item.description}
                                   </p>
                                 )}
                               </div>
                               {item.price != null && (
-                                <span className="shrink-0 font-forum text-2xl font-light tabular-nums whitespace-nowrap text-amber-300/95 sm:text-3xl">
+                                <span className="shrink-0 font-forum text-xl sm:text-2xl font-semibold tabular-nums whitespace-nowrap text-amber-600">
                                   {Number(item.price).toFixed(2)}{" "}
                                   {formatPriceSymbol(menu.priceCurrency)}
                                 </span>
                               )}
                             </div>
                             {subItems.length > 0 && (
-                              <ul className="mt-4 space-y-2 border-l-2 border-amber-500/30 pl-4">
+                              <ul className="mt-4 space-y-2 border-l border-amber-500/40 pl-4">
                                 {subItems.map((sub) => (
-                                  <li key={sub.id} className="flex flex-wrap items-baseline justify-between gap-2 text-lg font-semibold text-[#f5f0e8]">
+                                  <li
+                                    key={sub.id}
+                                    className="flex flex-wrap items-baseline justify-between gap-2 text-sm sm:text-base font-medium text-[#3a2a1c]"
+                                  >
                                     <span>↳ {sub.name}</span>
                                     {sub.price != null && (
-                                      <span className="tabular-nums text-amber-300/90">
+                                      <span className="tabular-nums text-amber-600">
                                         {Number(sub.price).toFixed(2)} {formatPriceSymbol(menu.priceCurrency)}
                                       </span>
                                     )}
@@ -140,10 +160,8 @@ export function MenuTemplateElegant({
                 </div>
 
                 {(!menu.items || menu.items.length === 0) && (
-                  <div
-                    className="rounded-lg border border-amber-500/20 bg-black/10 p-12 text-center"
-                  >
-                    <p className="text-[#a8a29e]">{t("noItems", locale)}</p>
+                  <div className="rounded-lg border border-amber-500/20 bg-[#f5ebe0] p-12 text-center">
+                    <p className="text-[#6b5a49]">{t("noItems", locale)}</p>
                   </div>
                 )}
               </div>
@@ -152,13 +170,14 @@ export function MenuTemplateElegant({
             <MenuPublicFooter menu={menu} locale={locale} />
 
             <p
-              className="mt-8 text-center text-[0.65rem] uppercase tracking-[0.3em]"
-              style={{ color: "#78716c" }}
+              className="mt-8 text-center text-[0.7rem] uppercase tracking-[0.32em]"
+              style={{ color: "#7c6a59" }}
             >
               {t("digikarte", locale)}
             </p>
           </main>
         </div>
+      </div>
       </div>
     </div>
   );

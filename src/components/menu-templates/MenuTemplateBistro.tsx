@@ -39,49 +39,53 @@ export function MenuTemplateBistro({
         style={{ ["--menu-page-border" as string]: "rgba(107,123,92,0.25)" }}
       >
         <div className="menu-page-inner">
-          <header className="relative z-10 flex min-h-[40vh] flex-col items-center justify-center px-6 py-14 text-center sm:px-8 sm:py-16">
-            <div className="mx-auto flex max-w-2xl flex-col items-center gap-4">
+          <header className="relative z-10 px-6 pt-10 pb-6 sm:px-8 sm:pt-12 sm:pb-8">
+            <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:text-left">
               {menu.organizationLogoBase64 && (
-                <MenuLogoFrame
-                  accentColor={VERT_OLIVE}
-                  accentOpacity={0.8}
-                  sizeRem={12}
-                  innerBgClassName="bg-[#faf8f5]"
-                  className="mb-4"
-                >
-                  <img
-                    src={`data:image/jpeg;base64,${menu.organizationLogoBase64}`}
-                    alt={menu.organizationName}
-                    className="h-full w-full object-contain"
-                  />
-                </MenuLogoFrame>
+                <div className="shrink-0">
+                  <MenuLogoFrame
+                    accentColor={VERT_OLIVE}
+                    accentOpacity={0.8}
+                    sizeRem={10}
+                    innerBgClassName="bg-[#faf8f5]"
+                  >
+                    <img
+                      src={`data:image/jpeg;base64,${menu.organizationLogoBase64}`}
+                      alt={menu.organizationName}
+                      className="h-full w-full object-contain"
+                    />
+                  </MenuLogoFrame>
+                </div>
               )}
-              {!menu.organizationLogoBase64 &&
-                menu.organizationName && (
-                  <h1 className="font-forum text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
+              <div className="min-w-0 flex-1">
+                {!menu.organizationLogoBase64 && menu.organizationName && (
+                  <h1 className="font-forum text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-slate-900">
                     {menu.organizationName}
                   </h1>
                 )}
-              {menu.organizationSlogan && (
-                <p className="text-base italic text-slate-700 sm:text-lg">
-                  {menu.organizationSlogan}
+                {menu.organizationSlogan && (
+                  <p className="mt-1 font-forum text-2xl sm:text-3xl font-semibold italic text-slate-900">
+                    {menu.organizationSlogan}
+                  </p>
+                )}
+                <p className="mt-2 font-forum text-xl sm:text-2xl md:text-3xl text-slate-900">
+                  {menu.title}
                 </p>
-              )}
-              <span className="inline-flex items-center rounded-full border border-amber-300 bg-white/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.32em] text-amber-700 shadow-sm">
-                {t("menu", locale)}
-              </span>
-              <p className="font-forum text-xl text-slate-900 sm:text-2xl md:text-3xl">
-                {menu.title}
-              </p>
-              {menu.description && (
-                <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-700">
-                  {menu.description}
-                </p>
-              )}
+                {menu.description && (
+                  <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-700">
+                    {menu.description}
+                  </p>
+                )}
+              </div>
             </div>
           </header>
 
           <main className="relative z-10 mx-auto max-w-3xl px-6 py-8 sm:px-8 sm:py-10">
+            <div className="mt-4 flex justify-center">
+              <p className="font-forum text-sm sm:text-base font-semibold uppercase tracking-[0.4em] text-amber-800">
+                {t("menu", locale)}
+              </p>
+            </div>
             <MenuDividerGravure color={VERT_OLIVE} className="px-2" />
             <div
               className="menu-contour-outer menu-contour-subtle mt-6"

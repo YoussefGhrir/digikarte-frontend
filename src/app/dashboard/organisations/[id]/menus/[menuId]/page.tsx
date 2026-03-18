@@ -42,7 +42,9 @@ const MENU_TEMPLATE_LABELS: Record<
   | "menuTemplateRestaurant"
   | "menuTemplateTerrasse"
   | "menuTemplateLounge"
+  | "menuTemplateLoungeOriental"
   | "menuTemplateCafeResto"
+  | "menuTemplateSteakhouseCoffee"
 > = {
   classic: "menuTemplateClassic",
   cafe: "menuTemplateCafe",
@@ -53,8 +55,47 @@ const MENU_TEMPLATE_LABELS: Record<
   restaurant: "menuTemplateRestaurant",
   terrasse: "menuTemplateTerrasse",
   lounge: "menuTemplateLounge",
+  loungeOriental: "menuTemplateLoungeOriental",
   cafeResto: "menuTemplateCafeResto",
+  steakhouseCoffee: "menuTemplateSteakhouseCoffee",
 };
+
+const MENU_TEMPLATE_GROUPS: {
+  key: "cafe" | "cafeRestoDark" | "restaurant" | "modern" | "lounge";
+  labelKey:
+    | "menuTemplateGroupCafe"
+    | "menuTemplateGroupCafeRestoDark"
+    | "menuTemplateGroupRestaurant"
+    | "menuTemplateGroupModern"
+    | "menuTemplateGroupLounge";
+  templates: MenuTemplateId[];
+}[] = [
+  {
+    key: "cafe",
+    labelKey: "menuTemplateGroupCafe",
+    templates: ["cafe", "terrasse"],
+  },
+  {
+    key: "cafeRestoDark",
+    labelKey: "menuTemplateGroupCafeRestoDark",
+    templates: ["cafeResto", "steakhouseCoffee"],
+  },
+  {
+    key: "restaurant",
+    labelKey: "menuTemplateGroupRestaurant",
+    templates: ["classic", "restaurant", "bistro", "elegant"],
+  },
+  {
+    key: "modern",
+    labelKey: "menuTemplateGroupModern",
+    templates: ["minimal", "cards"],
+  },
+  {
+    key: "lounge",
+    labelKey: "menuTemplateGroupLounge",
+    templates: ["lounge", "loungeOriental"],
+  },
+];
 
 function formatOrgAddress(org: OrganizationDto): string | null {
   const parts: string[] = [];
@@ -134,7 +175,6 @@ export default function MenuDetailPage() {
   const [deleteSectionSubmitting, setDeleteSectionSubmitting] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const [showExplainModal, setShowExplainModal] = useState(false);
-  const [showColorThemeModal, setShowColorThemeModal] = useState(false);
 
   /** Liste des items déjà triée par le backend (sortOrder ASC). */
   const sortedItems = useMemo(() => menu?.items ?? [], [menu?.items]);
@@ -543,12 +583,12 @@ export default function MenuDetailPage() {
         style={{ width: isDesktop ? asideWidth : "100%" }}
       >
         <div className="flex items-center justify-between border-b border-neutral-800 px-4 py-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-400">
+          <h2 className="text-[13px] font-semibold uppercase tracking-[0.32em] text-amber-300">
             {t("menuContentTab", locale)}
           </h2>
           <Link
             href={`/dashboard/organisations/${orgId}`}
-            className="text-xs text-neutral-500 hover:text-neutral-300"
+            className="text-[11px] font-medium text-neutral-500 hover:text-neutral-200"
           >
             ← {t("dashboardBack", locale)}
           </Link>
@@ -581,96 +621,50 @@ export default function MenuDetailPage() {
           )}
 
           {/* Modèle d'affichage */}
-          <section className="space-y-2">
+          <section className="space-y-3">
             <label className="block text-xs font-semibold uppercase tracking-wider text-amber-400">
               {t("menuDisplayTemplate", locale)}
             </label>
-            <div className="grid grid-cols-2 gap-1.5">
-              {MENU_TEMPLATE_IDS.map((id) => {
-                const isActive = normalizeTemplateId(menu.displayTemplate) === id;
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    disabled={templateSaving}
-                    onClick={async () => {
-                      setTemplateSaving(true);
-                      setError("");
-                      try {
-                        const updated = await menuUpdate(menu.id, { displayTemplate: id });
-                        setMenu(updated);
-                      } catch (e) {
-                        setError(e instanceof Error ? e.message : "Erreur");
-                      } finally {
-                        setTemplateSaving(false);
-                      }
-                    }}
-                    className={`cursor-pointer rounded-lg border px-2 py-1.5 text-left text-xs font-medium transition ${
-                      isActive
-                        ? "border-amber-500 bg-amber-500/20 text-amber-200"
-                        : "border-neutral-700 bg-neutral-800 text-neutral-400 hover:border-amber-500/50"
-                    } disabled:opacity-60`}
-                  >
-                    {t(MENU_TEMPLATE_LABELS[id], locale)}
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* Thème de couleur global du modèle */}
-          <section className="space-y-2">
-            <label className="block text-[10px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
-              {t("menuColorThemeLabel" as any, locale)}
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {MENU_COLOR_THEME_IDS.map((id) => {
-                const isActive = (menu.colorTheme ?? "default") === id || (!menu.colorTheme && id === "default");
-                const colorClass =
-                  id === "amber"
-                    ? "bg-amber-500"
-                    : id === "emerald"
-                      ? "bg-emerald-500"
-                      : id === "bordeaux"
-                        ? "bg-rose-800"
-                        : id === "slate"
-                          ? "bg-slate-600"
-                          : "bg-neutral-500";
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    disabled={templateSaving}
-                    onClick={async () => {
-                      const value: MenuColorThemeId = id;
-                      try {
-                        setTemplateSaving(true);
-                        setError("");
-                        const updated = await menuUpdate(menu.id, {
-                          colorTheme: value === "default" ? null : value,
-                        });
-                        setMenu(updated);
-                      } catch (e) {
-                        setError(e instanceof Error ? e.message : "Erreur");
-                      } finally {
-                        setTemplateSaving(false);
-                      }
-                    }}
-                    className={`flex cursor-pointer items-center gap-2 rounded-full border px-2.5 py-1 text-[11px] font-medium capitalize transition ${
-                      isActive
-                        ? "border-amber-400 bg-amber-500/15 text-amber-100"
-                        : "border-neutral-600 bg-neutral-900/70 text-neutral-300 hover:border-amber-400/60"
-                    }`}
-                  >
-                    <span className={`h-4 w-4 rounded-full ${colorClass}`} />
-                    <span>
-                      {id === "default"
-                        ? t("menuColorThemeDefault" as any, locale)
-                        : t(`menuColorTheme_${id}` as any, locale)}
-                    </span>
-                  </button>
-                );
-              })}
+            <div className="space-y-3">
+              {MENU_TEMPLATE_GROUPS.map((group) => (
+                <div key={group.key} className="space-y-1.5">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
+                    {t(group.labelKey, locale)}
+                  </p>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {group.templates.map((id) => {
+                      if (!MENU_TEMPLATE_IDS.includes(id)) return null;
+                      const isActive = normalizeTemplateId(menu.displayTemplate) === id;
+                      return (
+                        <button
+                          key={id}
+                          type="button"
+                          disabled={templateSaving}
+                          onClick={async () => {
+                            setTemplateSaving(true);
+                            setError("");
+                            try {
+                              const updated = await menuUpdate(menu.id, { displayTemplate: id });
+                              setMenu(updated);
+                            } catch (e) {
+                              setError(e instanceof Error ? e.message : "Erreur");
+                            } finally {
+                              setTemplateSaving(false);
+                            }
+                          }}
+                          className={`cursor-pointer rounded-lg border px-2 py-1.5 text-left text-xs font-medium transition ${
+                            isActive
+                              ? "border-amber-500 bg-amber-500/20 text-amber-200"
+                              : "border-neutral-700 bg-neutral-800 text-neutral-400 hover:border-amber-500/50"
+                          } disabled:opacity-60`}
+                        >
+                          {t(MENU_TEMPLATE_LABELS[id], locale)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
 
@@ -1027,17 +1021,23 @@ export default function MenuDetailPage() {
               </span>
             )}
           </div>
-          <button
-            type="button"
-            onClick={() => setShowColorThemeModal(true)}
-            className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-amber-500/60 bg-amber-500/10 px-3 py-1.5 text-[11px] font-semibold text-amber-200 hover:bg-amber-500/20"
-          >
-            {t("menuColorThemeLabel" as any, locale)}
-          </button>
         </div>
-        <div className="flex-1 overflow-auto overflow-x-hidden">
-          {previewMenu ? (
-            <div className="min-h-full w-full bg-neutral-900">
+        <div className="flex-1 overflow-hidden bg-neutral-900">
+          {menu?.slug ? (
+            <div className="flex h-full w-full items-start justify-center py-4">
+              <div className="relative h-full w-[430px] max-w-full rounded-[32px] border border-neutral-800 bg-black/90 shadow-[0_25px_70px_rgba(0,0,0,0.9)] overflow-hidden">
+                {/* Barre type téléphone */}
+                <div className="pointer-events-none absolute inset-x-16 top-2 h-1.5 rounded-full bg-neutral-700/80" />
+                <iframe
+                  key={`${menu.slug}-${menu.displayTemplate ?? "classic"}-${menu.colorTheme ?? "default"}`}
+                  src={`/menu/${menu.slug}`}
+                  title={previewMenu?.title || t("menu", locale)}
+                  className="mt-4 h-[calc(100vh-9rem)] w-full border-0 rounded-b-[32px] bg-black"
+                />
+              </div>
+            </div>
+          ) : previewMenu ? (
+            <div className="min-h-full w-full">
               <MenuTemplateRenderer menu={previewMenu} locale={locale} />
             </div>
           ) : (
@@ -1297,91 +1297,6 @@ export default function MenuDetailPage() {
                   {t("menuAddSectionConfirm", locale)}
                 </button>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal choix du thème couleur global du menu */}
-      {showColorThemeModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
-          onClick={() => setShowColorThemeModal(false)}
-        >
-          <div
-            className="w-full max-w-xl rounded-3xl border border-amber-500/40 bg-neutral-950 p-6 shadow-[0_22px_70px_rgba(15,23,42,0.95)]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="mb-4 flex items-start justify-between gap-3">
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-400">
-                  {t("menuColorThemeLabel" as any, locale)}
-                </p>
-                <h2 className="mt-1 font-forum text-2xl text-neutral-50">
-                  {t("menuDisplayTemplate", locale)}
-                </h2>
-                <p className="mt-1 text-xs text-neutral-400">
-                  {t("menuColorThemeDefault" as any, locale)}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowColorThemeModal(false)}
-                className="cursor-pointer rounded-lg bg-neutral-700 px-3 py-1.5 text-xs text-white hover:bg-neutral-600"
-              >
-                {t("dashboardCancel", locale)}
-              </button>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {MENU_COLOR_THEME_IDS.map((id) => {
-                const isActive = (menu.colorTheme ?? "default") === id || (!menu.colorTheme && id === "default");
-                const colorClass =
-                  id === "amber"
-                    ? "bg-amber-500"
-                    : id === "emerald"
-                      ? "bg-emerald-500"
-                      : id === "bordeaux"
-                        ? "bg-rose-800"
-                        : id === "slate"
-                          ? "bg-slate-600"
-                          : "bg-neutral-500";
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    disabled={templateSaving}
-                    onClick={async () => {
-                      const value: MenuColorThemeId = id;
-                      try {
-                        setTemplateSaving(true);
-                        setError("");
-                        const updated = await menuUpdate(menu.id, {
-                          colorTheme: value === "default" ? null : value,
-                        });
-                        setMenu(updated);
-                      } catch (e) {
-                        setError(e instanceof Error ? e.message : "Erreur");
-                      } finally {
-                        setTemplateSaving(false);
-                      }
-                    }}
-                    className={`flex cursor-pointer items-center justify-between gap-3 rounded-2xl border px-3 py-2.5 text-left text-xs font-medium transition ${
-                      isActive
-                        ? "border-amber-400 bg-amber-500/15 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.5)]"
-                        : "border-neutral-700 bg-neutral-900 text-neutral-200 hover:border-amber-400/60"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className={`h-6 w-6 rounded-full ${colorClass}`} />
-                      <span>
-                        {id === "default"
-                          ? t("menuColorThemeDefault" as any, locale)
-                          : t(`menuColorTheme_${id}` as any, locale)}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
             </div>
           </div>
         </div>

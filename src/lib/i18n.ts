@@ -62,9 +62,9 @@ export const translations = {
     en: "Digital menus with QR codes",
   },
   heroSubtitle: {
-    de: "Erstelle in wenigen Minuten moderne Speisekarten, verwalte deine Produkte und teile sie per QR-Code.",
-    fr: "Crée en quelques minutes des menus modernes, gère tes produits et partage-les via QR code.",
-    en: "Create modern menus in minutes, manage your items and share them via QR code.",
+    de: "Erstelle mehrere digitale Menüs für deine Organisation (Frühstück, Getränke, Dessert …). Jedes Menü erhält automatisch einen eigenen QR-Code, den deine Gäste scannen – die Inhalte bleiben immer aktuell.",
+    fr: "Crée plusieurs menus digitaux pour ton établissement (petit-déjeuner, boissons, desserts…). Chaque menu reçoit automatiquement son propre code QR que tes clients scannent, toujours à jour.",
+    en: "Create multiple digital menus for your venue (breakfast, drinks, desserts…). Each menu automatically gets its own QR code for guests to scan, always up to date.",
   },
   ctaGetStarted: {
     de: "Jetzt starten",
@@ -182,9 +182,9 @@ export const translations = {
     en: "A smooth experience, from scan to dessert",
   },
   sectionFlowText: {
-    de: "DigiKarte ersetzt gedruckte Karten durch ein hochwertiges digitales Erlebnis. Du änderst Preise, Fotos oder Abschnitte, und deine Gäste sehen alles in Echtzeit auf ihrem Smartphone.",
-    fr: "DigiKarte remplace vos cartes papier par une expérience digitale haut de gamme. Vous modifiez vos prix, vos photos, vos sections ; vos clients voient tout en temps réel sur leur téléphone.",
-    en: "DigiKarte replaces paper menus with a premium digital experience. Update prices, photos or sections and your guests see everything in real time on their phones.",
+    de: "Von der Organisation bis zum Tisch: Du erstellst mehrere Menüs, DigiKarte generiert für jedes einen eindeutigen QR-Code. Wenn du etwas änderst (Preis, Gericht, Sprache), sind alle verknüpften QR-Codes sofort aktuell.",
+    fr: "De l’organisation à la table : tu crées plusieurs menus, DigiKarte génère pour chacun un QR code unique. À chaque modification (prix, plat, langue), tous les QR liés sont instantanément à jour.",
+    en: "From organisation to table: you create multiple menus and DigiKarte generates a unique QR code for each one. Whenever you change prices, dishes or languages, all linked QRs update instantly.",
   },
   step1Title: {
     de: "Erstelle deine Menüs",
@@ -192,9 +192,9 @@ export const translations = {
     en: "Create your menus",
   },
   step1Text: {
-    de: "Füge Kategorien, Gerichte, Getränke, Beschreibungen und Fotos in wenigen Klicks hinzu.",
-    fr: "Ajoutez vos catégories, vos plats, vos boissons, vos descriptions et photos en quelques clics.",
-    en: "Add categories, dishes, drinks, descriptions and photos in just a few clicks.",
+    de: "Lege deine Organisation an (Café, Restaurant, Bar) und erstelle ein oder mehrere Menüs – zum Beispiel Hauptkarte, Mittagsmenü und Getränkekarte.",
+    fr: "Crée ton établissement (café, restaurant, bar) et ajoute un ou plusieurs menus – par exemple carte principale, menu du midi et carte des boissons.",
+    en: "Create your venue (café, restaurant, bar) and add one or several menus – for example main menu, lunch menu and drinks menu.",
   },
   step2Title: {
     de: "Erzeuge deine 3D-QRs",
@@ -202,9 +202,9 @@ export const translations = {
     en: "Generate your 3D QRs",
   },
   step2Text: {
-    de: "Drucke moderne QR-Codes auf Tische, Schaufenstersticker oder Werbematerial.",
-    fr: "Imprimez des QR modernes sur vos tables, stickers de vitrine ou supports publicitaires.",
-    en: "Print modern QR codes on tables, window stickers or marketing materials.",
+    de: "Für jedes Menü erzeugst du einen eigenen QR-Code. Lade Sticker- oder Poster-Vorlagen herunter und platziere sie auf Tischen, Türen oder im Schaufenster.",
+    fr: "Pour chaque menu, tu génères un QR code dédié. Télécharge des modèles de stickers ou d’affiches et place-les sur les tables, portes ou vitrines.",
+    en: "For each menu you generate its own QR code. Download sticker or poster templates and place them on tables, doors or windows.",
   },
   step3Title: {
     de: "Aktualisiere in Echtzeit",
@@ -212,9 +212,9 @@ export const translations = {
     en: "Update in real time",
   },
   step3Text: {
-    de: "Keine Neudrucke mehr: Preis ändern, Menü anpassen – alle QR-Codes sind sofort à jour.",
-    fr: "Plus de réimpression : un prix change, vous modifiez le menu, tous les QR sont à jour.",
-    en: "No more reprints: change a price or menu, and every QR is instantly up to date.",
+    de: "Ändere Gerichte, Preise oder Sprachen direkt im Dashboard. Gäste scannen denselben QR und sehen immer automatisch die neueste Version des passenden Menüs.",
+    fr: "Modifie plats, prix ou langues directement dans le dashboard. Les clients scannent le même QR et voient toujours automatiquement la dernière version du menu concerné.",
+    en: "Update dishes, prices or languages directly in the dashboard. Guests scan the same QR and always see the latest version of the corresponding menu.",
   },
   ctaFinalKicker: {
     de: "Bereit, deine Karte zu modernisieren?",
@@ -239,18 +239,18 @@ export const translations = {
   // Pricing / subscriptions on landing
   pricingTitle: {
     de: "Ein einfaches Abo, drei Rhythmen.",
-    fr: "Un seul abonnement, trois rythmes.",
-    en: "One simple plan, three rhythms.",
+    fr: "Un abonnement simple, trois rythmes.",
+    en: "One simple subscription, three rhythms.",
   },
   pricingSubtitle: {
     de: "Starten Sie mit 3 Tagen Testphase – danach wählen Sie monatlich, halbjährlich oder jährlich.",
-    fr: "Commencez avec 3 jours d’essai, puis choisissez mensuel, semestriel ou annuel.",
-    en: "Start with a 3‑day trial, then choose monthly, semi‑annual or yearly.",
+    fr: "Commence avec 3 jours d’essai gratuit, puis choisis mensuel, semestriel ou annuel.",
+    en: "Start with a 3‑day free trial, then choose monthly, semi‑annual or yearly.",
   },
   pricingTrialNote: {
-  de: "Testphase mit Karte: Die Karte wird erst nach der 3‑tägigen Testphase belastet. Sie können jederzeit vor Ablauf kündigen.",
-  fr: "Essai avec carte bancaire : la carte n’est débitée qu’après les 3 jours d’essai. Vous pouvez annuler avant la fin.",
-  en: "Trial with card: your card is only charged after the 3‑day trial. You can cancel before it ends.",
+  de: "Test mit Karte: Ihre Karte wird erst nach den 3 Tagen Testphase belastet. Sie können jederzeit vor Ablauf kündigen.",
+  fr: "Essai avec carte bancaire : ta carte n’est débitée qu’après les 3 jours d’essai. Tu peux annuler à tout moment avant la fin.",
+  en: "Trial with card: your card is only charged after the 3‑day trial. You can cancel at any time before it ends.",
   },
   pricingPerMonthShort: {
     de: "/ Monat",
@@ -299,9 +299,9 @@ export const translations = {
     en: "Add and personalise your menus",
   },
   explainPersonalizeText: {
-    de: "Kategorien, Gerichte, Preise, Beschreibungen und Vorlagen – alles in wenigen Klicks.",
-    fr: "Catégories, plats, prix, descriptions et modèles de design – le tout en quelques clics.",
-    en: "Categories, dishes, prices, descriptions and design templates – all in a few clicks.",
+    de: "Erstelle für jede Situation das passende Menü (Frühstück, Abendkarte, Take-away …) und wähle ein Design. Du kannst dieselben Gerichte in mehreren Menüs wiederverwenden oder spezielle Karten nur für bestimmte Anlässe anlegen.",
+    fr: "Crée le bon menu pour chaque moment (petit-déjeuner, soirée, vente à emporter…) et choisis un modèle. Tu peux réutiliser les mêmes plats dans plusieurs menus ou créer des cartes spécifiques pour certains événements.",
+    en: "Create the right menu for each moment (breakfast, evening, takeaway…) and choose a template. You can reuse the same dishes across several menus or create special menus just for specific occasions.",
   },
   explainQrTitle: {
     de: "QR-Codes generieren",
@@ -309,9 +309,9 @@ export const translations = {
     en: "Generate your QR codes",
   },
   explainQrText: {
-    de: "Lade deine QR-Codes herunter oder drucke sie für Tische, Schaufenster oder Werbematerial.",
-    fr: "Téléchargez ou imprimez vos QR pour tables, vitrines ou supports pub.",
-    en: "Download or print your QR codes for tables, windows or marketing materials.",
+    de: "Jedes Menü bekommt einen eindeutigen QR-Link. Du druckst die QR-Codes als Sticker oder Poster, und kannst sie jederzeit neu herunterladen – der Link bleibt derselbe, auch wenn du das Menü änderst.",
+    fr: "Chaque menu possède un lien QR unique. Tu imprimes les QR en stickers ou en affiches et tu peux les re-télécharger à tout moment : le lien reste le même, même si tu modifies le menu.",
+    en: "Each menu has a unique QR link. Print the QRs as stickers or posters and re-download them anytime – the link stays the same even when you change the menu.",
   },
   headerDashboardButton: {
     de: "Dashboard",
@@ -324,9 +324,9 @@ export const translations = {
     en: "Simple menu management",
   },
   feature1Text: {
-    de: "Füge Produkte mit Preis, Beschreibung und Bild hinzu und aktualisiere sie in Echtzeit.",
-    fr: "Ajoute des produits avec prix, description et image, et mets-les à jour en temps réel.",
-    en: "Add products with price, description and image, and update them in real time.",
+    de: "Lege beliebig viele Menüs an (Hauptkarte, Mittagsmenü, Getränkekarte …) und pflege deine Gerichte mit Preis, Beschreibung und Bild – alles an einem Ort.",
+    fr: "Crée autant de menus que nécessaire (carte principale, menu du midi, carte des boissons…) et gère tes plats avec prix, description et photo, le tout au même endroit.",
+    en: "Create as many menus as you need (main menu, lunch menu, drinks menu…) and manage dishes with price, description and image in one place.",
   },
   feature2Title: {
     de: "QR-Codes in mehreren Stilen",
@@ -334,9 +334,9 @@ export const translations = {
     en: "QR codes in multiple styles",
   },
   feature2Text: {
-    de: "Generiere verschiedene QR-Designs für Tischaufsteller, Flyer oder Aufkleber.",
-    fr: "Génère différents styles de QR pour chevalets, flyers ou stickers.",
-    en: "Generate multiple QR styles for table tents, flyers or stickers.",
+    de: "Für jedes Menü wird ein eigener QR-Code erzeugt – in mehreren Designs für Tischaufsteller, Aufkleber oder Plakate.",
+    fr: "Chaque menu reçoit son propre code QR, disponible en plusieurs designs pour chevalets, stickers ou affiches.",
+    en: "Each menu gets its own QR code, with multiple design styles for table tents, stickers or posters.",
   },
   feature3Title: {
     de: "Mehrsprachige Speisekarten",
@@ -344,9 +344,9 @@ export const translations = {
     en: "Multilingual menus",
   },
   feature3Text: {
-    de: "Biete deine Karte in Deutsch, Französisch und Englisch an.",
-    fr: "Propose ton menu en allemand, français et anglais.",
-    en: "Offer your menu in German, French and English.",
+    de: "Zeige deine Menüs in Deutsch, Französisch und Englisch – ideal für internationale Gäste.",
+    fr: "Affiche tes menus en allemand, français et anglais – idéal pour une clientèle internationale.",
+    en: "Display your menus in German, French and English – ideal for international guests.",
   },
   authRegisterFooter: {
     de: "Schließen Sie sich den Betrieben an, die das Gästeerlebnis modernisieren.",
@@ -1234,10 +1234,45 @@ export const translations = {
     fr: "Lounge (dark néon)",
     en: "Lounge (dark neon)",
   },
+  menuTemplateLoungeOriental: {
+    de: "Lounge (Oriental)",
+    fr: "Lounge (oriental)",
+    en: "Lounge (oriental)",
+  },
   menuTemplateCafeResto: {
     de: "Café-Restaurant (hybrid)",
     fr: "Café-Restaurant (hybride)",
     en: "Cafe-Restaurant (hybrid)",
+  },
+  menuTemplateSteakhouseCoffee: {
+    de: "Steakhouse & Coffee",
+    fr: "Steakhouse & Coffee",
+    en: "Steakhouse & Coffee",
+  },
+  menuTemplateGroupCafe: {
+    de: "Café & Brunch",
+    fr: "Café & brunch",
+    en: "Cafe & brunch",
+  },
+  menuTemplateGroupCafeRestoDark: {
+    de: "Café & Restaurant – Dark",
+    fr: "Café & Resto — dark/noir",
+    en: "Cafe & Restaurant – dark",
+  },
+  menuTemplateGroupRestaurant: {
+    de: "Restaurant & Brasserie",
+    fr: "Restaurant & brasserie",
+    en: "Restaurant & brasserie",
+  },
+  menuTemplateGroupModern: {
+    de: "Modern & minimal",
+    fr: "Moderne & minimal",
+    en: "Modern & minimal",
+  },
+  menuTemplateGroupLounge: {
+    de: "Lounge & Nacht",
+    fr: "Lounge & nuit",
+    en: "Lounge & night",
   },
   menuPreviewLive: {
     de: "Live-Vorschau",

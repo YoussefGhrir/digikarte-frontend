@@ -58,15 +58,10 @@ export function MenuTemplateTerrasse({
                   </h1>
                 )}
                 {menu.organizationSlogan && (
-                  <p className="text-base text-[#2d5a4a] sm:text-lg">{menu.organizationSlogan}</p>
-                )}
-                <div className="mt-3 flex items-center gap-3">
-                  <span className="h-px w-8 bg-[#6b8f71]/50" aria-hidden />
-                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#2d5a4a]">
-                    {t("menu", locale)}
+                  <p className="mt-1 font-forum text-xl sm:text-2xl italic text-[#214437]">
+                    {menu.organizationSlogan}
                   </p>
-                  <span className="h-px w-8 bg-[#6b8f71]/50" aria-hidden />
-                </div>
+                )}
                 <p className="mt-2 font-forum text-xl text-[#2d3d36] sm:text-2xl md:text-3xl">
                   {menu.title}
                 </p>
@@ -80,6 +75,13 @@ export function MenuTemplateTerrasse({
           </header>
 
           <main className="relative z-10 mx-auto max-w-2xl px-8 py-10 sm:px-12 sm:py-14">
+            <div className="mt-4 flex items-center justify-center gap-3">
+              <span className="h-px w-8 bg-[#6b8f71]/50" aria-hidden />
+              <p className="font-forum text-sm sm:text-base font-semibold uppercase tracking-[0.4em] text-[#2d5a4a]">
+                {t("menu", locale)}
+              </p>
+              <span className="h-px w-8 bg-[#6b8f71]/50" aria-hidden />
+            </div>
             <MenuDividerGravure color={TERRASSE_GREEN} className="px-2" />
             <div
               className="menu-contour-outer mt-8"

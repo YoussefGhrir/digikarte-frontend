@@ -59,7 +59,9 @@ export const MENU_TEMPLATE_IDS = [
   "restaurant",
   "terrasse",
   "lounge",
+  "loungeOriental",
   "cafeResto",
+  "steakhouseCoffee",
 ] as const;
 
 export type MenuTemplateId = (typeof MENU_TEMPLATE_IDS)[number];

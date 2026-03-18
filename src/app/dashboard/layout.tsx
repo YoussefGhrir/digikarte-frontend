@@ -275,10 +275,10 @@ export default function DashboardLayout({
             />
           </div>
           <div className="leading-tight">
-            <p className="font-forum text-xl tracking-wide text-amber-400">
+            <p className="font-forum text-[1.35rem] font-semibold uppercase tracking-[0.3em] text-amber-300">
               DigiKarte
             </p>
-            <p className="text-xs uppercase tracking-[0.25em] text-neutral-500">
+            <p className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.32em] text-neutral-500">
               {t("dashboardMenuDigitalAdmin", locale)}
             </p>
           </div>
@@ -338,7 +338,7 @@ export default function DashboardLayout({
           </div>
         )}
 
-        <nav className="flex-1 space-y-1 text-sm font-medium">
+        <nav className="flex-1 space-y-1 text-[13px] font-medium">
           {navItems(locale).map((item) => {
             const isProfile = pathname === "/dashboard/profile";
 
@@ -360,12 +360,12 @@ export default function DashboardLayout({
                 href={item.href}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
                   active && !isProfile
-                    ? "bg-amber-500/15 text-amber-300"
-                    : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-100"
+                    ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
+                    : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
                 }`}
               >
                 <item.Icon className="h-5 w-5 shrink-0" />
-                <span>{t(item.labelKey, locale)}</span>
+                <span className="tracking-wide">{t(item.labelKey, locale)}</span>
               </Link>
             );
           })}
@@ -377,8 +377,8 @@ export default function DashboardLayout({
                   (pathname === `/dashboard/organisations/${currentOrg.id}` ||
                     (pathname?.startsWith(`/dashboard/organisations/${currentOrg.id}/menus/`) &&
                       !pathname?.endsWith("/qr")))
-                    ? "bg-amber-500/15 text-amber-300"
-                    : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-100"
+                    ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
+                    : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
                 }`}
               >
                 <IconMenuList className="h-5 w-5 shrink-0" aria-hidden />
@@ -394,8 +394,8 @@ export default function DashboardLayout({
                 className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
                   pathname === `/dashboard/organisations/${currentOrg.id}/qr` ||
                   (pathname?.startsWith(`/dashboard/organisations/${currentOrg.id}/`) && pathname?.includes("/qr"))
-                    ? "bg-amber-500/15 text-amber-300"
-                    : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-100"
+                    ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
+                    : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
                 }`}
               >
                 <IconQr className="h-5 w-5 shrink-0" aria-hidden />

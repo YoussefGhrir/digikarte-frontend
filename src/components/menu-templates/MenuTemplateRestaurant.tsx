@@ -66,7 +66,10 @@ export function MenuTemplateRestaurant({
                   </h1>
                 )}
                 {menu.organizationSlogan && (
-                  <p className="text-xs italic" style={{ color: WARM_BEIGE }}>
+                  <p
+                    className="mt-1 font-forum text-2xl sm:text-3xl font-semibold italic tracking-wide"
+                    style={{ color: WARM_BEIGE }}
+                  >
                     {menu.organizationSlogan}
                   </p>
                 )}
@@ -75,12 +78,6 @@ export function MenuTemplateRestaurant({
                   style={{ backgroundColor: GOLD }}
                   aria-hidden
                 />
-                <p
-                  className="mt-2 text-[0.6rem] font-semibold uppercase tracking-[0.45em]"
-                  style={{ color: COPPER }}
-                >
-                  {t("menu", locale)}
-                </p>
                 <p
                   className="font-forum text-lg lowercase tracking-[0.18em] sm:text-xl"
                   style={{ color: CREAM }}
@@ -97,6 +94,14 @@ export function MenuTemplateRestaurant({
           </header>
 
           <main className="relative z-10 mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8">
+            <div className="mt-4 flex justify-center">
+              <p
+                className="font-forum text-sm sm:text-base font-semibold uppercase tracking-[0.4em]"
+                style={{ color: COPPER }}
+              >
+                {t("menu", locale)}
+              </p>
+            </div>
             <MenuDividerGravure color={GOLD} className="px-2" />
             <div
               className="menu-contour-outer menu-contour-subtle mt-5 border border-white/[0.04]"

@@ -81,20 +81,26 @@ export function MenuTemplateCafeResto({
       : CAFE_THEME_PALETTES[themeId as Exclude<MenuColorThemeId, "default">];
 
   return (
-    <div className="min-h-screen w-full font-dm" style={{ backgroundColor: "#f3e6d3" }}>
+    <div
+      className="min-h-screen w-full font-dm bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage: "url('/backgrounds/cafe-resto.png')",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center center",
+        backgroundColor: "#020202",
+      }}
+    >
+      {/* Overlay assombri plus léger pour mieux voir l'image de fond */}
+      <div className="min-h-screen bg-black/40">
       <div
         className="menu-page-outer min-h-screen"
         style={{ ["--menu-page-border" as string]: "rgba(192,86,33,0.3)" }}
       >
-        <div
-          className="menu-page-inner"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at top left, rgba(250,240,230,0.9), transparent 55%), radial-gradient(circle at bottom right, rgba(248,214,182,0.9), transparent 55%)",
-          }}
-        >
-          <header className="relative z-10 px-5 pt-10 pb-8 sm:px-7 sm:pt-12 sm:pb-9">
-            <div className="mx-auto flex max-w-4xl flex-col gap-6 sm:flex-row sm:items-center">
+        {/* Même logique que le template Restaurant : logo + slogan alignés de façon cohérente */}
+        <div className="menu-page-inner">
+          <header className="relative z-10 px-5 pt-10 pb-8 sm:px-7 sm:pt-12 sm:pb-9 rounded-t-[1.75rem]">
+            <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:text-left">
               {menu.organizationLogoBase64 && (
                 <MenuLogoFrame
                   accentColor={palette.accent}
@@ -112,25 +118,20 @@ export function MenuTemplateCafeResto({
               )}
               <div className="min-w-0 flex-1">
                 {!menu.organizationLogoBase64 && menu.organizationName && (
-                  <h1 className="font-forum text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl">
+                  <h1 className="font-forum text-3xl sm:text-4xl font-semibold tracking-tight text-white drop-shadow-[0_3px_10px_rgba(0,0,0,0.85)]">
                     {menu.organizationName}
                   </h1>
                 )}
                 {menu.organizationSlogan && (
-                  <p className="mt-1 text-sm italic" style={{ color: palette.muted }}>
+                  <p className="mt-1 font-forum text-2xl sm:text-3xl font-semibold italic text-[#facc6b] drop-shadow-[0_3px_12px_rgba(0,0,0,0.9)]">
                     {menu.organizationSlogan}
                   </p>
                 )}
-                <div className="mt-2 inline-flex flex-wrap items-center gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.35em]">
-                  <span className="rounded-full bg-white/70 px-3 py-1 text-neutral-700 ring-1 ring-amber-300/60">
-                    {t("menu", locale)}
-                  </span>
-                </div>
-                <p className="mt-3 font-forum text-xl text-neutral-900 sm:text-2xl">
+                <p className="mt-3 font-forum text-xl sm:text-2xl text-white">
                   {menu.title}
                 </p>
                 {menu.description && (
-                  <p className="mt-2 max-w-xl text-sm leading-relaxed" style={{ color: palette.muted }}>
+                  <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-100/90">
                     {menu.description}
                   </p>
                 )}
@@ -139,19 +140,22 @@ export function MenuTemplateCafeResto({
           </header>
 
           <main className="relative z-10 mx-auto w-full max-w-4xl px-5 pb-12 sm:px-7">
-            <MenuDividerGravure color={palette.accent} className="px-2" />
+            <div className="mt-1 mb-2 rounded-2xl bg-black/70 px-4 py-4">
+              <div className="flex justify-center">
+                <p
+                  className="font-forum text-sm sm:text-base font-semibold uppercase tracking-[0.4em]"
+                  style={{ color: palette.accentSoft }}
+                >
+                  {t("menu", locale)}
+                </p>
+              </div>
+              <MenuDividerGravure color={palette.accentSoft} className="px-2" />
+            </div>
             <div
               className="menu-contour-outer menu-contour-subtle mt-6"
               style={{ ["--menu-contour-color" as string]: palette.accentSoft }}
             >
-              <div
-                className="menu-contour-inner px-4 py-8 sm:px-6 sm:py-10"
-                style={{
-                  backgroundColor: palette.paper,
-                  backgroundImage:
-                    "repeating-linear-gradient(90deg, rgba(0,0,0,0.03), rgba(0,0,0,0.03) 1px, transparent 1px, transparent 6px)",
-                }}
-              >
+              <div className="menu-contour-inner px-4 py-8 sm:px-6 sm:py-10 bg-black/40 backdrop-blur-sm">
                 <div className="space-y-10">
                   {sections.map(([sectionKey, blocks]) => (
                     <section key={sectionKey}>
@@ -223,16 +227,18 @@ export function MenuTemplateCafeResto({
               </div>
             </div>
 
-            <MenuPublicFooter menu={menu} locale={locale} />
+            <div className="mt-10 rounded-3xl bg-black/80 px-4 py-6">
+              <MenuPublicFooter menu={menu} locale={locale} />
+            </div>
 
             <p
-              className="mt-6 text-center text-[0.65rem] font-medium uppercase tracking-[0.3em]"
-              style={{ color: palette.muted }}
+              className="mt-6 text-center text-[0.7rem] font-medium uppercase tracking-[0.3em] text-[#f5f0e8]/90"
             >
               {t("digikarte", locale)}
             </p>
           </main>
         </div>
+      </div>
       </div>
     </div>
   );

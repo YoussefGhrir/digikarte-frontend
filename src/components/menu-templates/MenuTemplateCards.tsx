@@ -32,8 +32,8 @@ export function MenuTemplateCards({
         style={{ ["--menu-page-border" as string]: "rgba(13,148,136,0.2)" }}
       >
         <div className="menu-page-inner">
-          <header className="relative z-10 px-4 pt-10 pb-6 sm:px-6">
-            <div className="mx-auto flex max-w-4xl flex-col gap-6 text-left sm:flex-row sm:items-center">
+          <header className="relative z-10 px-4 pt-10 pb-6 sm:px-6 sm:pt-12 sm:pb-8">
+            <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:text-left">
               {menu.organizationLogoBase64 && (
                 <MenuLogoFrame
                   accentColor={ACCENT}
@@ -51,19 +51,16 @@ export function MenuTemplateCards({
               )}
               <div className="min-w-0 flex-1">
                 {!menu.organizationLogoBase64 && menu.organizationName && (
-                  <h1 className="font-forum text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+                  <h1 className="font-forum text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900">
                     {menu.organizationName}
                   </h1>
                 )}
                 {menu.organizationSlogan && (
-                  <p className="mt-0.5 text-sm italic text-slate-600">
+                  <p className="mt-1 font-forum text-lg sm:text-xl italic text-slate-700">
                     {menu.organizationSlogan}
                   </p>
                 )}
-                <p className="mt-3 inline-flex items-center rounded-full bg-white/60 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-slate-700 shadow-sm">
-                  {t("menu", locale)}
-                </p>
-                <p className="mt-2 font-forum text-xl text-slate-900 sm:text-2xl">
+                <p className="mt-2 font-forum text-xl sm:text-2xl text-slate-900">
                   {menu.title}
                 </p>
                 {menu.description && (
@@ -76,6 +73,11 @@ export function MenuTemplateCards({
           </header>
 
           <main className="relative z-10 mx-auto max-w-5xl px-4 pb-12 sm:px-6">
+            <div className="mt-4 flex justify-center">
+              <p className="font-forum text-sm sm:text-base font-semibold uppercase tracking-[0.4em] text-slate-700">
+                {t("menu", locale)}
+              </p>
+            </div>
             <MenuDividerGravure color={ACCENT} className="px-2" />
             <div
               className="menu-contour-outer menu-contour-subtle mt-6"

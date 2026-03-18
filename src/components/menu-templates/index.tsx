@@ -22,7 +22,9 @@ import { MenuTemplateElegant } from "./MenuTemplateElegant";
 import { MenuTemplateRestaurant } from "./MenuTemplateRestaurant";
 import { MenuTemplateTerrasse } from "./MenuTemplateTerrasse";
 import { MenuTemplateLounge } from "./MenuTemplateLounge";
+import { MenuTemplateLoungeOriental } from "./MenuTemplateLoungeOriental";
 import { MenuTemplateCafeResto } from "./MenuTemplateCafeResto";
+import { MenuTemplateSteakhouseCoffee } from "./MenuTemplateSteakhouseCoffee";
 
 export { MENU_TEMPLATE_IDS, MENU_COLOR_THEME_IDS, normalizeTemplateId, getDefaultTemplateId, getDemoMenuPublicDto, formatPriceSymbol, PRICE_CURRENCY_CODES };
 export type { MenuTemplateId, MenuColorThemeId };
@@ -44,7 +46,9 @@ const TEMPLATES: Record<MenuTemplateId, (props: MenuTemplateProps) => JSX.Elemen
   restaurant: MenuTemplateRestaurant,
   terrasse: MenuTemplateTerrasse,
   lounge: MenuTemplateLounge,
+  loungeOriental: MenuTemplateLoungeOriental,
   cafeResto: MenuTemplateCafeResto,
+  steakhouseCoffee: MenuTemplateSteakhouseCoffee,
 };
 
 /**

@@ -6,7 +6,18 @@ import { normalizeTemplateId, type MenuTemplateId } from "./utils";
 
 const MENU_TEMPLATE_LABELS: Record<
   MenuTemplateId,
-  "menuTemplateClassic" | "menuTemplateCafe" | "menuTemplateBistro" | "menuTemplateMinimal" | "menuTemplateCards" | "menuTemplateElegant" | "menuTemplateRestaurant" | "menuTemplateTerrasse"
+  | "menuTemplateClassic"
+  | "menuTemplateCafe"
+  | "menuTemplateBistro"
+  | "menuTemplateMinimal"
+  | "menuTemplateCards"
+  | "menuTemplateElegant"
+  | "menuTemplateRestaurant"
+  | "menuTemplateTerrasse"
+  | "menuTemplateLounge"
+  | "menuTemplateLoungeOriental"
+  | "menuTemplateCafeResto"
+  | "menuTemplateSteakhouseCoffee"
 > = {
   classic: "menuTemplateClassic",
   cafe: "menuTemplateCafe",
@@ -16,6 +27,10 @@ const MENU_TEMPLATE_LABELS: Record<
   elegant: "menuTemplateElegant",
   restaurant: "menuTemplateRestaurant",
   terrasse: "menuTemplateTerrasse",
+  lounge: "menuTemplateLounge",
+  loungeOriental: "menuTemplateLoungeOriental",
+  cafeResto: "menuTemplateCafeResto",
+  steakhouseCoffee: "menuTemplateSteakhouseCoffee",
 };
 
 export function TemplateDemoModal({

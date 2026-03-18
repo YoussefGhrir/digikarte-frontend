@@ -33,44 +33,53 @@ export function MenuTemplateMinimal({
         style={{ ["--menu-page-border" as string]: "rgba(68,64,60,0.12)" }}
       >
         <div className="menu-page-inner">
-          <header className="relative z-10 flex min-h-[45vh] flex-col items-center justify-center px-8 py-20 text-center sm:px-12 sm:py-24">
-            <div className="mx-auto flex max-w-xl flex-col items-center gap-6">
+          <header className="relative z-10 px-4 pt-10 pb-6 sm:px-6 sm:pt-12 sm:pb-8">
+            <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:text-left">
               {menu.organizationLogoBase64 && (
-                <MenuLogoFrame
-                  accentColor={STONE}
-                  accentOpacity={0.5}
-                  sizeRem={12}
-                  innerBgClassName="bg-white"
-                  className="mb-2"
-                >
-                  <img
-                    src={`data:image/jpeg;base64,${menu.organizationLogoBase64}`}
-                    alt={menu.organizationName}
-                    className="h-full w-full object-contain"
-                  />
-                </MenuLogoFrame>
+                <div className="shrink-0">
+                  <MenuLogoFrame
+                    accentColor={STONE}
+                    accentOpacity={0.5}
+                    sizeRem={10}
+                    innerBgClassName="bg-white"
+                  >
+                    <img
+                      src={`data:image/jpeg;base64,${menu.organizationLogoBase64}`}
+                      alt={menu.organizationName}
+                      className="h-full w-full object-contain"
+                    />
+                  </MenuLogoFrame>
+                </div>
               )}
-              {!menu.organizationLogoBase64 && menu.organizationName && (
-                <h1 className="font-forum text-3xl font-semibold tracking-tight text-stone-800 sm:text-4xl md:text-5xl">
-                  {menu.organizationName}
-                </h1>
-              )}
-              {menu.organizationSlogan && (
-                <p className="text-base text-stone-600 sm:text-lg">{menu.organizationSlogan}</p>
-              )}
-              <p className="text-xs font-medium uppercase tracking-[0.3em] text-stone-500">
-                {t("menu", locale)}
-              </p>
-              <p className="font-forum text-2xl text-stone-700 sm:text-3xl">{menu.title}</p>
-              {menu.description && (
-                <p className="mt-3 max-w-md text-sm leading-relaxed text-stone-500">
-                  {menu.description}
+              <div className="min-w-0 flex-1">
+                {!menu.organizationLogoBase64 && menu.organizationName && (
+                  <h1 className="font-forum text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-stone-800">
+                    {menu.organizationName}
+                  </h1>
+                )}
+                {menu.organizationSlogan && (
+                  <p className="mt-1 font-forum text-2xl sm:text-3xl font-semibold italic text-stone-700">
+                    {menu.organizationSlogan}
+                  </p>
+                )}
+                <p className="mt-3 font-forum text-2xl text-stone-700 sm:text-3xl">
+                  {menu.title}
                 </p>
-              )}
+                {menu.description && (
+                  <p className="mt-2 max-w-md text-sm leading-relaxed text-stone-500">
+                    {menu.description}
+                  </p>
+                )}
+              </div>
             </div>
           </header>
 
           <main className="relative z-10 mx-auto max-w-2xl px-8 pb-28 sm:px-12 sm:pb-32">
+            <div className="mt-4 flex justify-center">
+              <p className="font-forum text-sm sm:text-base font-semibold uppercase tracking-[0.4em] text-stone-700">
+                {t("menu", locale)}
+              </p>
+            </div>
             <MenuDividerGravure color={SAGE} className="px-2" />
             <div
               className="menu-contour-outer menu-contour-subtle mt-10"

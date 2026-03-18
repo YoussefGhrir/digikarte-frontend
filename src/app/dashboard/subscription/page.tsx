@@ -187,7 +187,7 @@ export default function SubscriptionPage() {
     setError("");
     setActionLoading("billingPortal");
     try {
-      const { url } = await subscriptionOpenPaymentPortal();
+      const { url } = await subscriptionOpenPaymentPortal(locale);
       window.location.href = url;
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur portail de paiement");

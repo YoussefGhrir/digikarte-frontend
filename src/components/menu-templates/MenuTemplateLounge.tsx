@@ -88,7 +88,18 @@ export function MenuTemplateLounge({
   const palette = themeId === "default" ? null : LOUNGE_THEME_PALETTES[themeId === "default" ? "amber" : themeId as Exclude<MenuColorThemeId, "default">];
 
   return (
-    <div className="menu-bg-rome-elegant min-h-screen w-full font-dm text-[#f5f0e8]">
+    <div
+      className="min-h-screen w-full font-dm text-[#f5f0e8] bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage: "url('/backgrounds/lounge1.png')",
+        backgroundRepeat: "no-repeat",
+        // réduire le zoom comme pour le template café pour mieux voir l'image
+        backgroundSize: "contain",
+        backgroundPosition: "center top",
+        backgroundColor: LOUNGE_BG,
+      }}
+    >
+      <div className="min-h-screen bg-black/70">
       <div
         className="menu-page-outer min-h-screen"
         style={{ ["--menu-page-border" as string]: palette?.border ?? "rgba(168,85,247,0.35)" }}
@@ -128,15 +139,10 @@ export function MenuTemplateLounge({
                   </h1>
                 )}
                 {menu.organizationSlogan && (
-                  <p className="mt-1 text-sm italic text-slate-300">
+                  <p className="mt-1 font-forum text-2xl sm:text-3xl font-semibold italic text-slate-50">
                     {menu.organizationSlogan}
                   </p>
                 )}
-                <div className="mt-3 inline-flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.4em]">
-                  <span className="rounded-full bg-slate-900/60 px-3 py-1 text-slate-300 ring-1 ring-slate-700/60">
-                    {t("menu", locale)}
-                  </span>
-                </div>
                 <p className="mt-3 font-forum text-xl text-slate-100 sm:text-2xl">
                   {menu.title}
                 </p>
@@ -150,7 +156,15 @@ export function MenuTemplateLounge({
           </header>
 
           <main className="relative z-10 mx-auto w-full max-w-4xl px-5 pb-12 sm:px-7">
-            <MenuDividerGravure color={palette?.divider ?? LOUNGE_NEON_PURPLE} className="px-2" />
+            {/* Bandeau sombre pour MENU + motif, comme sur les templates café */}
+            <div className="mt-2 mb-3 rounded-2xl bg-black/80 px-4 py-4">
+              <div className="flex justify-center">
+                <p className="font-forum text-sm sm:text-base font-semibold uppercase tracking-[0.4em] text-slate-50">
+                  {t("menu", locale)}
+                </p>
+              </div>
+              <MenuDividerGravure color={palette?.divider ?? LOUNGE_NEON_PURPLE} className="px-2" />
+            </div>
             <div
               className="menu-contour-outer menu-contour-subtle mt-6"
               style={{ ["--menu-contour-color" as string]: palette?.divider ?? LOUNGE_NEON_PURPLE }}
@@ -225,13 +239,16 @@ export function MenuTemplateLounge({
               </div>
             </div>
 
-            <MenuPublicFooter menu={menu} locale={locale} />
+            <div className="mt-10 rounded-3xl bg-black/85 px-4 py-6">
+              <MenuPublicFooter menu={menu} locale={locale} />
+            </div>
 
-            <p className="mt-6 text-center text-[0.65rem] font-medium uppercase tracking-[0.3em] text-slate-500">
+            <p className="mt-6 text-center text-[0.7rem] font-medium uppercase tracking-[0.3em] text-slate-100/90">
               {t("digikarte", locale)}
             </p>
           </main>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -66,6 +66,15 @@ export function MenuPublicFooter({
               )}
             </div>
           )}
+          {menu.organizationLogoBase64 && (
+            <div className="mt-4 flex w-full justify-end">
+              <img
+                src={`data:image/jpeg;base64,${menu.organizationLogoBase64}`}
+                alt={menu.organizationName ?? ""}
+                className="h-10 max-w-[140px] object-contain"
+              />
+            </div>
+          )}
         </div>
       </footer>
     );
@@ -76,7 +85,7 @@ export function MenuPublicFooter({
       className="mx-auto max-w-4xl px-3 pb-8 pt-6 mt-8 border-t border-[var(--white-alpha-20)]/50"
     >
       <p
-        className="text-xs font-semibold uppercase tracking-[0.25em] text-center mb-4"
+        className="mb-4 text-center text-xs font-semibold uppercase tracking-[0.25em]"
         style={{ color: "var(--gold)" }}
       >
         {t("menuFooterContact", locale)}
@@ -113,6 +122,15 @@ export function MenuPublicFooter({
               {menu.organizationEmail}
             </a>
           </p>
+        )}
+        {menu.organizationLogoBase64 && (
+          <div className="mt-4 flex w-full justify-end">
+            <img
+              src={`data:image/jpeg;base64,${menu.organizationLogoBase64}`}
+              alt={menu.organizationName ?? ""}
+              className="h-10 max-w-[140px] object-contain"
+            />
+          </div>
         )}
       </div>
     </footer>

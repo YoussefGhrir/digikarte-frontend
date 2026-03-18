@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   menuCreate,
   menuDelete,
-  menuList,
+  menuListSummary,
   orgGet,
   orgUpdatePhoto,
   type MenuDto,
@@ -42,7 +42,7 @@ export default function OrganisationPage() {
     try {
       const [orgData, menusData] = await Promise.all([
         orgGet(id),
-        menuList(id),
+        menuListSummary(id),
       ]);
       setOrg(orgData);
       setMenus(menusData);

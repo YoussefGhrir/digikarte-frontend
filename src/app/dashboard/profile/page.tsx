@@ -75,6 +75,32 @@ export default function ProfilePage() {
     }
   }
 
+  async function downscaleImage(file: File, maxSize = 400): Promise<File> {
+    // Si le fichier est déjà petit (< 1 Mo), on l'envoie tel quel
+    if (file.size < 1 * 1024 * 1024) return file;
+    const imageBitmap = await createImageBitmap(file);
+    const ratio = Math.min(maxSize / imageBitmap.width, maxSize / imageBitmap.height, 1);
+    const targetWidth = Math.round(imageBitmap.width * ratio);
+    const targetHeight = Math.round(imageBitmap.height * ratio);
+    const canvas = document.createElement("canvas");
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(imageBitmap, 0, 0, targetWidth, targetHeight);
+    const blob: Blob = await new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (b) => {
+          if (!b) reject(new Error("Failed to convert image."));
+          else resolve(b);
+        },
+        "image/jpeg",
+        0.8
+      );
+    });
+    return new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), { type: "image/jpeg" });
+  }
+
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
@@ -82,7 +108,8 @@ export default function ProfilePage() {
     setPhotoError("");
     setPhotoUploading(true);
     try {
-      await authUpdateProfilePhoto(file);
+      const processedFile = await downscaleImage(file);
+      await authUpdateProfilePhoto(processedFile);
       await refreshUser();
       await loadProfile();
     } catch (err) {

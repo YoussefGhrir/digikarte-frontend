@@ -17,12 +17,23 @@ export function MenuTemplateCafe({
   locale: Locale;
 }) {
   const sections = groupSectionBlocks(menu.items ?? []);
+  const backgroundImage = "/backgrounds/coffee.jpg";
 
   return (
-    <div className="menu-bg-france-artnouveau min-h-screen font-dm text-[#3d2c29]">
+    <div
+      className="menu-bg-france-artnouveau min-h-screen font-dm text-[#3d2c29] bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage: `url('${backgroundImage}')`,
+        backgroundRepeat: "no-repeat",
+        // montrer presque toute l'image sans zoom excessif
+        backgroundSize: "contain",
+        backgroundPosition: "center top",
+        backgroundColor: "#020202",
+      }}
+    >
       <div className="menu-page-outer min-h-screen" style={{ ["--menu-page-border" as string]: "rgba(139,90,43,0.35)" }}>
         <div className="menu-page-inner">
-      <header className="relative z-10 px-4 pt-8 pb-6 sm:px-6 bg-gradient-to-b from-[#d4a574]/20 to-transparent">
+      <header className="relative z-10 px-4 pt-8 pb-6 sm:px-6 bg-gradient-to-b from-black/80 via-black/65 to-transparent">
         <div className="mx-auto max-w-2xl flex flex-col sm:flex-row sm:items-center gap-6 text-left">
           {menu.organizationLogoBase64 && (
             <MenuLogoFrame
@@ -41,29 +52,48 @@ export function MenuTemplateCafe({
           )}
           <div className="min-w-0 flex-1">
             {!menu.organizationLogoBase64 && menu.organizationName && (
-              <h1 className="font-forum text-3xl sm:text-4xl text-[#3d2c29]">{menu.organizationName}</h1>
+              <h1 className="font-forum text-3xl sm:text-4xl font-semibold text-[#f5f0e8] drop-shadow-[0_3px_10px_rgba(0,0,0,0.8)]">
+                {menu.organizationName}
+              </h1>
             )}
             {menu.organizationSlogan && (
-              <p className="text-sm italic text-[#8b5a2b] mt-0.5">{menu.organizationSlogan}</p>
+              <p className="mt-1 font-forum text-2xl sm:text-3xl font-semibold italic text-[#facc6b] drop-shadow-[0_3px_12px_rgba(0,0,0,0.85)]">
+                {menu.organizationSlogan}
+              </p>
             )}
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#8b5a2b] mt-2">
-              {t("menu", locale)}
+            <p className="font-forum text-xl text-[#f5f0e8] mt-1 tracking-wide">
+              {menu.title}
             </p>
-            <p className="font-forum text-xl text-[#5c4033] mt-0.5">{menu.title}</p>
             {menu.description && (
-              <p className="text-sm text-[#6b5344] max-w-md mt-2">{menu.description}</p>
+              <p className="text-sm text-[#f5e6d5] max-w-md mt-2">
+                {menu.description}
+              </p>
             )}
           </div>
         </div>
       </header>
 
       <main className="relative z-10 mx-auto max-w-2xl px-4 pb-12 pt-6">
-        <MenuDividerGravure color="#8b5a2b" className="px-2" />
+        {/* Bandeau sombre derrière le mot MENU pour garantir la lisibilité sur le bg café */}
+        <div className="mt-2 rounded-2xl bg-black/75 px-4 py-4">
+          <div className="flex justify-center">
+            <p className="font-forum text-sm sm:text-base font-semibold uppercase tracking-[0.4em] text-[#facc6b]">
+              {t("menu", locale)}
+            </p>
+          </div>
+          <MenuDividerGravure color="#facc6b" className="px-2" />
+        </div>
         <div
           className="menu-contour-outer"
           style={{ ["--menu-contour-color" as string]: "#8b5a2b" }}
         >
-          <div className="menu-contour-inner bg-white/20">
+          <div
+            className="menu-contour-inner"
+            style={{
+              backgroundColor: "rgba(255, 250, 241, 0.9)",
+              backdropFilter: "blur(10px)",
+            }}
+          >
         <div className="space-y-10">
           {sections.map(([sectionKey, blocks]) => (
             <section key={sectionKey}>
@@ -113,14 +143,16 @@ export function MenuTemplateCafe({
         </div>
 
         {(!menu.items || menu.items.length === 0) && (
-          <div className="rounded-2xl border-2 border-dashed border-[#8b5a2b]/50 bg-white/60 p-12 text-center">
+          <div className="rounded-2xl border-2 border-dashed border-[#8b5a2b]/60 bg-white/70 p-12 text-center">
             <p className="text-[#6b5344]">{t("noItems", locale)}</p>
           </div>
         )}
 
-        <MenuPublicFooter menu={menu} locale={locale} variant="light" />
+        <div className="mt-10 rounded-3xl bg-black/80 px-4 py-6">
+          <MenuPublicFooter menu={menu} locale={locale} variant="dark" />
+        </div>
 
-        <p className="mt-8 text-center text-xs tracking-widest text-[#8b5a2b]/80">
+        <p className="mt-6 text-center text-[0.7rem] uppercase tracking-[0.32em] text-[#f5f0e8]/90">
           {t("digikarte", locale)}
         </p>
       </main>

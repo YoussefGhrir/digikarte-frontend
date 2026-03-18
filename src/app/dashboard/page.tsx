@@ -6,7 +6,7 @@ import {
   orgList,
   orgUpdate,
   orgDelete,
-  menuList,
+  menuListSummary,
   type OrganizationDto,
   isApiError,
 } from "@/lib/api";
@@ -66,7 +66,7 @@ export default function DashboardPage() {
       const list = await orgList();
       setOrgs(list);
       if (list.length > 0) {
-        const menusPerOrg = await Promise.all(list.map((o) => menuList(o.id)));
+        const menusPerOrg = await Promise.all(list.map((o) => menuListSummary(o.id)));
         const total = menusPerOrg.reduce((s, arr) => s + arr.length, 0);
         setTotalMenus(total);
       } else {

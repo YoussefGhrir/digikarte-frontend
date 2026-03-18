@@ -226,126 +226,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Section Tarifs / Essai gratuit */}
-        <section className="space-y-6 border-t border-neutral-200/60 pt-8 dark:border-neutral-800/60 md:border-0 md:pt-0">
-          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-            <div>
-              <h2 className="font-forum text-2xl text-neutral-900 dark:text-neutral-50 md:text-3xl">
-                {t("pricingTitle", locale)}
-              </h2>
-              <p className="mt-2 max-w-xl text-sm text-neutral-600 dark:text-neutral-300">
-                {t("pricingSubtitle", locale)}
-              </p>
-            </div>
-            <p className="text-xs text-neutral-600 dark:text-neutral-400 max-w-sm">
-              {t("pricingTrialNote", locale)}
-            </p>
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-3">
-            {/* Mensuel */}
-            <article className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-neutral-600/70 bg-gradient-to-br from-neutral-950 via-neutral-925 to-neutral-900 p-5 shadow-xl shadow-emerald-500/15">
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.26em] text-neutral-400">
-                {t("subscriptionPlanMonthly", locale)}
-              </p>
-              <div className="flex items-baseline gap-1">
-                <span className="font-forum text-3xl text-neutral-50">
-                  9,99 €
-                </span>
-                <span className="text-xs text-neutral-500">
-                  {t("pricingPerMonthShort", locale)}
-                </span>
-              </div>
-              <p className="mt-2 text-xs text-neutral-400">
-                {t("subscriptionMonthlyHint", locale)}
-              </p>
-              <ul className="mt-4 space-y-1.5 text-xs text-neutral-300">
-                <li>• {t("subscriptionFeatureUnlimitedMenus", locale)}</li>
-                <li>• {t("subscriptionFeatureQr", locale)}</li>
-                <li>• {t("subscriptionFeatureSupport", locale)}</li>
-              </ul>
-              <Link
-                href="/register"
-                className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(16,185,129,0.55)] transition hover:-translate-y-0.5 hover:bg-emerald-300 md:mt-auto"
-              >
-                {t("pricingCtaChoosePlan", locale)}
-              </Link>
-            </article>
-
-            {/* Semestriel */}
-            <article className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-amber-500/70 bg-neutral-950/90 p-5 shadow-xl shadow-amber-500/15">
-              <div className="absolute right-3 top-3 rounded-full bg-amber-500 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-900">
-                {t("subscriptionBadgePopular", locale)}
-              </div>
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-amber-300">
-                {t("subscriptionPlanSemiannual", locale)}
-              </p>
-              <div className="flex items-baseline gap-1">
-                <span className="font-forum text-3xl text-neutral-50">
-                  49 €
-                </span>
-                <span className="text-xs text-neutral-400">
-                  {t("pricingPer6MonthsShort", locale)}
-                </span>
-              </div>
-              <p className="mt-1 text-xs text-emerald-300">
-                {t("subscriptionSemiannualSaving", locale)}
-              </p>
-              <p className="mt-1 text-xs text-neutral-400">
-                {t("subscriptionSemiannualHint", locale)}
-              </p>
-              <ul className="mt-4 space-y-1.5 text-xs text-neutral-300">
-                <li>• {t("subscriptionFeatureUnlimitedMenus", locale)}</li>
-                <li>• {t("subscriptionFeatureQr", locale)}</li>
-                <li>• {t("subscriptionFeatureSupport", locale)}</li>
-              </ul>
-              <Link
-                href="/register"
-                className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(251,191,36,0.5)] transition hover:-translate-y-0.5 hover:bg-amber-300 md:mt-auto"
-              >
-                {t("pricingCtaChoosePlan", locale)}
-              </Link>
-            </article>
-
-            {/* Annuel */}
-            <article className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-emerald-500/80 bg-gradient-to-br from-neutral-950 to-neutral-900 p-5 shadow-lg shadow-emerald-500/20">
-              <div className="absolute right-3 top-3 rounded-full bg-emerald-500 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-900">
-                {t("subscriptionBadgeBest", locale)}
-              </div>
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-300">
-                {t("subscriptionPlanYearly", locale)}
-              </p>
-              <div className="flex items-baseline gap-1">
-                <span className="font-forum text-3xl text-neutral-50">
-                  89 €
-                </span>
-                <span className="text-xs text-neutral-400">
-                  {t("pricingPerYearShort", locale)}
-                </span>
-              </div>
-              <p className="mt-1 text-xs text-emerald-300">
-                {t("subscriptionYearlySaving", locale)}
-              </p>
-              <p className="mt-1 text-xs text-neutral-400">
-                {t("subscriptionYearlyHint", locale)}
-              </p>
-              <ul className="mt-4 space-y-1.5 text-xs text-neutral-300">
-                <li>• {t("subscriptionFeatureUnlimitedMenus", locale)}</li>
-                <li>• {t("subscriptionFeatureQr", locale)}</li>
-                <li>• {t("subscriptionFeatureSupport", locale)}</li>
-              </ul>
-              <Link
-                href="/register"
-                className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(16,185,129,0.5)] transition hover:-translate-y-0.5 hover:bg-emerald-300 md:mt-auto"
-              >
-                {t("pricingCtaChoosePlan", locale)}
-              </Link>
-            </article>
-          </div>
-        </section>
 
         {/* Section avantages */}
-        <section className="space-y-8">
+        <section className="mt-10 space-y-8 md:mt-14">
           <h2 className="font-forum text-2xl text-neutral-900 dark:text-neutral-50 md:text-3xl">
             {t("sectionWhyTitle", locale)}
           </h2>
@@ -429,6 +312,194 @@ export default function Home() {
               text={t("explainQrText", locale)}
               variant="qr"
             />
+          </div>
+        </section>
+
+        {/* Section Tarifs / Essai gratuit – bloc pub */}
+        <section className="border-t border-neutral-200/60 pt-8 dark:border-neutral-800/60 md:border-0 md:pt-0">
+          <div className="overflow-hidden rounded-3xl border border-amber-500/25 bg-gradient-to-br from-neutral-50 via-amber-50/30 to-emerald-50/20 px-5 py-6 shadow-xl dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-950 md:px-8 md:py-8">
+            <div className="grid gap-8 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] md:items-center">
+              {/* Colonne texte + plans */}
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <p className="inline-flex items-center gap-2 rounded-full bg-amber-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-700 dark:text-amber-300">
+                    <span className="inline-flex h-1.5 w-1.5 rounded-full bg-amber-500" />
+                    {t("pricingTitle", locale)}
+                  </p>
+                  <h2 className="font-forum text-2xl text-neutral-900 dark:text-neutral-50 md:text-3xl">
+                    {t("pricingTitle", locale)}
+                  </h2>
+                  <p className="max-w-xl text-sm text-neutral-700 dark:text-neutral-300">
+                    {t("pricingSubtitle", locale)}
+                  </p>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-md">
+                    {t("pricingTrialNote", locale)}
+                  </p>
+                </div>
+
+                {/* Cartes des trois rythmes */}
+                <div className="grid gap-4 md:grid-cols-3">
+                  {/* Mensuel */}
+                  <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-neutral-600/70 bg-gradient-to-br from-neutral-950 via-neutral-925 to-neutral-900 p-4 shadow-lg shadow-emerald-500/25 transition-transform duration-200 hover:-translate-y-1 hover:shadow-emerald-500/40">
+                    <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.26em] text-neutral-400">
+                      {t("subscriptionPlanMonthly", locale)}
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-forum text-3xl text-neutral-50">9,99 €</span>
+                      <span className="text-xs text-neutral-500">
+                        {t("pricingPerMonthShort", locale)}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs text-neutral-400">
+                      {t("subscriptionMonthlyHint", locale)}
+                    </p>
+                    <ul className="mt-3 space-y-1.5 text-[11px] text-neutral-300">
+                      <li>• {t("subscriptionFeatureUnlimitedMenus", locale)}</li>
+                      <li>• {t("subscriptionFeatureQr", locale)}</li>
+                      <li>• {t("subscriptionFeatureSupport", locale)}</li>
+                    </ul>
+                    <Link
+                      href="/register"
+                      className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2 text-xs font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(16,185,129,0.55)] transition hover:-translate-y-0.5 hover:bg-emerald-300 md:mt-auto"
+                    >
+                      {t("pricingCtaChoosePlan", locale)}
+                    </Link>
+                  </article>
+
+                  {/* Semestriel – recommandé */}
+                  <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-amber-500/80 bg-neutral-950/95 p-4 pt-8 shadow-lg shadow-amber-500/25 transition-transform duration-200 hover:-translate-y-1.5 hover:shadow-amber-500/40">
+                    <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-amber-400 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.22em] text-neutral-900">
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-neutral-900" />
+                      {t("subscriptionBadgePopular", locale)}
+                    </div>
+                    <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.26em] text-amber-300">
+                      {t("subscriptionPlanSemiannual", locale)}
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-forum text-3xl text-neutral-50">49 €</span>
+                      <span className="text-xs text-neutral-400">
+                        {t("pricingPer6MonthsShort", locale)}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs text-emerald-300">
+                      {t("subscriptionSemiannualSaving", locale)}
+                    </p>
+                    <p className="mt-1 text-xs text-neutral-400">
+                      {t("subscriptionSemiannualHint", locale)}
+                    </p>
+                    <ul className="mt-3 space-y-1.5 text-[11px] text-neutral-300">
+                      <li>• {t("subscriptionFeatureUnlimitedMenus", locale)}</li>
+                      <li>• {t("subscriptionFeatureQr", locale)}</li>
+                      <li>• {t("subscriptionFeatureSupport", locale)}</li>
+                    </ul>
+                    <Link
+                      href="/register"
+                      className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-amber-400 px-4 py-2 text-xs font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(251,191,36,0.5)] transition hover:-translate-y-0.5 hover:bg-amber-300 md:mt-auto"
+                    >
+                      {t("pricingCtaChoosePlan", locale)}
+                    </Link>
+                  </article>
+
+                  {/* Annuel */}
+                  <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-emerald-500/80 bg-gradient-to-br from-neutral-950 to-neutral-900 p-4 pt-8 shadow-lg shadow-emerald-500/25 transition-transform duration-200 hover:-translate-y-1 hover:shadow-emerald-500/40">
+                    <div className="absolute right-3 top-3 rounded-full bg-emerald-500 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.22em] text-neutral-900">
+                      {t("subscriptionBadgeBest", locale)}
+                    </div>
+                    <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.26em] text-emerald-300">
+                      {t("subscriptionPlanYearly", locale)}
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-forum text-3xl text-neutral-50">89 €</span>
+                      <span className="text-xs text-neutral-400">
+                        {t("pricingPerYearShort", locale)}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs text-emerald-300">
+                      {t("subscriptionYearlySaving", locale)}
+                    </p>
+                    <p className="mt-1 text-xs text-neutral-400">
+                      {t("subscriptionYearlyHint", locale)}
+                    </p>
+                    <ul className="mt-3 space-y-1.5 text-[11px] text-neutral-300">
+                      <li>• {t("subscriptionFeatureUnlimitedMenus", locale)}</li>
+                      <li>• {t("subscriptionFeatureQr", locale)}</li>
+                      <li>• {t("subscriptionFeatureSupport", locale)}</li>
+                    </ul>
+                    <Link
+                      href="/register"
+                      className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2 text-xs font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(16,185,129,0.5)] transition hover:-translate-y-0.5 hover:bg-emerald-300 md:mt-auto"
+                    >
+                      {t("pricingCtaChoosePlan", locale)}
+                    </Link>
+                  </article>
+                </div>
+              </div>
+
+              {/* Colonne visuel pub (produit + marque) */}
+              <div className="relative flex items-center justify-center">
+                <div className="pointer-events-none absolute -inset-10 rounded-[2.5rem] bg-gradient-to-br from-amber-400/35 via-fuchsia-500/15 to-emerald-400/25 blur-2xl" />
+                <div className="relative flex w-full max-w-[360px] flex-col gap-3 rounded-[2.2rem] border border-neutral-700/70 bg-neutral-950/95 p-4 shadow-[0_30px_80px_rgba(0,0,0,0.9)]">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-neutral-400">
+                        DigiKarte
+                      </p>
+                      <p className="mt-1 text-xs text-neutral-500">
+                        {t("landingBrandTagline", locale)}
+                      </p>
+                    </div>
+                    <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-emerald-300">
+                      {t("subscriptionPlanSemiannual", locale)}
+                    </span>
+                  </div>
+
+                  <div className="mt-2 space-y-3 rounded-2xl border border-neutral-800 bg-neutral-900/90 p-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="font-forum text-lg text-neutral-50">
+                          {t("heroCardItem1Title", locale)}
+                        </p>
+                        <p className="mt-1 text-[11px] text-neutral-400">
+                          {t("heroCardItem1Text", locale)}
+                        </p>
+                      </div>
+                      <p className="font-forum text-xl text-amber-300 whitespace-nowrap">
+                        9,99 €
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="font-forum text-lg text-neutral-50">
+                          {t("heroCardItem2Title", locale)}
+                        </p>
+                        <p className="mt-1 text-[11px] text-neutral-400">
+                          {t("heroCardItem2Text", locale)}
+                        </p>
+                      </div>
+                      <p className="font-forum text-[11px] font-semibold uppercase tracking-[0.22em] text-emerald-300 whitespace-nowrap">
+                        {t("subscriptionPlanSemiannual", locale)} / {t("subscriptionPlanYearly", locale)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-[1.2fr_minmax(0,1fr)]">
+                    <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-3 text-[11px] text-emerald-100">
+                      <p className="font-semibold uppercase tracking-[0.24em]">
+                        3 Tage Test
+                      </p>
+                      <p className="mt-1 text-xs">
+                        {t("subscriptionSubtitle", locale)}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-center rounded-2xl border border-neutral-700 bg-neutral-900/90 p-2">
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-neutral-300">
+                        QR&nbsp;MENÜ
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 

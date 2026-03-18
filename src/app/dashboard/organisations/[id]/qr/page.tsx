@@ -1,6 +1,6 @@
 "use client";
 
-import { menuList, orgGet, type MenuDto, type OrganizationDto } from "@/lib/api";
+import { menuListSummary, orgGet, type MenuDto, type OrganizationDto } from "@/lib/api";
 import { t } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
 import { useParams } from "next/navigation";
@@ -24,7 +24,7 @@ export default function OrganisationQrPage() {
     }
     setLoading(true);
     setError("");
-    Promise.all([menuList(id), orgGet(id)])
+    Promise.all([menuListSummary(id), orgGet(id)])
       .then(([menuListData, orgData]) => {
         setMenus(menuListData);
         setOrg(orgData);
