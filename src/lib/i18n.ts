@@ -25,6 +25,38 @@ export const translations = {
     fr: "Menu non trouvé.",
     en: "Menu not found.",
   },
+
+  // Menu public indisponible (abonnement expiré / non renouvelé)
+  menuUnavailableTitleNoSubscription: {
+    de: "Menü ist derzeit nicht verfügbar",
+    fr: "Menu non disponible pour l'instant",
+    en: "Menu not available right now",
+  },
+  menuUnavailableSubtitleNoSubscription: {
+    de: "Für dieses Restaurant wurde das Abonnement noch nicht aktiviert.",
+    fr: "L'abonnement n'a pas encore été activé pour ce restaurant.",
+    en: "The subscription hasn’t been activated yet for this restaurant.",
+  },
+  menuUnavailableTitleInactive: {
+    de: "Menü ist derzeit nicht verfügbar",
+    fr: "Menu non disponible pour l'instant",
+    en: "Menu not available right now",
+  },
+  menuUnavailableSubtitleInactive: {
+    de: "Das Abonnement ist nicht mehr aktiv. Das Menü wird nach der Verlängerung wieder verfügbar.",
+    fr: "L’abonnement n’est plus actif. Le menu sera disponible dès le renouvellement.",
+    en: "The subscription is no longer active. The menu will be available again after renewal.",
+  },
+  menuUnavailableTitleError: {
+    de: "Menü nicht verfügbar",
+    fr: "Menu indisponible",
+    en: "Menu unavailable",
+  },
+  menuUnavailableSubtitleError: {
+    de: "Das Abonnement kann momentan nicht geprüft werden. Bitte später erneut versuchen.",
+    fr: "Impossible de vérifier l’abonnement pour le moment. Réessayez plus tard.",
+    en: "We can’t verify the subscription right now. Please try again later.",
+  },
   noItems: {
     de: "Noch keine Artikel.",
     fr: "Aucun article pour le moment.",

@@ -623,7 +623,7 @@ export default function MenuQrPage() {
                   <div className="flex items-center justify-center w-[220px] h-[240px] shrink-0" aria-hidden>
                     <div ref={posterPreviewRef} className="flex items-center justify-center origin-center" style={{ transform: "scale(0.324)" }}>
                       <QrDoorPoster
-                        qrValue={menuUrl}
+                        qrValue={effectiveMenuUrl}
                         restaurantName={org.name}
                         discoverOur={t("menuQrPosterDiscoverOur", locale)}
                         menuTitle={t("menuQrPosterMenu", locale)}

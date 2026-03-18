@@ -41,12 +41,12 @@ export function MenuTemplateLoungeOriental({
         >
           <div className="menu-page-inner relative overflow-hidden">
             <header className="relative z-10 px-5 pt-10 pb-6 sm:px-7 sm:pt-12 sm:pb-8">
-              <div className="mx-auto flex max-w-3xl flex-col gap-6 sm:flex-row sm:items-center">
+              <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:text-left">
                 {menu.organizationLogoBase64 && (
                   <MenuLogoFrame
                     accentColor="#facc6b"
                     accentOpacity={0.9}
-                    sizeRem={11}
+                    sizeRem={8}
                     innerBgClassName="bg-black/90"
                     className="shrink-0 shadow-[0_0_40px_rgba(250,204,100,0.6)]"
                   >

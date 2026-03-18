@@ -34,12 +34,12 @@ export function MenuTemplateCafe({
       <div className="menu-page-outer min-h-screen" style={{ ["--menu-page-border" as string]: "rgba(139,90,43,0.35)" }}>
         <div className="menu-page-inner">
       <header className="relative z-10 px-4 pt-8 pb-6 sm:px-6 bg-gradient-to-b from-black/80 via-black/65 to-transparent">
-        <div className="mx-auto max-w-2xl flex flex-col sm:flex-row sm:items-center gap-6 text-left">
+        <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:text-left">
           {menu.organizationLogoBase64 && (
             <MenuLogoFrame
               accentColor="#8b5a2b"
               accentOpacity={0.9}
-              sizeRem={11}
+              sizeRem={8}
               innerBgClassName="bg-white"
               className="shrink-0"
             >

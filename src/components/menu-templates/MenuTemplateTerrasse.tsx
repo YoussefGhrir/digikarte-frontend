@@ -34,13 +34,13 @@ export function MenuTemplateTerrasse({
       >
         <div className="menu-page-inner">
           <header className="relative z-10 flex min-h-[32vh] flex-col items-center justify-center px-8 py-10 text-center sm:px-12 sm:py-12">
-            <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center sm:flex-row sm:items-center sm:text-left">
+            <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:text-left">
               {menu.organizationLogoBase64 && (
                 <div className="shrink-0">
                   <MenuLogoFrame
                     accentColor={TERRASSE_GREEN}
                     accentOpacity={0.6}
-                    sizeRem={14}
+                    sizeRem={8}
                     innerBgClassName="bg-[#f8fbf9]"
                   >
                     <img

@@ -152,7 +152,7 @@ function drawStickerCard(
 async function buildStickerPdfDoc(
   options: QrPdfOptions,
   labels: QrPdfLabels
-): Promise<InstanceType<typeof import("jspdf")>> {
+): Promise<any> {
   const { default: jsPDF } = await import("jspdf");
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
@@ -209,7 +209,7 @@ async function buildPosterPdfDoc(
   options: QrPdfOptions,
   posterTitle: string,
   labels: QrPdfLabels
-): Promise<InstanceType<typeof import("jspdf")>> {
+): Promise<any> {
   const { default: jsPDF } = await import("jspdf");
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 

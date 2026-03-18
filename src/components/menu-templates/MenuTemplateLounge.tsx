@@ -3,7 +3,7 @@
 import type { MenuPublicDto } from "@/lib/api";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
-import { groupSectionBlocks, formatPriceSymbol, type MenuColorThemeId } from "./utils";
+import { groupSectionBlocks, formatPriceSymbol, MENU_COLOR_THEME_IDS, type MenuColorThemeId } from "./utils";
 import { MenuPublicFooter } from "./MenuPublicFooter";
 import { MenuLogoFrame } from "./MenuLogoFrame";
 import { MenuDividerGravure } from "./MenuDividerGravure";
@@ -16,7 +16,7 @@ const LOUNGE_NEON_PINK = "#ec4899"; // pink-500
 const LOUNGE_NEON_BLUE = "#38bdf8"; // sky-400
 const LOUNGE_TEXT_MUTED = "#9ca3af"; // gray-400
 
-const LOUNGE_THEME_PALETTES: Record<Exclude<MenuColorThemeId, "default">, {
+const LOUNGE_THEME_PALETTES: Record<MenuColorThemeId, {
   border: string;
   haloA: string;
   haloB: string;
@@ -56,6 +56,16 @@ const LOUNGE_THEME_PALETTES: Record<Exclude<MenuColorThemeId, "default">, {
     price: "#fecaca",
     subBorder: "border-rose-400/40",
   },
+  default: {
+    border: "rgba(168,85,247,0.5)",
+    haloA: "bg-fuchsia-500/35",
+    haloB: "bg-fuchsia-400/25",
+    haloC: "bg-purple-500/20",
+    divider: "#e9d5ff",
+    sectionAccent: "#e9d5ff",
+    price: "#fde8ff",
+    subBorder: "border-fuchsia-400/40",
+  },
   slate: {
     border: "rgba(148,163,184,0.5)",
     haloA: "bg-slate-500/35",
@@ -81,11 +91,10 @@ export function MenuTemplateLounge({
   locale: Locale;
 }) {
   const sections = groupSectionBlocks(menu.items ?? []);
-  const themeId: MenuColorThemeId =
-    (menu.colorTheme as MenuColorThemeId) && (["default", "amber", "emerald", "bordeaux", "slate"] as MenuColorThemeId[]).includes(menu.colorTheme as MenuColorThemeId)
-      ? (menu.colorTheme as MenuColorThemeId)
-      : "default";
-  const palette = themeId === "default" ? null : LOUNGE_THEME_PALETTES[themeId === "default" ? "amber" : themeId as Exclude<MenuColorThemeId, "default">];
+  const themeId: MenuColorThemeId = (menu.colorTheme && MENU_COLOR_THEME_IDS.includes(menu.colorTheme as MenuColorThemeId))
+    ? (menu.colorTheme as MenuColorThemeId)
+    : "default";
+  const palette = LOUNGE_THEME_PALETTES[themeId];
 
   return (
     <div
@@ -116,12 +125,12 @@ export function MenuTemplateLounge({
           </div>
 
           <header className="relative z-10 px-5 pt-10 pb-6 sm:px-7 sm:pt-12 sm:pb-8">
-            <div className="mx-auto flex max-w-3xl flex-col gap-6 sm:flex-row sm:items-center">
+            <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:text-left">
               {menu.organizationLogoBase64 && (
                 <MenuLogoFrame
                   accentColor={palette?.divider ?? LOUNGE_NEON_PINK}
                   accentOpacity={0.9}
-                  sizeRem={11}
+                  sizeRem={8}
                   innerBgClassName="bg-slate-950/90"
                   className="shrink-0 shadow-[0_0_40px_rgba(236,72,153,0.5)]"
                 >
