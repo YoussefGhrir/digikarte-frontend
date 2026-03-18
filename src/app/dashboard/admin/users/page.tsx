@@ -148,6 +148,11 @@ export default function AdminUsersPage() {
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
 
+  const [actionUser, setActionUser] = useState<AdminUserDto | null>(null);
+  const [actionMode, setActionMode] = useState<"require" | "vip" | null>(null);
+  const [actionSubmitting, setActionSubmitting] = useState(false);
+  const [actionError, setActionError] = useState("");
+
   async function reload() {
     setLoading(true);
     setError("");
@@ -216,21 +221,30 @@ export default function AdminUsersPage() {
     return sorted;
   }, [q, sortDir, sortKey, users, view]);
 
-  async function handleToggleBypass(user: AdminUserDto) {
-    setError("");
+  function openAccessAction(user: AdminUserDto) {
+    setActionError("");
+    setActionUser(user);
+    // VIP = subscriptionBypass true => action = Exiger abonnement (require).
+    // Normal = subscriptionBypass false => action = Rendre VIP (vip).
+    setActionMode(user.subscriptionBypass ? "require" : "vip");
+  }
+
+  async function confirmAccessAction() {
+    if (!actionUser || !actionMode) return;
+    setActionSubmitting(true);
+    setActionError("");
     try {
-      const nextBypass = !user.subscriptionBypass;
-      await adminUpdateUser(user.userId, { subscriptionBypass: nextBypass });
+      const nextBypass = actionMode === "vip";
+      await adminUpdateUser(actionUser.userId, { subscriptionBypass: nextBypass });
+      setActionUser(null);
+      setActionMode(null);
 
-      // Si on passe de "Accès direct" -> "Exige abonnement",
-      // on bascule la vue vers la table "users normal".
-      if (user.subscriptionBypass && !nextBypass) setView("normal");
-      // Et inversement.
-      if (!user.subscriptionBypass && nextBypass) setView("bypass");
-
+      setView(nextBypass ? "bypass" : "normal");
       await reload();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Erreur toggle");
+      setActionError(e instanceof Error ? e.message : "Erreur action");
+    } finally {
+      setActionSubmitting(false);
     }
   }
 
@@ -339,7 +353,7 @@ export default function AdminUsersPage() {
             }`}
             disabled={loading}
           >
-            Accès direct
+            VIP
           </button>
           <button
             type="button"
@@ -351,7 +365,7 @@ export default function AdminUsersPage() {
             }`}
             disabled={loading}
           >
-            Users normal
+            Normal
           </button>
           <button
             type="button"
@@ -508,10 +522,10 @@ export default function AdminUsersPage() {
                       <div className="mt-2">
                         <button
                           type="button"
-                          onClick={() => void handleToggleBypass(u)}
+                          onClick={() => openAccessAction(u)}
                           className="rounded-lg border border-neutral-800 bg-neutral-950/30 px-2.5 py-1 text-[11px] font-semibold text-neutral-200 hover:bg-neutral-900"
                         >
-                          {u.subscriptionBypass ? "Exiger abonnement" : "Autoriser accès direct"}
+                          {u.subscriptionBypass ? "Exiger abonnement" : "Rendre VIP"}
                         </button>
                       </div>
                     </td>
@@ -777,6 +791,64 @@ export default function AdminUsersPage() {
                 disabled={resetSubmitting}
               >
                 {resetSubmitting ? "Reset…" : "Reset"}
+              </button>
+            </div>
+          </div>
+        </ModalShell>
+      )}
+
+      {/* Action subscription bypass modal */}
+      {actionUser && actionMode && (
+        <ModalShell
+          title={actionMode === "require" ? "Exiger abonnement" : "Rendre VIP"}
+          onClose={() => {
+            setActionUser(null);
+            setActionMode(null);
+            setActionError("");
+          }}
+        >
+          <div className="space-y-4">
+            {actionError && (
+              <div className="rounded-lg border border-red-500/40 bg-red-950/40 p-3 text-sm text-red-200">
+                {actionError}
+              </div>
+            )}
+
+            <p className="text-sm text-neutral-300">
+              {actionMode === "require" ? "Exiger abonnement pour" : "Rendre VIP pour"}{" "}
+              <span className="font-semibold text-neutral-100">{actionUser.email}</span>.
+            </p>
+
+            <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-neutral-200">
+              Cette action met à jour le paramètre <span className="font-semibold">subscriptionBypass</span>.
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setActionUser(null);
+                  setActionMode(null);
+                  setActionError("");
+                }}
+                className="rounded-xl bg-neutral-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-neutral-600"
+                disabled={actionSubmitting}
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={() => void confirmAccessAction()}
+                className={`rounded-xl px-4 py-2.5 text-sm font-semibold text-white hover:opacity-95 disabled:opacity-60 ${
+                  actionMode === "require" ? "bg-amber-500" : "bg-emerald-500"
+                }`}
+                disabled={actionSubmitting}
+              >
+                {actionSubmitting
+                  ? "En cours…"
+                  : actionMode === "require"
+                    ? "Exiger abonnement"
+                    : "Rendre VIP"}
               </button>
             </div>
           </div>
