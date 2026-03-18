@@ -326,6 +326,21 @@ export default function AdminUsersPage() {
     }
   }
 
+  async function handleRequireSubscriptionFromEdit() {
+    if (!editUser) return;
+    setEditSubmitting(true);
+    setEditError("");
+    try {
+      await adminUpdateUser(editUser.userId, { subscriptionBypass: false });
+      setEditUser(null);
+      router.push("/dashboard/admin/users/normal");
+    } catch (e) {
+      setEditError(e instanceof Error ? e.message : "Erreur exige abonnement");
+    } finally {
+      setEditSubmitting(false);
+    }
+  }
+
   async function handleResetPassword() {
     if (!resetUser) return;
     setResetSubmitting(true);
@@ -494,17 +509,6 @@ export default function AdminUsersPage() {
                       >
                         {active ? "Abonnement actif" : "Abonnement inactif"}
                       </span>
-                      {u.subscriptionBypass && !isNormalRoute && (
-                        <div className="mt-2">
-                          <button
-                            type="button"
-                            onClick={() => openAccessAction(u)}
-                            className="rounded-lg border border-neutral-800 bg-neutral-950/30 px-2.5 py-1 text-[11px] font-semibold text-neutral-200 hover:bg-neutral-900"
-                          >
-                            Exiger abonnement
-                          </button>
-                        </div>
-                      )}
                     </td>
                     <td className="py-3">
                       <div className="flex flex-wrap gap-2">
@@ -735,6 +739,17 @@ export default function AdminUsersPage() {
                 Oui
               </label>
             </div>
+
+            {editForm.subscriptionBypass && !isNormalRoute && (
+              <button
+                type="button"
+                onClick={() => void handleRequireSubscriptionFromEdit()}
+                className="w-full rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-2.5 text-sm font-semibold text-amber-200 hover:bg-amber-500/15 disabled:opacity-60"
+                disabled={editSubmitting}
+              >
+                Exiger abonnement
+              </button>
+            )}
 
             <div className="flex justify-end gap-2 pt-2">
               <button
