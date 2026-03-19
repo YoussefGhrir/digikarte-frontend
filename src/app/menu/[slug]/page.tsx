@@ -197,96 +197,132 @@ function DemoScenarioPage({
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
-      <div className="mx-auto max-w-6xl px-5 py-8 md:px-8 md:py-10">
-        <section className="rounded-3xl border border-amber-500/35 bg-neutral-900/70 p-6 shadow-xl md:p-8">
+      <div className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-8">
+        {/* Bandeau intro */}
+        <section className="rounded-3xl border border-amber-500/35 bg-neutral-900/70 p-5 shadow-xl md:p-7">
           <p className="text-[11px] uppercase tracking-[0.3em] text-amber-300">
             DigiKarte · Demo
           </p>
           <h1 className="mt-3 font-forum text-3xl text-neutral-50 md:text-4xl">{text.heroTitle}</h1>
           <p className="mt-3 max-w-4xl text-sm leading-relaxed text-neutral-300">{text.heroSubtitle}</p>
-        </section>
-
-        <section className="mt-6 grid gap-4 md:grid-cols-3">
-          {text.steps.map((step) => (
-            <article key={step.title} className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-5">
-              <p className="text-[11px] uppercase tracking-[0.24em] text-amber-300">{step.kicker}</p>
-              <h2 className="mt-2 font-forum text-xl text-neutral-50">{step.title}</h2>
-              <p className="mt-2 text-xs leading-relaxed text-neutral-300">{step.text}</p>
-            </article>
-          ))}
-        </section>
-
-        <section className="mt-6 rounded-3xl border border-neutral-800 bg-neutral-900/70 p-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-forum text-2xl text-neutral-50">{text.templatesTitle}</h2>
-            <p className="text-xs text-neutral-400">{text.templatesHint}</p>
+          <div className="mt-4 flex flex-wrap gap-2 text-xs">
+            <a
+              href="/"
+              className="inline-flex items-center rounded-full border border-neutral-700 bg-neutral-950 px-3 py-1.5 text-[11px] text-neutral-200 hover:border-amber-400 hover:text-amber-200"
+            >
+              ← Home
+            </a>
+            <a
+              href="/register"
+              className="inline-flex items-center rounded-full border border-emerald-500/60 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-semibold text-emerald-200 hover:bg-emerald-500/20"
+            >
+              Register
+            </a>
+            <a
+              href="/login"
+              className="inline-flex items-center rounded-full border border-neutral-600 bg-neutral-950 px-3 py-1.5 text-[11px] text-neutral-200 hover:border-amber-400 hover:text-amber-200"
+            >
+              Login
+            </a>
           </div>
-          <div className="mt-4 grid gap-2 md:grid-cols-3">
-            {templateItems.map((template) => {
-              const active = template.id === selectedTemplate;
-              return (
-                <a
-                  key={template.id}
-                  href={`/menu/demo?template=${template.id}`}
-                  className={`rounded-xl border px-3 py-2 text-sm transition ${
-                    active
-                      ? "border-amber-400 bg-amber-400/15 text-amber-200"
-                      : "border-neutral-700 bg-neutral-950/40 text-neutral-300 hover:border-neutral-500 hover:text-neutral-100"
-                  }`}
+        </section>
+
+        {/* Bloc principal en 2 colonnes sur desktop */}
+        <section className="mt-5 grid gap-5 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:items-start">
+          {/* Colonne gauche : étapes + templates */}
+          <div className="space-y-4">
+            <div className="grid gap-3 md:grid-cols-3">
+              {text.steps.map((step) => (
+                <article
+                  key={step.title}
+                  className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4 text-xs"
                 >
-                  {template.label}
-                </a>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="mt-6 overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900/70">
-          <div className="border-b border-neutral-800 px-5 py-4 text-sm text-neutral-300">
-            {text.previewTitle}:{" "}
-            <span className="font-semibold text-amber-300">
-              {templateItems.find((x) => x.id === selectedTemplate)?.label ?? selectedTemplate}
-            </span>
-          </div>
-          <MenuTemplateRenderer menu={demoMenu} locale={locale} />
-        </section>
-
-        <section className="mt-6 grid gap-4 md:grid-cols-2">
-          <article className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-5">
-            <h3 className="font-forum text-xl text-neutral-50">{text.qrTableTitle}</h3>
-            <p className="mt-2 text-xs leading-relaxed text-neutral-300">{text.qrTableText}</p>
-            <div className="mt-4 rounded-2xl border border-neutral-700 bg-neutral-950/70 p-3">
-              <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
-                {text.visualTableLabel}
-              </p>
-              <QrTableVisual qrSrc={qrSrc} text={text.qrStickerText} />
+                  <p className="text-[10px] uppercase tracking-[0.24em] text-amber-300">
+                    {step.kicker}
+                  </p>
+                  <h2 className="mt-1.5 font-forum text-base text-neutral-50">{step.title}</h2>
+                  <p className="mt-1.5 leading-relaxed text-neutral-300">{step.text}</p>
+                </article>
+              ))}
             </div>
-            <ul className="mt-3 space-y-1 text-xs text-neutral-400">
-              <li>{text.qrTablePoint1}</li>
-              <li>{text.qrTablePoint2}</li>
-              <li>{text.qrTablePoint3}</li>
-            </ul>
-          </article>
-          <article className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-5">
-            <h3 className="font-forum text-xl text-neutral-50">{text.qrDoorTitle}</h3>
-            <p className="mt-2 text-xs leading-relaxed text-neutral-300">{text.qrDoorText}</p>
-            <div className="mt-4 rounded-2xl border border-neutral-700 bg-neutral-950/70 p-3">
-              <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
-                {text.visualDoorLabel}
-              </p>
-              <QrDoorVisual
-                qrSrc={qrSrc}
-                title={text.qrPosterTitle}
-                subtitle={text.qrPosterSubtitle}
-                cta={text.qrPosterCta}
-              />
+
+            <div className="rounded-3xl border border-neutral-800 bg-neutral-900/70 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="font-forum text-lg text-neutral-50">{text.templatesTitle}</h2>
+                <p className="text-[11px] text-neutral-400">{text.templatesHint}</p>
+              </div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                {templateItems.map((template) => {
+                  const active = template.id === selectedTemplate;
+                  return (
+                    <a
+                      key={template.id}
+                      href={`/menu/demo?template=${template.id}`}
+                      className={`rounded-xl border px-3 py-1.5 text-[11px] transition ${
+                        active
+                          ? "border-amber-400 bg-amber-400/15 text-amber-200"
+                          : "border-neutral-700 bg-neutral-950/40 text-neutral-300 hover:border-neutral-500 hover:text-neutral-100"
+                      }`}
+                    >
+                      {template.label}
+                    </a>
+                  );
+                })}
+              </div>
             </div>
-            <ul className="mt-3 space-y-1 text-xs text-neutral-400">
-              <li>{text.qrDoorPoint1}</li>
-              <li>{text.qrDoorPoint2}</li>
-              <li>{text.qrDoorPoint3}</li>
-            </ul>
-          </article>
+          </div>
+
+          {/* Colonne droite : preview + QR scénarios */}
+          <div className="space-y-4">
+            <div className="overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900/70">
+              <div className="border-b border-neutral-800 px-4 py-3 text-xs text-neutral-300">
+                {text.previewTitle}:{" "}
+                <span className="font-semibold text-amber-300">
+                  {templateItems.find((x) => x.id === selectedTemplate)?.label ?? selectedTemplate}
+                </span>
+              </div>
+              <MenuTemplateRenderer menu={demoMenu} locale={locale} />
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-1">
+              <article className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4 text-xs">
+                <h3 className="font-forum text-lg text-neutral-50">{text.qrTableTitle}</h3>
+                <p className="mt-1.5 leading-relaxed text-neutral-300">{text.qrTableText}</p>
+                <div className="mt-3 rounded-2xl border border-neutral-700 bg-neutral-950/70 p-3">
+                  <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+                    {text.visualTableLabel}
+                  </p>
+                  <QrTableVisual qrSrc={qrSrc} text={text.qrStickerText} />
+                </div>
+                <ul className="mt-2 space-y-1 text-[11px] text-neutral-400">
+                  <li>{text.qrTablePoint1}</li>
+                  <li>{text.qrTablePoint2}</li>
+                  <li>{text.qrTablePoint3}</li>
+                </ul>
+              </article>
+
+              <article className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4 text-xs">
+                <h3 className="font-forum text-lg text-neutral-50">{text.qrDoorTitle}</h3>
+                <p className="mt-1.5 leading-relaxed text-neutral-300">{text.qrDoorText}</p>
+                <div className="mt-3 rounded-2xl border border-neutral-700 bg-neutral-950/70 p-3">
+                  <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+                    {text.visualDoorLabel}
+                  </p>
+                  <QrDoorVisual
+                    qrSrc={qrSrc}
+                    title={text.qrPosterTitle}
+                    subtitle={text.qrPosterSubtitle}
+                    cta={text.qrPosterCta}
+                  />
+                </div>
+                <ul className="mt-2 space-y-1 text-[11px] text-neutral-400">
+                  <li>{text.qrDoorPoint1}</li>
+                  <li>{text.qrDoorPoint2}</li>
+                  <li>{text.qrDoorPoint3}</li>
+                </ul>
+              </article>
+            </div>
+          </div>
         </section>
       </div>
     </div>

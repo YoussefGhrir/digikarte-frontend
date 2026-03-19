@@ -109,7 +109,7 @@ export default function Home() {
           {user && (
             <Link
               href="/dashboard"
-              className="hidden rounded-full border border-emerald-500/50 bg-emerald-500/10 px-4 py-1.5 text-xs font-medium text-emerald-800 dark:text-emerald-100 hover:bg-emerald-500/20 sm:inline-block"
+              className="rounded-full border border-emerald-500/50 bg-emerald-500/10 px-3.5 py-1.5 text-[11px] font-medium text-emerald-800 dark:text-emerald-100 hover:bg-emerald-500/20"
             >
               {t("headerDashboardButton", locale)}
             </Link>
@@ -117,7 +117,7 @@ export default function Home() {
 
           <Link
             href="/login"
-            className="hidden rounded-full border border-neutral-400 dark:border-neutral-700 px-4 py-1.5 text-xs font-medium text-neutral-700 dark:text-neutral-200 hover:border-amber-500/70 hover:bg-amber-500/10 sm:inline-block"
+            className="rounded-full border border-neutral-400 dark:border-neutral-700 px-3.5 py-1.5 text-[11px] font-medium text-neutral-700 dark:text-neutral-200 hover:border-amber-500/70 hover:bg-amber-500/10"
           >
             {t("ctaLogin", locale)}
           </Link>

@@ -1,246 +1,176 @@
 import Link from "next/link";
+import LegalPageLayout from "@/components/legal/LegalPageLayout";
 
 export default function DatenschutzPage() {
-  return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-50">
-      <div className="mx-auto w-full max-w-4xl px-6 py-10">
-        <h1 className="font-forum text-3xl text-neutral-50 md:text-4xl">
-          Datenschutzerklärung
-        </h1>
-        <p className="mt-3 text-sm text-neutral-400">
-          Der Schutz deiner personenbezogenen Daten ist uns ein wichtiges
-          Anliegen. Nachfolgend informieren wir dich darüber, wie wir deine
-          Daten im Rahmen der Nutzung von{" "}
-          <span className="font-medium text-neutral-100">DigiKarte</span>{" "}
-          verarbeiten.
+  const sections = [
+    {
+      title: "1. Verantwortlicher",
+      content: (
+        <p className="whitespace-pre-line">
+          Verantwortlich im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:
+          {"\n"}Youssef Ghrir
+          {"\n"}Straße und Hausnummer: [bitte ergänzen]
+          {"\n"}PLZ und Ort: [bitte ergänzen] Kaiserslautern
+          {"\n"}Deutschland
+          {"\n"}E-Mail: gheriryoussef@gmail.com
         </p>
-
-        <section className="mt-8 space-y-2 text-sm text-neutral-300">
-          <h2 className="text-lg font-semibold text-neutral-100">
-            1. Verantwortlicher
-          </h2>
-          <p className="whitespace-pre-line">
-            Verantwortlich im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:
-            {"\n"}Youssef Ghrir
-            {"\n"}Straße und Hausnummer: [bitte ergänzen]
-            {"\n"}PLZ und Ort: [bitte ergänzen] Kaiserslautern
-            {"\n"}Deutschland
-            {"\n"}E-Mail: gheriryoussef@gmail.com
-          </p>
-        </section>
-
-        <section className="mt-6 space-y-2 text-sm text-neutral-300">
-          <h2 className="text-lg font-semibold text-neutral-100">
-            2. Zwecke und Rechtsgrundlagen der Datenverarbeitung
-          </h2>
+      ),
+    },
+    {
+      title: "2. Zwecke und Rechtsgrundlagen",
+      content: (
+        <>
           <p>
-            Wir verarbeiten personenbezogene Daten zur Bereitstellung und
-            zum Betrieb von DigiKarte (digitale Speisekarten und QR-Codes), für
-            die Registrierung und Verwaltung von Nutzerkonten, die Erstellung
-            und Veröffentlichung deiner Inhalte (z. B. Menütexte, Preise, Bilder),
-            sowie zur Abrechnung und Verwaltung von Abonnements. Je nach
-            Nutzung verarbeiten wir auch Zahlungsdaten, die jedoch
-            überwiegend über unseren Zahlungsdienstleister verarbeitet werden.
+            Wir verarbeiten personenbezogene Daten zur Bereitstellung und zum Betrieb von DigiKarte,
+            zur Registrierung und Verwaltung von Nutzerkonten, zur Veröffentlichung deiner Inhalte sowie
+            zur Abrechnung von Abonnements.
           </p>
-          <p>
-            Die Verarbeitung erfolgt insbesondere auf Grundlage von Art. 6 Abs.
-            1 lit. b DSGVO (Vertragserfüllung), Art. 6 Abs. 1 lit. c DSGVO
-            (rechtliche Verpflichtung) sowie Art. 6 Abs. 1 lit. f DSGVO
-            (berechtigtes Interesse). Soweit wir eine Einwilligung einholen,
-            erfolgt die Verarbeitung auf Grundlage von Art. 6 Abs. 1 lit. a
-            DSGVO.
-          </p>
-        </section>
-
-        <section className="mt-6 space-y-2 text-sm text-neutral-300">
-          <h2 className="text-lg font-semibold text-neutral-100">
-            3. Erhobene Datenkategorien
-          </h2>
-          <p>
-            Im Rahmen der Nutzung von DigiKarte können insbesondere folgende
-            Daten verarbeitet werden:
-          </p>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-neutral-300">
-            <li>
-              Stammdaten (z. B. Name, Kontaktdaten wie E-Mail, ggf. Telefon
-              sowie Unternehmens-/Organisationsdaten).
-            </li>
-            <li>
-              Zugangsdaten (z. B. E-Mail-Adresse, Passwort – als Hash
-              gespeichert).
-            </li>
-            <li>
-              Nutzungsdaten (z. B. aufgerufene Seiten, Interaktionen mit Menüs
-              und QR-bezogene Aktionen).
-            </li>
-            <li>
-              Kommunikationsdaten (z. B. Anfragen per E-Mail im Rahmen des
-              Supports/der Kontaktaufnahme).
-            </li>
-            <li>
-              Bild- und Inhaltsdaten: Profilfoto (z. B. im „Wer wir sind/Portrait“-Bereich),
-              Logo/Platzhalterbilder sowie Bilder, die du für deine Menüs
-              hochlädst bzw. bereitstellst (z. B. als JPEG/PNG/WebP/GIF, je nach
-              Upload-Format).
-            </li>
-          </ul>
-        </section>
-
-        <section className="mt-6 space-y-2 text-sm text-neutral-300">
-          <h2 className="text-lg font-semibold text-neutral-100">
-            4. Server-Logfiles
-          </h2>
-          <p>
-            Beim Aufruf unserer Seiten werden durch den von uns eingesetzten
-            Server automatisch Informationen in so genannten Server-Logfiles
-            erhoben und gespeichert. Dies sind insbesondere:
-          </p>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-neutral-300">
-            <li>
-              IP-Adresse des anfragenden Endgeräts (gekürzt, soweit möglich),
-            </li>
-            <li>Datum und Uhrzeit des Zugriffs,</li>
-            <li>aufgerufene Seite/Datei,</li>
-            <li>übertragene Datenmenge,</li>
-            <li>verwendeter Browser und Betriebssystem.</li>
-          </ul>
-          <p>
-            Die Verarbeitung erfolgt auf Grundlage unseres berechtigten
-            Interesses an der technischen Bereitstellung, Stabilität und
-            Sicherheit unseres Angebots (Art. 6 Abs. 1 lit. f DSGVO).
-          </p>
-        </section>
-
-        <section className="mt-6 space-y-2 text-sm text-neutral-300">
-          <h2 className="text-lg font-semibold text-neutral-100">
-            5. Cookies und vergleichbare Technologien
-          </h2>
-          <p>
-            Wir verwenden insbesondere einen Cookie, um die von dir ausgewählte
-            Sprache zu speichern (Cookie-Key: <span className="font-medium">digikarte-lang</span>).
-            Dieser Cookie wird serverseitig gesetzt und zur Anzeige der
-            passenden Sprache genutzt.
-          </p>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-neutral-300">
-            <li>
-              Zweck: Sprach-/Locale-Auswahl für den ersten Eindruck und für
-              zukünftige Besuche.
-            </li>
-            <li>
-              Speicherdauer: ca. 2 Jahre (maxAge).
-            </li>
-            <li>
-              Einstellungen: <code>path=/</code>, <code>SameSite=Lax</code>, Secure
-              abhängig vom Protokoll (HTTPS).
-            </li>
-          </ul>
-        </section>
-
-        <section className="mt-6 space-y-2 text-sm text-neutral-300">
-          <h2 className="text-lg font-semibold text-neutral-100">
-            6. Empfänger und Drittlandübermittlungen
-          </h2>
-          <p>
-            Wir geben personenbezogene Daten nur an Dritte weiter, soweit dies
-            zur Vertragserfüllung, zur Erfüllung rechtlicher Pflichten, zur
-            Wahrung unserer berechtigten Interessen oder auf Grundlage deiner
-            Einwilligung erforderlich ist.
-          </p>
-          <p>
-            Bei Zahlungen arbeiten wir mit dem Zahlungsdienstleister Stripe
-            zusammen. Dabei können u. a. Zahlungs- und Vertragsdaten (z. B.
-            Stripe-Kunden-/Abonnement-IDs und Zahlungsstatus) zwischen DigiKarte
-            und Stripe ausgetauscht werden. Hosting/Verarbeitung erfolgt je
-            nach Einsatz über unseren Infrastruktur-/Hosting-Anbieter.
-          </p>
-          <p>
-            Eine Übermittlung in Drittländer (außerhalb der EU/des EWR) kann
-            erfolgen, wenn dies zur Leistungserbringung erforderlich ist und
-            ein angemessenes Datenschutzniveau bzw. geeignete Garantien im
-            Sinne der Art. 44 ff. DSGVO vorliegen.
-          </p>
-        </section>
-
-        <section className="mt-6 space-y-2 text-sm text-neutral-300">
-          <h2 className="text-lg font-semibold text-neutral-100">
-            7. Speicherdauer
-          </h2>
-          <p>
-            Wir verarbeiten und speichern personenbezogene Daten nur so lange,
-            wie es für die jeweiligen Zwecke erforderlich ist oder gesetzliche
-            Aufbewahrungsfristen bestehen. Nach Wegfall des Zwecks bzw.
-            Ablauf der Fristen werden die Daten gelöscht oder anonymisiert.
-          </p>
-        </section>
-
-        <section className="mt-6 space-y-2 text-sm text-neutral-300">
-          <h2 className="text-lg font-semibold text-neutral-100">
-            8. Deine Rechte
-          </h2>
-          <p>
-            Dir stehen nach der DSGVO insbesondere folgende Rechte zu:
-          </p>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-neutral-300">
-            <li>Recht auf Auskunft (Art. 15 DSGVO)</li>
-            <li>Recht auf Berichtigung (Art. 16 DSGVO)</li>
-            <li>Recht auf Löschung (Art. 17 DSGVO)</li>
-            <li>Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
-            <li>Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</li>
-            <li>Recht auf Widerspruch (Art. 21 DSGVO)</li>
-            <li>
-              Recht, eine erteilte Einwilligung jederzeit mit Wirkung für die
-              Zukunft zu widerrufen (Art. 7 Abs. 3 DSGVO)
-            </li>
-          </ul>
           <p className="mt-2">
-            Zur Ausübung deiner Rechte kannst du dich jederzeit an uns wenden
-            (Kontaktdaten siehe oben unter Ziff. 1).
+            Die Verarbeitung erfolgt insbesondere auf Grundlage von Art. 6 Abs. 1 lit. b, c und f DSGVO
+            sowie bei Einwilligungen nach Art. 6 Abs. 1 lit. a DSGVO.
           </p>
-        </section>
-
-        <section className="mt-6 space-y-2 text-sm text-neutral-300">
-          <h2 className="text-lg font-semibold text-neutral-100">
-            9. Beschwerderecht bei einer Aufsichtsbehörde
-          </h2>
+        </>
+      ),
+    },
+    {
+      title: "3. Datenkategorien",
+      content: (
+        <ul className="list-disc space-y-1 pl-5">
+          <li>Stammdaten (Name, E-Mail, Telefon, Organisationsdaten)</li>
+          <li>Zugangsdaten (E-Mail, gehashtes Passwort)</li>
+          <li>Nutzungsdaten (Seitenaufrufe, Interaktionen, QR-Aktionen)</li>
+          <li>Kommunikationsdaten (Support- und Kontaktanfragen)</li>
+          <li>Bild- und Inhaltsdaten (Profilfoto, Logos, Menübilder)</li>
+        </ul>
+      ),
+    },
+    {
+      title: "4. Server-Logfiles",
+      content: (
+        <>
           <p>
-            Du hast das Recht, dich bei einer Datenschutzaufsichtsbehörde über
-            die Verarbeitung deiner personenbezogenen Daten zu beschweren (Art.
-            77 DSGVO). Zuständig ist insbesondere die Aufsichtsbehörde deines
-            gewöhnlichen Aufenthaltsortes, deines Arbeitsplatzes oder des Orts
-            des mutmaßlichen Verstoßes.
+            Beim Aufruf unserer Seiten werden automatisch Logdaten wie IP-Adresse (gekürzt, soweit
+            möglich), Datum/Uhrzeit, aufgerufene Datei, Datenmenge, Browser und Betriebssystem erfasst.
           </p>
-        </section>
-
-        <section className="mt-6 space-y-2 text-sm text-neutral-300">
-          <h2 className="text-lg font-semibold text-neutral-100">
-            10. Aktualität und Änderungen dieser Datenschutzerklärung
-          </h2>
+          <p className="mt-2">
+            Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (technische Stabilität und Sicherheit).
+          </p>
+        </>
+      ),
+    },
+    {
+      title: "5. Cookies und ähnliche Technologien",
+      content: (
+        <>
           <p>
-            Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf zu
-            aktualisieren, um sie an geänderte Rechtslagen oder Änderungen
-            unserer Dienste anzupassen. Die jeweils aktuelle Version ist auf
-            dieser Seite abrufbar.
+            Wir verwenden u. a. den Cookie <span className="font-medium">digikarte-lang</span> zur
+            Speicherung der Sprachauswahl.
           </p>
-        </section>
-
-        <section className="mt-10 border-t border-neutral-800 pt-4 text-xs text-neutral-500">
+          <ul className="mt-2 list-disc space-y-1 pl-5">
+            <li>Zweck: Sprachwahl für aktuelle und zukünftige Besuche</li>
+            <li>Speicherdauer: ca. 2 Jahre</li>
+            <li>
+              Einstellungen: <code>path=/</code>, <code>SameSite=Lax</code>, <code>Secure</code> bei HTTPS
+            </li>
+          </ul>
+        </>
+      ),
+    },
+    {
+      title: "6. Empfänger und Drittlandübermittlung",
+      content: (
+        <>
           <p>
-            Hinweis: Diese Datenschutzerklärung ist ein allgemeines Muster und
-            ersetzt keine individuelle rechtliche Beratung. Bitte passe alle
-            Platzhalter und Angaben an dein konkretes Geschäftsmodell, deine
-            technischen Prozesse und eingesetzten Dienstleister an und lass den
-            Text im Zweifel rechtlich prüfen.
+            Eine Weitergabe an Dritte erfolgt nur, soweit dies zur Vertragserfüllung, zur Erfüllung
+            rechtlicher Pflichten, auf Grundlage berechtigter Interessen oder mit Einwilligung
+            erforderlich ist.
           </p>
-          <p className="mt-3">
-            Zurück zur{" "}
+          <p className="mt-2">
+            Für Zahlungen nutzen wir Stripe. Drittlandübermittlungen erfolgen nur unter den Vorgaben der
+            Art. 44 ff. DSGVO.
+          </p>
+        </>
+      ),
+    },
+    {
+      title: "7. Speicherdauer",
+      content: (
+        <p>
+          Daten werden nur so lange gespeichert, wie es für den jeweiligen Zweck erforderlich ist oder
+          gesetzliche Aufbewahrungspflichten bestehen. Danach werden Daten gelöscht oder anonymisiert.
+        </p>
+      ),
+    },
+    {
+      title: "8. Betroffenenrechte",
+      content: (
+        <>
+          <p>Du hast insbesondere folgende Rechte nach DSGVO:</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5">
+            <li>Auskunft (Art. 15), Berichtigung (Art. 16), Löschung (Art. 17)</li>
+            <li>Einschränkung (Art. 18), Datenübertragbarkeit (Art. 20), Widerspruch (Art. 21)</li>
+            <li>Widerruf erteilter Einwilligungen mit Wirkung für die Zukunft</li>
+          </ul>
+        </>
+      ),
+    },
+    {
+      title: "9. Beschwerderecht",
+      content: (
+        <p>
+          Du hast das Recht auf Beschwerde bei einer Datenschutzaufsichtsbehörde gemäß Art. 77 DSGVO.
+        </p>
+      ),
+    },
+    {
+      title: "10. Aktualität und Änderungen",
+      content: (
+        <p>
+          Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf zu aktualisieren. Es gilt jeweils
+          die auf dieser Seite veröffentlichte aktuelle Version.
+        </p>
+      ),
+    },
+  ];
+
+  return (
+    <LegalPageLayout
+      pageLabel="DigiKarte"
+      title="Datenschutzerklärung"
+      intro={
+        <>
+          Der Schutz deiner personenbezogenen Daten ist uns wichtig. Nachfolgend informieren wir dich
+          über die Verarbeitung im Rahmen der Nutzung von{" "}
+          <span className="font-medium text-neutral-100">DigiKarte</span>.
+        </>
+      }
+      sideCard={
+        <div className="space-y-3 text-sm text-neutral-300">
+          <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">Schnellkontakt</p>
+          <p>
+            Datenschutz-Anfragen:{" "}
+            <a href="mailto:gheriryoussef@gmail.com" className="text-amber-300 hover:text-amber-200">
+              gheriryoussef@gmail.com
+            </a>
+          </p>
+          <p className="text-xs text-neutral-400">
+            Bitte füge bei Anfragen möglichst den betroffenen Account und den Zeitraum hinzu.
+          </p>
+          <p className="pt-3 text-xs text-neutral-500">
+            Projektwebseite:{" "}
             <Link href="/" className="text-amber-300 hover:text-amber-200">
-              Startseite
+              digi-karte.com
             </Link>
-            .
           </p>
-        </section>
-      </div>
-    </div>
+        </div>
+      }
+      sections={sections}
+      footerNote={
+        <p>
+          Hinweis: Diese Datenschutzerklärung ist ein allgemeines Muster und ersetzt keine individuelle
+          Rechtsberatung.
+        </p>
+      }
+    />
   );
 }
-
