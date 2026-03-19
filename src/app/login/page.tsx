@@ -16,7 +16,9 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [pendingAction, setPendingAction] = useState<"form" | "google" | null>(
+    null
+  );
 
   const GOOGLE_LOGIN_URL = `${API_BASE}/api/auth/google/login-url`;
 
@@ -62,7 +64,7 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    setLoading(true);
+    setPendingAction("form");
     try {
       await login(email, password);
     } catch (err) {
@@ -72,9 +74,13 @@ export default function LoginPage() {
         setError(t("authErrorGeneric", locale));
       }
     } finally {
-      setLoading(false);
+      setPendingAction(null);
     }
   }
+
+  const isBusy = pendingAction !== null;
+  const isFormPending = pendingAction === "form";
+  const isGooglePending = pendingAction === "google";
 
   const languages: Locale[] = ["de", "fr", "en"];
   const [langOpen, setLangOpen] = useState(false);
@@ -142,6 +148,7 @@ export default function LoginPage() {
           >
             <button
               type="button"
+              disabled={isBusy}
               onClick={() => setLangOpen((o) => !o)}
               className="flex items-center gap-1.5 rounded-full border border-neutral-800 bg-black/75 px-3 py-1.5 text-[11px] text-neutral-200 shadow-lg shadow-black/40 backdrop-blur transition hover:border-emerald-400/70 hover:text-neutral-50"
               aria-haspopup="true"
@@ -162,6 +169,7 @@ export default function LoginPage() {
                   <button
                     key={lang}
                     type="button"
+                    disabled={isBusy}
                     onClick={() => {
                       setLocale(lang);
                       setLangOpen(false);
@@ -270,7 +278,10 @@ export default function LoginPage() {
             <div className="mb-5">
               <button
                 type="button"
+              disabled={isBusy}
                 onClick={async () => {
+                setError("");
+                setPendingAction("google");
                   try {
                     const res = await fetch(
                       `${GOOGLE_LOGIN_URL}?lang=${locale}&source=login`
@@ -280,22 +291,35 @@ export default function LoginPage() {
                       window.location.href = data.url;
                     } else {
                       setError(t("authErrorGeneric", locale));
+                      setPendingAction(null);
                     }
                   } catch {
                     setError(t("authErrorGeneric", locale));
+                    setPendingAction(null);
                   }
                 }}
-                className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-neutral-700 bg-white px-4 py-2.75 text-sm font-semibold text-neutral-900 shadow-[0_12px_40px_rgba(0,0,0,0.85)] transition hover:-translate-y-0.5 hover:border-neutral-500 hover:bg-neutral-50"
+                className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-neutral-700 bg-white px-4 py-2.75 text-sm font-semibold text-neutral-900 shadow-[0_12px_40px_rgba(0,0,0,0.85)] transition hover:-translate-y-0.5 hover:border-neutral-500 hover:bg-neutral-50 disabled:translate-y-0 disabled:cursor-wait disabled:opacity-70"
               >
-                <span className="inline-flex h-5 w-5 items-center justify-center overflow-hidden rounded-full bg-white">
-                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
-                    <path fill="#EA4335" d="M12 11.3v3.6h5.1c-.2 1.1-.8 2.1-1.8 2.7l2.9 2.2c1.7-1.6 2.8-3.9 2.8-6.6 0-.6-.1-1.2-.2-1.8H12z" />
-                    <path fill="#34A853" d="M6.6 13.8l-.9.7-2.3 1.8C4.7 19.7 8.1 22 12 22c2.4 0 4.5-.8 6-2.2l-2.9-2.2c-.8.5-1.8.8-3.1.8-2.4 0-4.5-1.6-5.2-3.8z" />
-                    <path fill="#4A90E2" d="M3.4 8.7C2.8 10 2.8 11.5 3.4 12.8c.7 2.2 2.8 3.8 5.2 3.8 1.3 0 2.4-.3 3.1-.8v-3.9H6.6z" />
-                    <path fill="#FBBC05" d="M6.6 8.2 9.1 10c.7-.4 1.6-.7 2.9-.7 1.7 0 3.3.6 4.4 1.7l2.6-2.6C17.9 6.9 15.6 6 12 6 8.1 6 4.7 8.3 3.4 11l3.2-2.8z" />
-                  </svg>
+                {isGooglePending ? (
+                  <span
+                    className="inline-flex h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <span className="inline-flex h-5 w-5 items-center justify-center overflow-hidden rounded-full bg-white">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
+                      <path fill="#EA4335" d="M12 11.3v3.6h5.1c-.2 1.1-.8 2.1-1.8 2.7l2.9 2.2c1.7-1.6 2.8-3.9 2.8-6.6 0-.6-.1-1.2-.2-1.8H12z" />
+                      <path fill="#34A853" d="M6.6 13.8l-.9.7-2.3 1.8C4.7 19.7 8.1 22 12 22c2.4 0 4.5-.8 6-2.2l-2.9-2.2c-.8.5-1.8.8-3.1.8-2.4 0-4.5-1.6-5.2-3.8z" />
+                      <path fill="#4A90E2" d="M3.4 8.7C2.8 10 2.8 11.5 3.4 12.8c.7 2.2 2.8 3.8 5.2 3.8 1.3 0 2.4-.3 3.1-.8v-3.9H6.6z" />
+                      <path fill="#FBBC05" d="M6.6 8.2 9.1 10c.7-.4 1.6-.7 2.9-.7 1.7 0 3.3.6 4.4 1.7l2.6-2.6C17.9 6.9 15.6 6 12 6 8.1 6 4.7 8.3 3.4 11l3.2-2.8z" />
+                    </svg>
+                  </span>
+                )}
+                <span>
+                  {isGooglePending
+                    ? `${t("authGoogleButton", locale)}...`
+                    : t("authGoogleButton", locale)}
                 </span>
-                <span>{t("authGoogleButton", locale)}</span>
               </button>
             </div>
 
@@ -325,6 +349,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={isBusy}
                     className="w-full rounded-2xl border border-neutral-800/80 bg-neutral-900/70 px-3.5 py-2.75 text-sm text-neutral-50 outline-none ring-0 placeholder:text-neutral-500 transition focus:border-emerald-400 focus:bg-neutral-900 focus:shadow-[0_0_0_1px_rgba(52,211,153,0.65)] focus:outline-none"
                     placeholder={t("authBusinessEmailPlaceholder", locale)}
                   />
@@ -342,6 +367,7 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    disabled={isBusy}
                     className="w-full rounded-2xl border border-neutral-800/80 bg-neutral-900/70 px-3.5 py-2.75 text-sm text-neutral-50 outline-none ring-0 placeholder:text-neutral-500 transition focus:border-emerald-400 focus:bg-neutral-900 focus:shadow-[0_0_0_1px_rgba(52,211,153,0.65)] focus:outline-none"
                     placeholder={t("authPasswordPlaceholder", locale)}
                   />
@@ -353,11 +379,17 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={isBusy}
                 className="mt-1.5 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400/95 px-4 py-2.75 text-sm font-semibold text-neutral-900 shadow-[0_16px_40px_rgba(16,185,129,0.45)] transition hover:-translate-y-0.5 hover:bg-emerald-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 disabled:translate-y-0 disabled:cursor-wait disabled:opacity-60"
               >
-                {loading
-                  ? `${t("authLoginButton", locale)}…`
+                {isFormPending && (
+                  <span
+                    className="mr-2 inline-flex h-4 w-4 animate-spin rounded-full border-2 border-neutral-700/40 border-t-neutral-900"
+                    aria-hidden="true"
+                  />
+                )}
+                {isFormPending
+                  ? `${t("authLoginButton", locale)}...`
                   : t("authLoginButton", locale)}
               </button>
 
