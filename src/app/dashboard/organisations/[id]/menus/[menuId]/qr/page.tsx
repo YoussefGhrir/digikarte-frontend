@@ -191,7 +191,7 @@ export default function MenuQrPage() {
   const load = useCallback(async () => {
     if (!menuId || isNaN(menuId)) return;
     try {
-      const [data, qr] = await Promise.all([menuGet(menuId), menuQrUrl(menuId)]);
+      const [data, qr] = await Promise.all([menuGet(menuId), menuQrUrl(menuId, locale)]);
       setMenu(data);
       setMenuUrl(qr.url);
     } catch (e) {
@@ -199,7 +199,7 @@ export default function MenuQrPage() {
     } finally {
       setLoading(false);
     }
-  }, [menuId]);
+  }, [menuId, locale]);
 
   useEffect(() => {
     load();
@@ -221,8 +221,8 @@ export default function MenuQrPage() {
   const effectiveMenuUrl =
     menuUrl ??
     (typeof window !== "undefined"
-      ? `${window.location.origin}/menu/${menu?.slug ?? ""}`
-      : `https://digi-karte.com/menu/${menu?.slug ?? ""}`);
+      ? `${window.location.origin}${prefixWithLocale(`/menu/${menu?.slug ?? ""}`, locale)}`
+      : `https://digi-karte.com${prefixWithLocale(`/menu/${menu?.slug ?? ""}`, locale)}`);
 
   /** Capture la couche impression (taille réelle) pour éviter recadrage et artefacts. */
   const handleDownloadStickerImage = useCallback(async () => {

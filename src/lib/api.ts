@@ -5,6 +5,45 @@ export const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ||
   "https://digicarte-043d88a805be.herokuapp.com";
 
+/** Même clé que `language-context` / middleware : langue courante pour les URLs QR côté API. */
+const CLIENT_LANG_STORAGE_KEY = "digikarte-lang";
+/** Aligné sur `MenuController.LOCALE_HEADER` (backend). */
+export const DIGIKARTE_LOCALE_HEADER = "X-DigiKarte-Locale";
+
+const VALID_API_LOCALES: Locale[] = ["de", "fr", "en"];
+
+function isApiLocale(value: unknown): value is Locale {
+  return typeof value === "string" && VALID_API_LOCALES.includes(value as Locale);
+}
+
+function readLangCookie(): string | null {
+  if (typeof document === "undefined") return null;
+  const all = document.cookie;
+  if (!all) return null;
+  for (const part of all.split(";").map((p) => p.trim())) {
+    const [k, ...rest] = part.split("=");
+    if (k === CLIENT_LANG_STORAGE_KEY) return rest.join("=");
+  }
+  return null;
+}
+
+/**
+ * Locale « route » pour les appels API (QR, etc.) : localStorage puis cookie.
+ * Sur le serveur → `null` (le backend utilisera `APP_ROUTE_LOCALE_FALLBACK`).
+ */
+export function getClientRouteLocale(): Locale | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = localStorage.getItem(CLIENT_LANG_STORAGE_KEY);
+    if (isApiLocale(stored)) return stored;
+  } catch {
+    // ignore
+  }
+  const c = readLangCookie();
+  if (isApiLocale(c)) return c;
+  return null;
+}
+
 function getToken(): string | null {
   if (typeof window === "undefined") return null;
   return localStorage.getItem("token");
@@ -30,11 +69,16 @@ export async function api<T>(
   options: RequestInit = {}
 ): Promise<T> {
   const token = getToken();
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(options.headers as Record<string, string>),
   };
-  if (token) (headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  const routeLoc = getClientRouteLocale();
+  if (routeLoc && headers[DIGIKARTE_LOCALE_HEADER] === undefined) {
+    headers[DIGIKARTE_LOCALE_HEADER] = routeLoc;
+  }
 
   const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
 
@@ -379,15 +423,19 @@ export function menuRemoveItem(menuId: number, itemId: number) {
   });
 }
 
-export function menuQrUrl(menuId: number) {
-  return api<{ url: string; slug: string }>(`/api/menus/${menuId}/qr-url`);
+export function menuQrUrl(menuId: number, locale?: Locale) {
+  const loc = locale ?? getClientRouteLocale();
+  const q = loc ? `?locale=${encodeURIComponent(loc)}` : "";
+  return api<{ url: string; slug: string }>(`/api/menus/${menuId}/qr-url${q}`);
 }
 
 /** URL de l'image QR générée par le backend (pour téléchargement). */
-export function menuQrImageUrl(menuId: number, size = 256, mode?: string) {
+export function menuQrImageUrl(menuId: number, size = 256, mode?: string, locale?: Locale) {
   const token = getToken();
   const params = new URLSearchParams({ size: String(size) });
   if (mode) params.set("mode", mode);
+  const loc = locale ?? getClientRouteLocale();
+  if (loc) params.set("locale", loc);
   return `${API_BASE}/api/menus/${menuId}/qr?${params}` + (token ? `&_t=${token}` : "");
 }
 
