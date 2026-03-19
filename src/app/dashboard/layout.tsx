@@ -64,6 +64,9 @@ export default function DashboardLayout({
   const langRef = useRef<HTMLDivElement | null>(null);
   const orgRef = useRef<HTMLDivElement | null>(null);
   const orgSidebarRef = useRef<HTMLDivElement | null>(null);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const mobileNavBtnRef = useRef<HTMLButtonElement | null>(null);
+  const mobileNavRef = useRef<HTMLDivElement | null>(null);
 
   const [orgs, setOrgs] = useState<OrganizationDto[]>([]);
   const [orgsLoading, setOrgsLoading] = useState(true);
@@ -81,6 +84,29 @@ export default function DashboardLayout({
   useEffect(() => {
     if (!loading && !token) router.replace("/");
   }, [loading, token, router]);
+
+  useEffect(() => {
+    // Ferme le menu mobile dès qu'on change de page.
+    setMobileNavOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+
+    function onPointerDown(e: MouseEvent | TouchEvent) {
+      const target = e.target as Node;
+      const insideMenu = mobileNavRef.current?.contains(target);
+      const insideBtn = mobileNavBtnRef.current?.contains(target);
+      if (!insideMenu && !insideBtn) setMobileNavOpen(false);
+    }
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("touchstart", onPointerDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("touchstart", onPointerDown);
+    };
+  }, [mobileNavOpen]);
 
   // On rafraîchit le profil (pour récupérer subscriptionBypass) avant d'appliquer le paywall.
   useEffect(() => {
@@ -570,6 +596,120 @@ export default function DashboardLayout({
 
           {/* Droite : sélecteur de langue + profil */}
           <div className="ml-auto flex shrink-0 items-center gap-3 text-xs text-neutral-400">
+            {/* Menu mobile (3 points) */}
+            <div className="relative lg:hidden">
+              <button
+                ref={mobileNavBtnRef}
+                type="button"
+                onClick={() => setMobileNavOpen((o) => !o)}
+                aria-label="Open mobile navigation"
+                aria-expanded={mobileNavOpen}
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-sm hover:bg-neutral-900"
+              >
+                <span aria-hidden className="text-xl leading-none">
+                  ⋯
+                </span>
+              </button>
+
+              {mobileNavOpen && (
+                <div
+                  ref={mobileNavRef}
+                  className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-xl shadow-black/60"
+                >
+                  <div className="p-2 space-y-1">
+                    {isAdmin ? (
+                      <>
+                        <Link
+                          href="/dashboard/admin"
+                          onClick={() => setMobileNavOpen(false)}
+                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                        >
+                          <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
+                          <span>Admin</span>
+                        </Link>
+                        <Link
+                          href="/dashboard/admin/users"
+                          onClick={() => setMobileNavOpen(false)}
+                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                        >
+                          <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
+                          <span>Gestion users VIP</span>
+                        </Link>
+                        <Link
+                          href="/dashboard/admin/users/normal"
+                          onClick={() => setMobileNavOpen(false)}
+                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                        >
+                          <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
+                          <span>Gestion users normal</span>
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          href="/dashboard/subscription"
+                          onClick={() => setMobileNavOpen(false)}
+                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                        >
+                          <IconQr className="h-4 w-4 shrink-0" aria-hidden />
+                          <span>Abonnement</span>
+                        </Link>
+
+                        <Link
+                          href={
+                            currentOrg
+                              ? `/dashboard/organisations/${currentOrg.id}`
+                              : "/dashboard?view=organisations"
+                          }
+                          onClick={() => setMobileNavOpen(false)}
+                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                        >
+                          <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
+                          <span>Gestion organisations</span>
+                        </Link>
+
+                        <Link
+                          href={
+                            currentOrg
+                              ? `/dashboard/organisations/${currentOrg.id}/qr`
+                              : "/dashboard?view=organisations"
+                          }
+                          onClick={() => setMobileNavOpen(false)}
+                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                        >
+                          <IconQr className="h-4 w-4 shrink-0" aria-hidden />
+                          <span>Gestion QR code</span>
+                        </Link>
+                      </>
+                    )}
+
+                    <div className="mt-2 border-t border-neutral-800" />
+
+                    <Link
+                      href="/dashboard/profile"
+                      onClick={() => setMobileNavOpen(false)}
+                      className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                    >
+                      <IconHome className="h-4 w-4 shrink-0 text-amber-200" aria-hidden />
+                      <span>Profile</span>
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMobileNavOpen(false);
+                        logout();
+                      }}
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-neutral-50 hover:bg-neutral-900/90"
+                    >
+                      <IconLogout className="h-4 w-4 shrink-0 text-red-200" aria-hidden />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div ref={langRef} className="relative">
               <button
                 type="button"
@@ -600,7 +740,7 @@ export default function DashboardLayout({
                         className={`flex w-full cursor-pointer items-center gap-2 rounded-xl px-2 py-1.5 text-left transition ${
                           locale === lang
                             ? "bg-emerald-500/15 text-emerald-200"
-                            : "text-neutral-300 hover:bg-neutral-900 hover:text-neutral-50"
+                            : "text-neutral-50 hover:bg-neutral-900"
                         }`}
                       >
                       <FlagIcon code={lang} />
