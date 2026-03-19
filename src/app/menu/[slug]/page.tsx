@@ -176,6 +176,10 @@ function DemoScenarioPage({
   demoMenu: MenuPublicDto;
 }) {
   const text = getDemoTexts(locale);
+  const demoUrl = "https://www.digi-karte.com/menu/demo";
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(
+    demoUrl,
+  )}`;
   const templateItems: { id: MenuTemplateId; label: string }[] = [
     { id: "classic", label: t("menuTemplateClassic", locale) },
     { id: "cafe", label: t("menuTemplateCafe", locale) },
@@ -251,6 +255,12 @@ function DemoScenarioPage({
           <article className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-5">
             <h3 className="font-forum text-xl text-neutral-50">{text.qrTableTitle}</h3>
             <p className="mt-2 text-xs leading-relaxed text-neutral-300">{text.qrTableText}</p>
+            <div className="mt-4 rounded-2xl border border-neutral-700 bg-neutral-950/70 p-3">
+              <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+                {text.visualTableLabel}
+              </p>
+              <QrTableVisual qrSrc={qrSrc} text={text.qrStickerText} />
+            </div>
             <ul className="mt-3 space-y-1 text-xs text-neutral-400">
               <li>{text.qrTablePoint1}</li>
               <li>{text.qrTablePoint2}</li>
@@ -260,6 +270,17 @@ function DemoScenarioPage({
           <article className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-5">
             <h3 className="font-forum text-xl text-neutral-50">{text.qrDoorTitle}</h3>
             <p className="mt-2 text-xs leading-relaxed text-neutral-300">{text.qrDoorText}</p>
+            <div className="mt-4 rounded-2xl border border-neutral-700 bg-neutral-950/70 p-3">
+              <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+                {text.visualDoorLabel}
+              </p>
+              <QrDoorVisual
+                qrSrc={qrSrc}
+                title={text.qrPosterTitle}
+                subtitle={text.qrPosterSubtitle}
+                cta={text.qrPosterCta}
+              />
+            </div>
             <ul className="mt-3 space-y-1 text-xs text-neutral-400">
               <li>{text.qrDoorPoint1}</li>
               <li>{text.qrDoorPoint2}</li>
@@ -267,6 +288,51 @@ function DemoScenarioPage({
             </ul>
           </article>
         </section>
+      </div>
+    </div>
+  );
+}
+
+function QrTableVisual({ qrSrc, text }: { qrSrc: string; text: string }) {
+  return (
+    <div className="rounded-xl border border-neutral-800 bg-gradient-to-b from-neutral-900 to-neutral-950 p-3">
+      <div className="mx-auto max-w-[240px] rounded-xl border border-amber-400/40 bg-white p-3 text-neutral-900 shadow-[0_16px_40px_rgba(0,0,0,0.4)]">
+        <p className="text-center text-[10px] font-semibold uppercase tracking-[0.22em] text-neutral-500">
+          Table 12
+        </p>
+        <div className="mx-auto mt-2 h-24 w-24 rounded-lg border border-neutral-200 bg-white p-1">
+          <img src={qrSrc} alt="QR table visual" className="h-full w-full rounded-md" />
+        </div>
+        <p className="mt-2 text-center text-[10px] font-medium text-neutral-700">{text}</p>
+      </div>
+    </div>
+  );
+}
+
+function QrDoorVisual({
+  qrSrc,
+  title,
+  subtitle,
+  cta,
+}: {
+  qrSrc: string;
+  title: string;
+  subtitle: string;
+  cta: string;
+}) {
+  return (
+    <div className="rounded-xl border border-neutral-800 bg-gradient-to-b from-neutral-900 to-neutral-950 p-3">
+      <div className="mx-auto max-w-[260px] rounded-xl border border-neutral-300 bg-white p-4 text-neutral-900 shadow-[0_18px_45px_rgba(0,0,0,0.45)]">
+        <p className="text-center text-[11px] font-semibold uppercase tracking-[0.24em] text-neutral-500">
+          {title}
+        </p>
+        <p className="mt-1 text-center text-[11px] text-neutral-600">{subtitle}</p>
+        <div className="mx-auto mt-3 h-28 w-28 rounded-lg border border-neutral-200 bg-white p-1.5">
+          <img src={qrSrc} alt="QR door visual" className="h-full w-full rounded-md" />
+        </div>
+        <p className="mt-3 rounded-lg bg-amber-400 px-2 py-1 text-center text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-900">
+          {cta}
+        </p>
       </div>
     </div>
   );
@@ -310,6 +376,12 @@ function getDemoTexts(locale: Locale) {
       qrDoorPoint1: "1) Im Dashboard: QR-Codes > PDF-Poster (Tür)",
       qrDoorPoint2: "2) A4/A3 gut sichtbar an Eingang und Schaufenster",
       qrDoorPoint3: "3) Gleiches Menü, gleiche URL, jederzeit editierbar",
+      visualTableLabel: "Visuelle Vorschau: Tisch-Sticker",
+      visualDoorLabel: "Visuelle Vorschau: Tür-Poster",
+      qrStickerText: "Scannen Sie für die Speisekarte",
+      qrPosterTitle: "Digitales Menü",
+      qrPosterSubtitle: "Vor der Bestellung kurz scannen",
+      qrPosterCta: "Jetzt scannen",
     };
   }
   if (locale === "fr") {
@@ -349,6 +421,12 @@ function getDemoTexts(locale: Locale) {
       qrDoorPoint1: "1) Dashboard: QR codes > PDF Affiche (porte)",
       qrDoorPoint2: "2) Positionner A4/A3 a l'entree et vitrine",
       qrDoorPoint3: "3) Meme menu, meme URL, toujours editable",
+      visualTableLabel: "Aperçu visuel: sticker table",
+      visualDoorLabel: "Aperçu visuel: affiche porte",
+      qrStickerText: "Scannez pour voir le menu",
+      qrPosterTitle: "Menu digital",
+      qrPosterSubtitle: "Scannez avant d'entrer",
+      qrPosterCta: "Scanner ici",
     };
   }
   return {
@@ -387,5 +465,11 @@ function getDemoTexts(locale: Locale) {
     qrDoorPoint1: "1) Dashboard: QR codes > PDF Poster (door)",
     qrDoorPoint2: "2) Place A4/A3 at entrance and shop window",
     qrDoorPoint3: "3) Same menu, same URL, always editable",
+    visualTableLabel: "Visual preview: table sticker",
+    visualDoorLabel: "Visual preview: door poster",
+    qrStickerText: "Scan to open menu",
+    qrPosterTitle: "Digital Menu",
+    qrPosterSubtitle: "Scan before entering",
+    qrPosterCta: "Scan now",
   };
 }
