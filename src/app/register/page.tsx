@@ -6,12 +6,13 @@ import { useLanguage } from "@/lib/language-context";
 import { API_BASE, isApiError } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 export default function RegisterPage() {
   const { register, token } = useAuth();
   const { locale, setLocale } = useLanguage();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
   const [email, setEmail] = useState("");
@@ -70,8 +71,18 @@ export default function RegisterPage() {
   useEffect(() => {
     if (token) {
       router.replace("/dashboard");
+      return;
     }
-  }, [token, router]);
+
+    const googleError = searchParams.get("googleError");
+    const emailParam = searchParams.get("email");
+    if (googleError === "EMAIL_ALREADY_EXISTS") {
+      setError(t("authErrorEmailExists", locale));
+      if (emailParam) {
+        setEmail(emailParam);
+      }
+    }
+  }, [token, router, searchParams, locale]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -240,7 +251,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => {
-                  window.location.href = `${GOOGLE_LOGIN_URL}?lang=${locale}`;
+                  window.location.href = `${GOOGLE_LOGIN_URL}?lang=${locale}&source=register`;
                 }}
                 className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-neutral-700 bg-white px-4 py-2.75 text-sm font-semibold text-neutral-900 shadow-[0_12px_40px_rgba(0,0,0,0.85)] transition hover:-translate-y-0.5 hover:border-neutral-500 hover:bg-neutral-50"
               >

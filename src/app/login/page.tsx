@@ -246,7 +246,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => {
-                  window.location.href = `${GOOGLE_LOGIN_URL}?lang=${locale}`;
+                  window.location.href = `${GOOGLE_LOGIN_URL}?lang=${locale}&source=login`;
                 }}
                 className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-neutral-700 bg-white px-4 py-2.75 text-sm font-semibold text-neutral-900 shadow-[0_12px_40px_rgba(0,0,0,0.85)] transition hover:-translate-y-0.5 hover:border-neutral-500 hover:bg-neutral-50"
               >

@@ -613,9 +613,9 @@ export const translations = {
     en: "Connected as",
   },
   dashboardAdmin: {
-    de: "Admin",
-    fr: "Admin",
-    en: "Admin",
+    de: "Analyse",
+    fr: "Analyse",
+    en: "Analytics",
   },
   dashboardSuperAdmin: {
     de: "Super-Admin",
