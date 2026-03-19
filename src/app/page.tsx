@@ -664,7 +664,7 @@ function ExplainVisualQr() {
   return (
     <div className="flex flex-col items-center gap-1">
       <div className="rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white p-1 shadow-sm">
-        <img src={qrSrc} alt="" className="h-14 w-14 rounded-md" />
+        <img src={qrSrc} alt="" loading="lazy" decoding="async" className="h-14 w-14 rounded-md" />
       </div>
       <span className="text-[9px] uppercase tracking-wider text-neutral-500 dark:text-neutral-400">QR</span>
     </div>
@@ -760,6 +760,8 @@ function QrPreview() {
           <img
             src={qrSrc}
             alt="QR code menu démo"
+            loading="lazy"
+            decoding="async"
             className="h-full w-full rounded-[0.6rem] bg-white p-0.5"
           />
         </div>

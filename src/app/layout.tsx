@@ -36,8 +36,22 @@ const dancingScript = Dancing_Script({
 });
 
 export const metadata: Metadata = {
-  title: "DigiKarte – Menu digital",
-  description: "Créez et gérez vos menus digitaux avec codes QR",
+  metadataBase: new URL("https://digi-karte.com"),
+  title: "Digi-Karte",
+  description: "Digital menus and QR codes for restaurants.",
+  openGraph: {
+    title: "Digitale Speisekarte mit QR-Code – Digi-Karte",
+    description: "Erstelle in 2 Minuten deine digitale Speisekarte. Einfach, schnell, professionell.",
+    url: "https://digi-karte.com/de/",
+    type: "website",
+    images: [{ url: "/og-image-de.jpg" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Digitale Speisekarte mit QR-Code – Digi-Karte",
+    description: "Erstelle in 2 Minuten deine digitale Speisekarte.",
+    images: ["/og-image-de.jpg"],
+  },
   icons: {
     // Heroku/audits demandent souvent explicitement `/favicon.ico`.
     icon: "/favicon.ico",

@@ -57,6 +57,19 @@ function resolveLocale(countryCode: string | null, acceptLanguage: string | null
 }
 
 export function middleware(req: NextRequest) {
+  const host = req.headers.get("host") ?? "";
+  if (host.toLowerCase() === "www.digi-karte.com") {
+    const apexUrl = req.nextUrl.clone();
+    apexUrl.host = "digi-karte.com";
+    return NextResponse.redirect(apexUrl, 301);
+  }
+
+  if (req.nextUrl.pathname === "/") {
+    const localized = req.nextUrl.clone();
+    localized.pathname = "/de/";
+    return NextResponse.redirect(localized, 302);
+  }
+
   const existing = req.cookies.get(COOKIE_KEY)?.value;
   if (isLocale(existing)) return NextResponse.next();
 

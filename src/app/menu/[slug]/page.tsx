@@ -382,7 +382,7 @@ function QrTableVisual({ qrSrc, text }: { qrSrc: string; text: string }) {
           Table 12
         </p>
         <div className="mx-auto mt-2 h-24 w-24 rounded-lg border border-neutral-200 bg-white p-1">
-          <img src={qrSrc} alt="QR table visual" className="h-full w-full rounded-md" />
+          <img src={qrSrc} alt="QR table visual" loading="lazy" decoding="async" className="h-full w-full rounded-md" />
         </div>
         <p className="mt-2 text-center text-[10px] font-medium text-neutral-700">{text}</p>
       </div>
@@ -409,7 +409,7 @@ function QrDoorVisual({
         </p>
         <p className="mt-1 text-center text-[11px] text-neutral-600">{subtitle}</p>
         <div className="mx-auto mt-3 h-28 w-28 rounded-lg border border-neutral-200 bg-white p-1.5">
-          <img src={qrSrc} alt="QR door visual" className="h-full w-full rounded-md" />
+          <img src={qrSrc} alt="QR door visual" loading="lazy" decoding="async" className="h-full w-full rounded-md" />
         </div>
         <p className="mt-3 rounded-lg bg-amber-400 px-2 py-1 text-center text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-900">
           {cta}
