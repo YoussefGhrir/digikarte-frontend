@@ -319,6 +319,13 @@ export default function DashboardLayout({
       ? orgs.find((o) => o.id === currentOrgId) ?? null
       : null;
 
+  const currentOrgIdSafe = currentOrg?.id ?? null;
+
+  const menusHref = currentOrgIdSafe ? `/dashboard/organisations/${currentOrgIdSafe}` : "/dashboard";
+  const organisationsHref = "/dashboard?view=organisations";
+  const qrHref = currentOrgIdSafe ? `/dashboard/organisations/${currentOrgIdSafe}/qr` : organisationsHref;
+  const subscriptionHref = "/dashboard/subscription";
+
   return (
     <div className="flex min-h-screen bg-neutral-950 text-neutral-100">
       {/* Sidebar gauche */}
@@ -822,13 +829,107 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto bg-neutral-950/95 px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
+        <main className="flex-1 overflow-y-auto bg-neutral-950/95 px-4 py-6 pb-24 sm:px-6 sm:pb-28 lg:px-10 lg:py-8 lg:pb-0">
           {pathname?.match(/\/dashboard\/organisations\/[^/]+\/menus\/[^/]+/) ? (
             <div className="w-full min-w-0">{children}</div>
           ) : (
             <div className="mx-auto max-w-6xl">{children}</div>
           )}
         </main>
+
+        {/* Navbar mobile fixe (navigation toujours visible) */}
+        <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-neutral-800 bg-neutral-950/90 backdrop-blur lg:hidden">
+          <div
+            className={`grid items-center ${isAdmin ? "grid-cols-3" : "grid-cols-4"} px-2 py-2`}
+          >
+            {isAdmin ? (
+              <>
+                <Link
+                  href="/dashboard/admin"
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                    pathname === "/dashboard/admin"
+                      ? "text-amber-200"
+                      : "text-neutral-400 hover:text-neutral-100"
+                  }`}
+                >
+                  <IconBuilding className="h-5 w-5" aria-hidden />
+                  <span>Admin</span>
+                </Link>
+                <Link
+                  href="/dashboard/admin/users"
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                    pathname === "/dashboard/admin/users" ||
+                    pathname === "/dashboard/admin/users/normal"
+                      ? "text-amber-200"
+                      : "text-neutral-400 hover:text-neutral-100"
+                  }`}
+                >
+                  <IconMenuList className="h-5 w-5" aria-hidden />
+                  <span>VIP</span>
+                </Link>
+                <Link
+                  href="/dashboard/admin/users/normal"
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                    pathname === "/dashboard/admin/users/normal"
+                      ? "text-amber-200"
+                      : "text-neutral-400 hover:text-neutral-100"
+                  }`}
+                >
+                  <IconMenuList className="h-5 w-5" aria-hidden />
+                  <span>Normal</span>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href={subscriptionHref}
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                    pathname?.startsWith("/dashboard/subscription")
+                      ? "text-amber-200"
+                      : "text-neutral-400 hover:text-neutral-100"
+                  }`}
+                >
+                  <IconMenuList className="h-5 w-5" aria-hidden />
+                  <span>Abonnement</span>
+                </Link>
+                <Link
+                  href={organisationsHref}
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                    pathname === "/dashboard" && dashboardView === "organisations"
+                      ? "text-amber-200"
+                      : "text-neutral-400 hover:text-neutral-100"
+                  }`}
+                >
+                  <IconBuilding className="h-5 w-5" aria-hidden />
+                  <span>Orgs</span>
+                </Link>
+                <Link
+                  href={qrHref}
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                    pathname?.startsWith(`/dashboard/organisations/${currentOrgIdSafe ?? ""}/qr`) &&
+                    currentOrgIdSafe != null
+                      ? "text-amber-200"
+                      : "text-neutral-400 hover:text-neutral-100"
+                  }`}
+                >
+                  <IconQr className="h-5 w-5" aria-hidden />
+                  <span>QR</span>
+                </Link>
+                <Link
+                  href={menusHref}
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                    currentOrgIdSafe != null && pathname?.startsWith(`/dashboard/organisations/${currentOrgIdSafe}`) && !pathname?.includes("/qr")
+                      ? "text-amber-200"
+                      : "text-neutral-400 hover:text-neutral-100"
+                  }`}
+                >
+                  <IconHome className="h-5 w-5" aria-hidden />
+                  <span>Menus</span>
+                </Link>
+              </>
+            )}
+          </div>
+        </nav>
       </div>
     </div>
   );
