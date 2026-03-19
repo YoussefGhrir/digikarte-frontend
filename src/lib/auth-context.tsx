@@ -132,15 +132,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [persist, router]
   );
 
-  const logout = useCallback((options?: { redirectTo?: string }) => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(USER_KEY);
-    const target = options?.redirectTo;
-    if (target) router.replace(target);
-    else router.push("/login");
-  }, [router]);
+  const logout = useCallback(
+    (options?: { redirectTo?: string }) => {
+      setUser(null);
+      setToken(null);
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(USER_KEY);
+      const target = options?.redirectTo;
+      if (target) {
+        router.replace(target);
+      } else {
+        // Par défaut, renvoyer proprement vers la page d'accueil publique
+        router.push("/");
+      }
+    },
+    [router]
+  );
 
   return (
     <AuthContext.Provider

@@ -50,8 +50,18 @@ export async function api<T>(
     }
 
     // In case of unauthorized/forbidden from protected endpoints, clear token
+    // and user, then send the visitor back to the public home page.
     if ((res.status === 401 || res.status === 403) && typeof window !== "undefined") {
-      localStorage.removeItem("token");
+      try {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      } catch {
+        // ignore storage errors
+      }
+      // Redirection globale vers la page d'accueil publique
+      if (window.location.pathname !== "/") {
+        window.location.href = "/";
+      }
     }
 
     const code = parsedBody?.code as string | undefined;
