@@ -18,6 +18,8 @@ import {
   isApiError,
 } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { t } from "@/lib/i18n";
+import { useLanguage } from "@/lib/language-context";
 
 function statusBadge(status: string) {
   const s = (status ?? "").toUpperCase();
@@ -115,6 +117,7 @@ function ModalShell({
 
 export default function AdminUsersPage() {
   const router = useRouter();
+  const { locale } = useLanguage();
   const { user } = useAuth();
   const pathname = usePathname();
   const isNormalRoute = pathname?.includes("/dashboard/admin/users/normal") ?? false;
@@ -393,12 +396,12 @@ export default function AdminUsersPage() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">Admin</p>
           <h1 className="mt-2 font-forum text-3xl tracking-tight text-neutral-50 md:text-4xl">
-            {isNormalRoute ? "Gestion users normal" : "Gestion users VIP"}
+            {isNormalRoute ? t("adminUsersTitleNormal", locale) : t("adminUsersTitleVip", locale)}
           </h1>
           <p className="mt-2 text-sm text-neutral-400">
             {isNormalRoute
-              ? "Users qui doivent exiger un abonnement."
-              : "Users avec accès direct (sans abonnement requis)."}
+              ? t("adminUsersSubtitleNormal", locale)
+              : t("adminUsersSubtitleVip", locale)}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -410,7 +413,7 @@ export default function AdminUsersPage() {
               disabled={loading}
             >
               <IconPlus className="h-4 w-4" />
-              Ajouter user
+              {t("adminUsersAddUser", locale)}
             </button>
           )}
           <button
@@ -419,7 +422,7 @@ export default function AdminUsersPage() {
             className="inline-flex items-center rounded-2xl border border-neutral-800 bg-neutral-950/40 px-4 py-2.5 text-sm font-semibold text-neutral-200 hover:bg-neutral-900"
             disabled={loading}
           >
-            Rafraîchir
+            {t("adminRefresh", locale)}
           </button>
         </div>
       </div>
@@ -480,7 +483,7 @@ export default function AdminUsersPage() {
       )}
 
       {loading ? (
-        <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-6 text-sm text-neutral-400">Loading users…</div>
+        <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-6 text-sm text-neutral-400">{t("adminUsersLoading", locale)}</div>
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-neutral-800 bg-neutral-950/70">
           <table className="w-full lg:min-w-[1040px] text-sm">

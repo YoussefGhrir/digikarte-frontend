@@ -210,19 +210,19 @@ function DemoScenarioPage({
               href="/"
               className="inline-flex items-center rounded-full border border-neutral-700 bg-neutral-950 px-3 py-1.5 text-[11px] text-neutral-200 hover:border-amber-400 hover:text-amber-200"
             >
-              ← Home
+              ← {t("menuDemoBackHome", locale)}
             </a>
             <a
               href="/register"
               className="inline-flex items-center rounded-full border border-emerald-500/60 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-semibold text-emerald-200 hover:bg-emerald-500/20"
             >
-              Register
+              {t("menuDemoRegister", locale)}
             </a>
             <a
               href="/login"
               className="inline-flex items-center rounded-full border border-neutral-600 bg-neutral-950 px-3 py-1.5 text-[11px] text-neutral-200 hover:border-amber-400 hover:text-amber-200"
             >
-              Login
+              {t("ctaLogin", locale)}
             </a>
           </div>
         </section>

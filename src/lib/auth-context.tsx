@@ -71,9 +71,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: res.email,
       nom: res.nom,
       prenom: res.prenom,
-      subscriptionBypass: false, // remplacé après refreshUser() via /api/auth/me
-      admin: false,
-      superAdmin: false,
+      subscriptionBypass: Boolean(res.subscriptionBypass),
+      admin: Boolean(res.admin),
+      superAdmin: Boolean(res.superAdmin),
     };
     setUser(u);
     setToken(res.token);

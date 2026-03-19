@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminGetMetrics, type AdminMetricsDto, isApiError } from "@/lib/api";
 import { useLanguage } from "@/lib/language-context";
+import { t } from "@/lib/i18n";
 
 function formatCurrency(amount: number, currency: string, locale: string) {
   try {
@@ -69,7 +70,7 @@ export default function AdminDashboardPage() {
   if (loading) {
     return (
       <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-6 text-sm text-neutral-400">
-        Loading admin metrics…
+        {t("adminMetricsLoading", locale)}
       </div>
     );
   }
@@ -87,38 +88,38 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">Admin Dashboard</p>
-        <h1 className="mt-2 font-forum text-3xl tracking-tight text-neutral-50 md:text-4xl">Vue globale</h1>
-        <p className="mt-2 text-sm text-neutral-400">Users, abonnements, revenus & répartition par pays.</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">{t("adminDashboardTitle", locale)}</p>
+        <h1 className="mt-2 font-forum text-3xl tracking-tight text-neutral-50 md:text-4xl">{t("adminDashboardOverview", locale)}</h1>
+        <p className="mt-2 text-sm text-neutral-400">{t("adminDashboardSubtitle", locale)}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">Users</p>
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">{t("adminUsersLabel", locale)}</p>
           <p className="mt-2 font-forum text-3xl text-amber-300 tabular-nums">{metrics.totalUsers.toString().padStart(2, "0")}</p>
         </div>
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">Actifs</p>
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">{t("adminActiveLabel", locale)}</p>
           <p className="mt-2 font-forum text-3xl text-emerald-300 tabular-nums">
             {(metrics.activeSubscriptions + metrics.trialingSubscriptions).toString().padStart(2, "0")}
           </p>
           <p className="mt-1 text-xs text-neutral-500">ACTIVE + TRIALING</p>
         </div>
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">Annulés</p>
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">{t("adminCancelledLabel", locale)}</p>
           <p className="mt-2 font-forum text-3xl text-red-300 tabular-nums">{metrics.cancelledSubscriptions.toString().padStart(2, "0")}</p>
         </div>
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">Revenue (approx.)</p>
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">{t("adminRevenueApprox", locale)}</p>
           <p className="mt-2 font-forum text-3xl text-sky-300 tabular-nums">{revenue}</p>
-          <p className="mt-1 text-xs text-neutral-500">Somme des factures payées (30 jours)</p>
+          <p className="mt-1 text-xs text-neutral-500">{t("adminPaidInvoices30Days", locale)}</p>
         </div>
       </div>
 
       <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">Taux d’abonnement</p>
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">{t("adminSubscriptionRate", locale)}</p>
             <p className="mt-2 font-forum text-3xl text-emerald-300 tabular-nums">
               {(metrics.subscriptionActiveRate * 100).toFixed(1)}%
             </p>
@@ -143,20 +144,20 @@ export default function AdminDashboardPage() {
 
       <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="font-forum text-lg text-neutral-50">Répartition par pays</h2>
-          <p className="text-xs text-neutral-500">Top pays trié par taux & menus</p>
+          <h2 className="font-forum text-lg text-neutral-50">{t("adminCountryDistribution", locale)}</h2>
+          <p className="text-xs text-neutral-500">{t("adminTopCountriesHint", locale)}</p>
         </div>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full lg:min-w-[720px] text-sm">
             <thead className="text-xs uppercase tracking-[0.18em] text-neutral-500">
               <tr className="border-b border-neutral-800">
-                <th className="py-3 text-left font-medium">Pays</th>
-                <th className="py-3 text-left font-medium">Users</th>
+                <th className="py-3 text-left font-medium">{t("adminCountryLabel", locale)}</th>
+                <th className="py-3 text-left font-medium">{t("adminUsersLabel", locale)}</th>
                 <th className="py-3 text-left font-medium">Menus</th>
                 <th className="py-3 text-left font-medium">ACTIVE/TRIAL</th>
                 <th className="py-3 text-left font-medium">EXPIRED</th>
                 <th className="py-3 text-left font-medium">CANCELLED</th>
-                <th className="py-3 text-left font-medium">Taux</th>
+                <th className="py-3 text-left font-medium">{t("adminRateLabel", locale)}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-900/60">
@@ -176,7 +177,7 @@ export default function AdminDashboardPage() {
               {metrics.byCountry.length === 0 && (
                 <tr>
                   <td className="py-6 text-neutral-500" colSpan={7}>
-                    Aucun pays (encore).
+                    {t("adminNoCountryYet", locale)}
                   </td>
                 </tr>
               )}

@@ -475,7 +475,7 @@ export default function DashboardLayout({
                 }`}
               >
                 <IconBuilding className="h-5 w-5 shrink-0" />
-                <span className="tracking-wide">Admin</span>
+                <span className="tracking-wide">{t("dashboardAdmin", locale)}</span>
               </Link>
               <Link
                 href="/dashboard/admin/users"
@@ -486,7 +486,7 @@ export default function DashboardLayout({
                 }`}
               >
                 <IconMenuList className="h-5 w-5 shrink-0" />
-                <span className="tracking-wide">Gestion users VIP</span>
+                <span className="tracking-wide">{t("dashboardAdminVipUsers", locale)}</span>
               </Link>
               <Link
                 href="/dashboard/admin/users/normal"
@@ -497,7 +497,7 @@ export default function DashboardLayout({
                 }`}
               >
                 <IconMenuList className="h-5 w-5 shrink-0" />
-                <span className="tracking-wide">Gestion users normal</span>
+                <span className="tracking-wide">{t("dashboardAdminNormalUsers", locale)}</span>
               </Link>
             </>
           )}
@@ -622,7 +622,7 @@ export default function DashboardLayout({
             )}
           {isSuperAdmin && (
               <span className="hidden truncate rounded-xl border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-left text-sm font-semibold text-amber-200 lg:block">
-                Super Admin
+                {t("dashboardSuperAdmin", locale)}
               </span>
             )}
           </div>
@@ -635,7 +635,7 @@ export default function DashboardLayout({
                 ref={mobileNavBtnRef}
                 type="button"
                 onClick={() => setMobileNavOpen((o) => !o)}
-                aria-label="Open mobile navigation"
+                aria-label={t("dashboardOpenMobileNavigation", locale)}
                 aria-expanded={mobileNavOpen}
                 className="flex h-9 w-9 items-center justify-center rounded-xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-sm hover:bg-neutral-900"
               >
@@ -660,7 +660,7 @@ export default function DashboardLayout({
                             className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
                           >
                             <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
-                            <span>Admin</span>
+                            <span>{t("dashboardAdmin", locale)}</span>
                           </Link>
                           <Link
                             href="/dashboard/admin/users"
@@ -668,7 +668,7 @@ export default function DashboardLayout({
                             className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
                           >
                             <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
-                            <span>Gestion users VIP</span>
+                            <span>{t("dashboardAdminVipUsers", locale)}</span>
                           </Link>
                           <Link
                             href="/dashboard/admin/users/normal"
@@ -676,7 +676,7 @@ export default function DashboardLayout({
                             className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
                           >
                             <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
-                            <span>Gestion users normal</span>
+                            <span>{t("dashboardAdminNormalUsers", locale)}</span>
                           </Link>
                         </>
                       ) : (
@@ -893,7 +893,7 @@ export default function DashboardLayout({
                   }`}
                 >
                   <IconBuilding className="h-5 w-5" aria-hidden />
-                  <span>Admin</span>
+                  <span>{t("dashboardAdmin", locale)}</span>
                 </Link>
                 <Link
                   href="/dashboard/admin/users"
@@ -905,7 +905,7 @@ export default function DashboardLayout({
                   }`}
                 >
                   <IconMenuList className="h-5 w-5" aria-hidden />
-                  <span>VIP</span>
+                  <span>{t("dashboardAdminVipShort", locale)}</span>
                 </Link>
                 <Link
                   href="/dashboard/admin/users/normal"
@@ -916,7 +916,7 @@ export default function DashboardLayout({
                   }`}
                 >
                   <IconMenuList className="h-5 w-5" aria-hidden />
-                  <span>Normal</span>
+                  <span>{t("dashboardAdminNormalShort", locale)}</span>
                 </Link>
               </>
             ) : (
@@ -930,7 +930,7 @@ export default function DashboardLayout({
                   }`}
                 >
                   <IconHome className="h-5 w-5" aria-hidden />
-                  <span>Home</span>
+                  <span>{t("dashboardMobileHomeShort", locale)}</span>
                 </Link>
                 {!subscriptionBypass && (
                   <Link
@@ -942,7 +942,7 @@ export default function DashboardLayout({
                     }`}
                   >
                     <IconMenuList className="h-5 w-5" aria-hidden />
-                    <span>Abonnement</span>
+                    <span>{t("subscriptionNav", locale)}</span>
                   </Link>
                 )}
                 <Link
@@ -954,7 +954,7 @@ export default function DashboardLayout({
                   }`}
                 >
                   <IconBuilding className="h-5 w-5" aria-hidden />
-                  <span>Orgs</span>
+                  <span>{t("dashboardMobileOrgsShort", locale)}</span>
                 </Link>
                 <Link
                   href={qrHref}

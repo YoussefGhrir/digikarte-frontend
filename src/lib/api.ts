@@ -78,6 +78,9 @@ export interface AuthResponse {
   nom: string;
   prenom: string;
   userId: number;
+  subscriptionBypass?: boolean;
+  admin?: boolean;
+  superAdmin?: boolean;
 }
 
 export function authRegister(data: {
@@ -437,6 +440,11 @@ export interface SubscriptionDto {
   amount: number;
 }
 
+let subscriptionMeCache:
+  | { value: SubscriptionDto | null; expiresAt: number }
+  | null = null;
+const SUBSCRIPTION_ME_TTL_MS = 10_000;
+
 export interface InvoiceDto {
   id: string;
   amount: number;
@@ -449,7 +457,17 @@ export interface InvoiceDto {
 
 /** Récupère l'abonnement courant de l'utilisateur connecté. */
 export function subscriptionGetMe() {
-  return api<SubscriptionDto | null>("/api/billing/me/subscription");
+  const now = Date.now();
+  if (subscriptionMeCache && subscriptionMeCache.expiresAt > now) {
+    return Promise.resolve(subscriptionMeCache.value);
+  }
+  return api<SubscriptionDto | null>("/api/billing/me/subscription").then((value) => {
+    subscriptionMeCache = {
+      value,
+      expiresAt: Date.now() + SUBSCRIPTION_ME_TTL_MS,
+    };
+    return value;
+  });
 }
 
 /** Récupère les dernières factures de l'utilisateur connecté. */
@@ -480,6 +498,7 @@ export function subscriptionConfirmCheckout(sessionId: string) {
 
 /** Annule l'abonnement courant (utilisé pour arrêter un essai ou un abonnement). */
 export function subscriptionCancel() {
+  subscriptionMeCache = null;
   return api<void>("/api/billing/me/subscription/cancel", {
     method: "POST",
   });
@@ -487,6 +506,7 @@ export function subscriptionCancel() {
 
 /** Termine l'essai immédiatement et active le plan payant. */
 export function subscriptionSkipTrial() {
+  subscriptionMeCache = null;
   return api<SubscriptionDto>("/api/billing/me/subscription/skip-trial", {
     method: "POST",
   });
@@ -494,6 +514,7 @@ export function subscriptionSkipTrial() {
 
 /** Demande l'annulation à la fin de la période en cours (cancel_at_period_end=true). */
 export function subscriptionCancelAtPeriodEnd() {
+  subscriptionMeCache = null;
   return api<SubscriptionDto>("/api/billing/me/subscription/cancel-at-period-end", {
     method: "POST",
   });
@@ -501,6 +522,7 @@ export function subscriptionCancelAtPeriodEnd() {
 
 /** Réactive le renouvellement automatique d'un abonnement encore actif. */
 export function subscriptionReactivate() {
+  subscriptionMeCache = null;
   return api<SubscriptionDto>("/api/billing/me/subscription/reactivate", {
     method: "POST",
   });

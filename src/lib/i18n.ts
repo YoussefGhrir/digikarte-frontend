@@ -607,6 +607,166 @@ export const translations = {
     fr: "Admin",
     en: "Admin",
   },
+  dashboardSuperAdmin: {
+    de: "Super-Admin",
+    fr: "Super admin",
+    en: "Super admin",
+  },
+  dashboardAdminVipUsers: {
+    de: "VIP-Benutzerverwaltung",
+    fr: "Gestion utilisateurs VIP",
+    en: "VIP users management",
+  },
+  dashboardAdminNormalUsers: {
+    de: "Normale Benutzerverwaltung",
+    fr: "Gestion utilisateurs normaux",
+    en: "Normal users management",
+  },
+  dashboardMobileHomeShort: {
+    de: "Start",
+    fr: "Accueil",
+    en: "Home",
+  },
+  dashboardMobileOrgsShort: {
+    de: "Orgs",
+    fr: "Orgs",
+    en: "Orgs",
+  },
+  dashboardAdminVipShort: {
+    de: "VIP",
+    fr: "VIP",
+    en: "VIP",
+  },
+  dashboardAdminNormalShort: {
+    de: "Normal",
+    fr: "Normal",
+    en: "Normal",
+  },
+  dashboardOpenMobileNavigation: {
+    de: "Mobile Navigation öffnen",
+    fr: "Ouvrir la navigation mobile",
+    en: "Open mobile navigation",
+  },
+  menuDemoBackHome: {
+    de: "Zur Startseite",
+    fr: "Retour accueil",
+    en: "Back home",
+  },
+  menuDemoRegister: {
+    de: "Registrieren",
+    fr: "S’inscrire",
+    en: "Register",
+  },
+  adminMetricsLoading: {
+    de: "Admin-Metriken werden geladen…",
+    fr: "Chargement des métriques admin…",
+    en: "Loading admin metrics…",
+  },
+  adminDashboardTitle: {
+    de: "Admin-Dashboard",
+    fr: "Dashboard admin",
+    en: "Admin dashboard",
+  },
+  adminDashboardOverview: {
+    de: "Globale Übersicht",
+    fr: "Vue globale",
+    en: "Global overview",
+  },
+  adminDashboardSubtitle: {
+    de: "Benutzer, Abonnements, Umsatz und Länderverteilung.",
+    fr: "Utilisateurs, abonnements, revenus et répartition par pays.",
+    en: "Users, subscriptions, revenue and country breakdown.",
+  },
+  adminUsersLabel: {
+    de: "Benutzer",
+    fr: "Utilisateurs",
+    en: "Users",
+  },
+  adminActiveLabel: {
+    de: "Aktiv",
+    fr: "Actifs",
+    en: "Active",
+  },
+  adminCancelledLabel: {
+    de: "Gekündigt",
+    fr: "Annulés",
+    en: "Cancelled",
+  },
+  adminRevenueApprox: {
+    de: "Umsatz (ca.)",
+    fr: "Revenu (approx.)",
+    en: "Revenue (approx.)",
+  },
+  adminPaidInvoices30Days: {
+    de: "Summe bezahlter Rechnungen (30 Tage)",
+    fr: "Somme des factures payées (30 jours)",
+    en: "Sum of paid invoices (30 days)",
+  },
+  adminSubscriptionRate: {
+    de: "Abonnementquote",
+    fr: "Taux d’abonnement",
+    en: "Subscription rate",
+  },
+  adminCountryDistribution: {
+    de: "Verteilung nach Ländern",
+    fr: "Répartition par pays",
+    en: "Distribution by country",
+  },
+  adminTopCountriesHint: {
+    de: "Top-Länder nach Quote und Menüs",
+    fr: "Top pays trié par taux et menus",
+    en: "Top countries sorted by rate and menus",
+  },
+  adminCountryLabel: {
+    de: "Land",
+    fr: "Pays",
+    en: "Country",
+  },
+  adminRateLabel: {
+    de: "Quote",
+    fr: "Taux",
+    en: "Rate",
+  },
+  adminNoCountryYet: {
+    de: "Noch keine Länder.",
+    fr: "Aucun pays (encore).",
+    en: "No country yet.",
+  },
+  adminUsersTitleVip: {
+    de: "VIP-Benutzerverwaltung",
+    fr: "Gestion utilisateurs VIP",
+    en: "VIP users management",
+  },
+  adminUsersTitleNormal: {
+    de: "Normale Benutzerverwaltung",
+    fr: "Gestion utilisateurs normaux",
+    en: "Normal users management",
+  },
+  adminUsersSubtitleVip: {
+    de: "Benutzer mit Direktzugang (ohne Abo-Pflicht).",
+    fr: "Utilisateurs avec accès direct (sans abonnement requis).",
+    en: "Users with direct access (no subscription required).",
+  },
+  adminUsersSubtitleNormal: {
+    de: "Benutzer, die ein aktives Abonnement benötigen.",
+    fr: "Utilisateurs qui doivent exiger un abonnement.",
+    en: "Users who must have an active subscription.",
+  },
+  adminUsersAddUser: {
+    de: "Benutzer hinzufügen",
+    fr: "Ajouter utilisateur",
+    en: "Add user",
+  },
+  adminRefresh: {
+    de: "Aktualisieren",
+    fr: "Rafraîchir",
+    en: "Refresh",
+  },
+  adminUsersLoading: {
+    de: "Benutzer werden geladen…",
+    fr: "Chargement des utilisateurs…",
+    en: "Loading users…",
+  },
   // Profile page
   profileTitle: {
     de: "Profil",
