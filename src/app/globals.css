@@ -43,6 +43,13 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 /* Menu public – style Graine-de-cafe */
 .font-forum {
   font-family: var(--font-forum), Georgia, serif;

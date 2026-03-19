@@ -36,7 +36,7 @@ export default function Home() {
   }
 
   return (
-    <div className="relative min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+    <div className="relative min-h-screen overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
       {/* Background publicitaire */}
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(16,185,129,0.16),_transparent_55%)]" />
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[url('/bg-landing.png')] bg-cover bg-center opacity-10" />
@@ -131,7 +131,7 @@ export default function Home() {
       </header>
 
       {/* HERO principal : texte + carte QR moderne */}
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-20 px-6 pb-20 pt-8 md:pt-10">
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-20 overflow-x-hidden px-6 pb-20 pt-8 md:pt-10">
         <section className="grid gap-10 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] md:items-center">
           {/* Colonne gauche : texte marketing */}
           <div>

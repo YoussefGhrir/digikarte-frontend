@@ -96,11 +96,11 @@ export default function RootLayout({
     return (
       <html lang={cookieLocale} className="dark">
         <body
-          className={`${inter.variable} ${jetbrainsMono.variable} ${forum.variable} ${dmSans.variable} ${dancingScript.variable} antialiased`}
+          className={`${inter.variable} ${jetbrainsMono.variable} ${forum.variable} ${dmSans.variable} ${dancingScript.variable} overflow-x-hidden antialiased`}
         >
           <AuthProvider>
             <LanguageProvider initialLocale={cookieLocale}>
-              <div className="flex min-h-screen flex-col bg-[var(--background)] text-[var(--foreground)]">
+              <div className="flex min-h-screen flex-col overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
                 <main className="flex-1">{children}</main>
                 <Footer />
               </div>
@@ -143,11 +143,11 @@ export default function RootLayout({
   return (
     <html lang={initialLocale} className="dark">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${forum.variable} ${dmSans.variable} ${dancingScript.variable} antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${forum.variable} ${dmSans.variable} ${dancingScript.variable} overflow-x-hidden antialiased`}
       >
         <AuthProvider>
           <LanguageProvider initialLocale={initialLocale}>
-            <div className="flex min-h-screen flex-col bg-[var(--background)] text-[var(--foreground)]">
+            <div className="flex min-h-screen flex-col overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
               <main className="flex-1">{children}</main>
               <Footer />
             </div>
