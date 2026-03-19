@@ -198,9 +198,9 @@ export default function RegisterPage() {
         </div>
 
         {/* Formulaire droite */}
-        <div className="flex items-center justify-center px-4 pt-16 pb-10 md:px-8 md:pt-10 lg:px-10">
-          <div className="w-full max-w-sm">
-            <div className="mb-6 flex items-center gap-4 md:hidden">
+        <div className="flex items-center justify-center px-4 pt-20 pb-10 md:px-8 md:pt-10 lg:px-10">
+          <div className="w-full max-w-md">
+            <div className="mb-8 flex items-center gap-4 md:hidden">
               <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-3xl border-2 border-amber-400/80 bg-white shadow-md">
                 <Image
                   src="/digikarte-logo.png"
@@ -220,7 +220,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="mb-6 space-y-2">
+            <div className="mb-8 space-y-2">
               <p className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-500/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200">
                 <span className="inline-block h-1 w-1 rounded-full bg-amber-300" />
                 {t("authRegisterKicker", locale)}
@@ -241,9 +241,9 @@ export default function RegisterPage() {
 
             <form
               onSubmit={handleSubmit}
-              className="space-y-5 rounded-2xl border border-neutral-900/80 bg-neutral-950/90 p-5 shadow-[0_14px_40px_rgba(0,0,0,0.85)] backdrop-blur-sm md:space-y-6 md:p-6"
+              className="space-y-6 rounded-[26px] border border-neutral-900/80 bg-neutral-950/90 p-6 shadow-[0_18px_55px_rgba(0,0,0,0.9)] backdrop-blur-sm md:p-7"
             >
-              <div className="grid gap-3.5 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label
                     htmlFor="prenom"
@@ -278,7 +278,7 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              <div className="space-y-3.5">
+              <div className="space-y-4">
                 <div>
                   <label
                     htmlFor="email"

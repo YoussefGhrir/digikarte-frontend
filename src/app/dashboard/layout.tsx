@@ -565,7 +565,7 @@ export default function DashboardLayout({
       {/* Contenu principal */}
       <div className="flex min-h-screen flex-1 flex-col lg:ml-0">
         {/* Topbar: gauche = nom organisation (cliquable), droite = langue + profil */}
-        <header className="flex items-center justify-between border-b border-neutral-800 bg-neutral-950 px-4 py-3 sm:bg-neutral-950/95 sm:backdrop-blur lg:pl-8">
+        <header className="flex items-center justify-between border-b border-neutral-800 bg-neutral-950/90 px-4 py-3 backdrop-blur lg:pl-8">
           {/* Gauche : logo mobile ou nom de l'organisation (lien vers dashboard / org) */}
           <div className="flex min-w-0 flex-1 items-center gap-3">
             <div className="flex items-center gap-3 lg:hidden">
@@ -621,7 +621,7 @@ export default function DashboardLayout({
               {mobileNavOpen && (
                 <div
                   ref={mobileNavRef}
-                  className="absolute left-1/2 top-full z-50 mt-2 w-[calc(100vw-2rem)] -translate-x-1/2 max-w-[420px] max-h-[calc(100vh-12rem)] overflow-y-auto overflow-x-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-xl shadow-black/60"
+                  className="absolute left-0 top-full z-50 mt-2 w-[calc(100vw-2rem)] max-w-64 max-h-[calc(100vh-12rem)] overflow-y-auto overflow-x-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-xl shadow-black/60"
                 >
                   <div className="p-2 space-y-1">
                     {isAdmin ? (
@@ -838,17 +838,15 @@ export default function DashboardLayout({
         </main>
 
         {/* Navbar mobile fixe (navigation toujours visible) */}
-        <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-neutral-800 bg-neutral-950 lg:hidden">
-          <div className="mx-auto w-full max-w-md px-2 pb-[env(safe-area-inset-bottom)]">
-            <div className="rounded-t-2xl border border-neutral-800 border-b-0 bg-neutral-950 shadow-[0_-10px_30px_rgba(0,0,0,0.35)]">
-              <div
-                className={`grid items-center ${isAdmin ? "grid-cols-3" : "grid-cols-4"} gap-1 px-2 py-2`}
-              >
+        <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-neutral-800 bg-neutral-950/90 backdrop-blur lg:hidden">
+          <div
+            className={`grid items-center ${isAdmin ? "grid-cols-3" : "grid-cols-4"} px-2 py-2`}
+          >
             {isAdmin ? (
               <>
                 <Link
                   href="/dashboard/admin"
-                  className={`flex min-h-[44px] flex-col items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-[11px] font-semibold ${
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     pathname === "/dashboard/admin"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
@@ -859,7 +857,7 @@ export default function DashboardLayout({
                 </Link>
                 <Link
                   href="/dashboard/admin/users"
-                  className={`flex min-h-[44px] flex-col items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-[11px] font-semibold ${
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     pathname === "/dashboard/admin/users" ||
                     pathname === "/dashboard/admin/users/normal"
                       ? "text-amber-200"
@@ -871,7 +869,7 @@ export default function DashboardLayout({
                 </Link>
                 <Link
                   href="/dashboard/admin/users/normal"
-                  className={`flex min-h-[44px] flex-col items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-[11px] font-semibold ${
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     pathname === "/dashboard/admin/users/normal"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
@@ -885,7 +883,7 @@ export default function DashboardLayout({
               <>
                 <Link
                   href={subscriptionHref}
-                  className={`flex min-h-[44px] flex-col items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-[11px] font-semibold ${
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     pathname?.startsWith("/dashboard/subscription")
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
@@ -896,7 +894,7 @@ export default function DashboardLayout({
                 </Link>
                 <Link
                   href={organisationsHref}
-                  className={`flex min-h-[44px] flex-col items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-[11px] font-semibold ${
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     pathname === "/dashboard" && dashboardView === "organisations"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
@@ -907,7 +905,7 @@ export default function DashboardLayout({
                 </Link>
                 <Link
                   href={qrHref}
-                  className={`flex min-h-[44px] flex-col items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-[11px] font-semibold ${
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     pathname?.startsWith(`/dashboard/organisations/${currentOrgIdSafe ?? ""}/qr`) &&
                     currentOrgIdSafe != null
                       ? "text-amber-200"
@@ -919,7 +917,7 @@ export default function DashboardLayout({
                 </Link>
                 <Link
                   href={menusHref}
-                  className={`flex min-h-[44px] flex-col items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-[11px] font-semibold ${
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     currentOrgIdSafe != null && pathname?.startsWith(`/dashboard/organisations/${currentOrgIdSafe}`) && !pathname?.includes("/qr")
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
@@ -930,8 +928,6 @@ export default function DashboardLayout({
                 </Link>
               </>
             )}
-              </div>
-            </div>
           </div>
         </nav>
       </div>

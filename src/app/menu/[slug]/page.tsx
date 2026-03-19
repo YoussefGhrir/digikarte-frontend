@@ -25,68 +25,6 @@ export default function PublicMenuPage() {
 
   useEffect(() => {
     if (!slug) return;
-
-    // Cas spécial: page de démonstration publique (/menu/demo)
-    // On évite d'appeler le backend et on injecte un menu vitrine
-    if (slug === "demo") {
-      const demoMenu: MenuPublicDto = {
-        title: "DigiKarte – Demo Menü",
-        description:
-          "Beispielkarte, um zu zeigen, wie Ihre digitale Speisekarte mit DigiKarte aussehen kann.",
-        organizationName: "Demo Café Berlin",
-        organizationSlogan: "Digitales Menü in 3 Sprachen – DE / FR / EN",
-        organizationLogoBase64: null,
-        organizationAddress: "Musterstraße 12, 10115 Berlin",
-        organizationPhone: "+49 30 123456",
-        organizationEmail: "info@demo-cafe.de",
-        displayTemplate: "cafe",
-        colorTheme: "amber",
-        priceCurrency: "EUR",
-        available: true,
-        items: [
-          {
-            id: 1,
-            section: "Kaffee · Café · Coffee",
-            name: "Caffè Latte / Café au lait / Latte",
-            description:
-              "Espresso mit cremiger Milch – perfekt für den Start in den Tag.",
-            price: 4.9,
-          },
-          {
-            id: 2,
-            section: "Kaffee · Café · Coffee",
-            name: "Cappuccino / Cappuccino / Cappuccino",
-            description:
-              "Klassischer Cappuccino mit feinporigem Milchschaum.",
-            price: 4.5,
-          },
-          {
-            id: 3,
-            section: "Snacks · Snacks · Snacks",
-            name: "Croissant beurre / Buttercroissant / Butter croissant",
-            description:
-              "Frisches Croissant – ideal mit Kaffee oder Tee, morgens oder nachmittags.",
-            price: 2.5,
-          },
-          {
-            id: 4,
-            section: "Desserts · Desserts · Desserts",
-            name: "Tarte au citron / Zitronentarte / Lemon tart",
-            description:
-              "Hausgemachte Zitronentarte mit feinem Mürbeteig und frischer Creme.",
-            price: 5.9,
-          },
-        ],
-      };
-
-      setMenu(demoMenu);
-      setError("");
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setError("");
     menuPublicBySlug(slug)
       .then(setMenu)
       .catch(() => setError("notFound"))
