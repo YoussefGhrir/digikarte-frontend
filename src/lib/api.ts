@@ -62,7 +62,11 @@ export async function api<T>(
   }
 
   if (res.status === 204) return undefined as T;
-  return res.json() as Promise<T>;
+  // Certains endpoints (ex: DELETE "void") renvoient un body vide mais pas forcément en 204.
+  // Dans ce cas, `res.json()` déclenche "Unexpected end of JSON input".
+  const text = await res.text();
+  if (!text) return undefined as T;
+  return JSON.parse(text) as T;
 }
 
 // Auth
