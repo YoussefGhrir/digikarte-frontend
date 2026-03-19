@@ -7,23 +7,17 @@ export default function ImpressumPage() {
     {
       title: "Angaben gemäß § 5 DDG",
       content: (
-        <>
-          <p>
-            <span className="font-semibold text-neutral-100">
-              Verantwortlicher / Diensteanbieter:
-            </span>
-            <br />
-            Youssef Ghrir
-            <br />
-            Software Engineer
-            <br />
-            Kaiserslautern, Deutschland
-          </p>
-          <p className="mt-2 text-xs text-neutral-400">
-            Hinweis: Für vollständige rechtliche Konformität in Deutschland sollte hier eine
-            ladungsfähige Anschrift (Straße, Hausnummer, PLZ, Ort) ergänzt werden.
-          </p>
-        </>
+        <p>
+          <span className="font-semibold text-neutral-100">
+            Verantwortlicher / Diensteanbieter:
+          </span>
+          <br />
+          Youssef Ghrir
+          <br />
+          Software Engineer
+          <br />
+          Kaiserslautern, Deutschland
+        </p>
       ),
     },
     {

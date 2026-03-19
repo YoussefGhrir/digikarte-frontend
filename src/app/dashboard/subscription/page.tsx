@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/language-context";
 import { t, type Locale } from "@/lib/i18n";
+import { useAuth } from "@/lib/auth-context";
 import {
   subscriptionGetMe,
   subscriptionCreateCheckoutSession,
@@ -54,6 +55,7 @@ function planLabel(plan: SubscriptionPlan, locale: Locale) {
 
 export default function SubscriptionPage() {
   const { locale } = useLanguage();
+  const { user } = useAuth();
   const router = useRouter();
   const [sub, setSub] = useState<SubscriptionDto | null>(null);
   const [invoices, setInvoices] = useState<InvoiceDto[]>([]);
@@ -61,6 +63,13 @@ export default function SubscriptionPage() {
   const [error, setError] = useState("");
   const [checkoutLoading, setCheckoutLoading] = useState<SubscriptionPlan | null>(null);
   const [actionLoading, setActionLoading] = useState<"cancel" | "skip" | "cancelAtEnd" | "reactivate" | "billingPortal" | null>(null);
+
+  useEffect(() => {
+    if (Boolean((user as any)?.subscriptionBypass)) {
+      router.replace("/dashboard");
+      return;
+    }
+  }, [router, (user as any)?.subscriptionBypass]);
 
   useEffect(() => {
     let cancelled = false;
@@ -102,7 +111,7 @@ export default function SubscriptionPage() {
     return () => {
       cancelled = true;
     };
-  }, [router]);
+  }, [router, (user as any)?.subscriptionBypass]);
 
   const isTrial = sub?.status === "TRIALING";
   const isActive = sub?.status === "ACTIVE";

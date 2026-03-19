@@ -58,6 +58,7 @@ export default function DashboardLayout({
   const { locale, setLocale } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
+  const onAdminArea = Boolean(pathname?.startsWith("/dashboard/admin"));
 
   const languages: Locale[] = ["de", "fr", "en"];
   const [langOpen, setLangOpen] = useState(false);
@@ -80,6 +81,7 @@ export default function DashboardLayout({
   const isAdmin =
     user?.email?.toLowerCase() === "gharghour" ||
     user?.email?.toLowerCase() === "gharghour@digikarte.local";
+  const subscriptionBypass = Boolean((user as any)?.subscriptionBypass);
 
   useEffect(() => {
     if (!loading && !token) router.replace("/");
@@ -113,6 +115,10 @@ export default function DashboardLayout({
     let cancelled = false;
     async function run() {
       if (!token) return;
+      if (onAdminArea || subscriptionBypass) {
+        setProfileChecked(true);
+        return;
+      }
       setProfileChecked(false);
       try {
         await refreshUser();
@@ -125,18 +131,20 @@ export default function DashboardLayout({
     return () => {
       cancelled = true;
     };
-  }, [token, refreshUser]);
+  }, [token, refreshUser, onAdminArea, subscriptionBypass]);
 
   // Chargement de l'abonnement et redirection si expiré / inexistant
   useEffect(() => {
     let cancelled = false;
     async function loadSubscription() {
       if (!token || !profileChecked) return;
-      const subscriptionBypass = Boolean((user as any)?.subscriptionBypass);
-      if (isAdmin || subscriptionBypass) {
+      if (onAdminArea || isAdmin || subscriptionBypass) {
         // Accès direct => ne pas rediriger vers /dashboard/subscription
         setSubscription(null);
         setSubscriptionChecked(true);
+        if (subscriptionBypass && pathname?.startsWith("/dashboard/subscription")) {
+          router.replace("/dashboard");
+        }
         return;
       }
       try {
@@ -179,7 +187,7 @@ export default function DashboardLayout({
     return () => {
       cancelled = true;
     };
-  }, [token, pathname, router, logout, profileChecked, (user as any)?.subscriptionBypass, isAdmin]);
+  }, [token, pathname, router, logout, profileChecked, subscriptionBypass, isAdmin, onAdminArea]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -286,7 +294,7 @@ export default function DashboardLayout({
 
   // Tant que nous n'avons pas vérifié l'abonnement (et qu'on n'est pas déjà
   // sur la page d'abonnement), afficher un écran de chargement.
-  if (!subscriptionChecked && !pathname?.startsWith("/dashboard/subscription")) {
+  if (!subscriptionChecked && !pathname?.startsWith("/dashboard/subscription") && !onAdminArea && !subscriptionBypass) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-950">
         <p className="text-sm tracking-[0.3em] text-neutral-400 uppercase">
@@ -308,7 +316,8 @@ export default function DashboardLayout({
     subscriptionChecked &&
     needsPaywall &&
     !isAdmin &&
-    !Boolean((user as any)?.subscriptionBypass) &&
+    !subscriptionBypass &&
+    !onAdminArea &&
     !pathname?.startsWith("/dashboard/subscription")
   ) {
     return null;
@@ -406,6 +415,7 @@ export default function DashboardLayout({
 
         <nav className="flex-1 space-y-1 text-[13px] font-medium">
           {!isAdmin &&
+            !subscriptionBypass &&
             navItems(locale).map((item) => {
               const isProfile = pathname === "/dashboard/profile";
 
@@ -843,7 +853,7 @@ export default function DashboardLayout({
         {/* Navbar mobile fixe (navigation toujours visible) */}
         <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-neutral-800 bg-neutral-950/90 backdrop-blur lg:hidden">
           <div
-            className={`grid items-center ${isAdmin ? "grid-cols-3" : "grid-cols-4"} px-2 py-2`}
+            className={`grid items-center ${isAdmin ? "grid-cols-3" : subscriptionBypass ? "grid-cols-3" : "grid-cols-4"} px-2 py-2`}
           >
             {isAdmin ? (
               <>
@@ -884,17 +894,19 @@ export default function DashboardLayout({
               </>
             ) : (
               <>
-                <Link
-                  href={subscriptionHref}
-                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
-                    pathname?.startsWith("/dashboard/subscription")
-                      ? "text-amber-200"
-                      : "text-neutral-400 hover:text-neutral-100"
-                  }`}
-                >
-                  <IconMenuList className="h-5 w-5" aria-hidden />
-                  <span>Abonnement</span>
-                </Link>
+                {!subscriptionBypass && (
+                  <Link
+                    href={subscriptionHref}
+                    className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                      pathname?.startsWith("/dashboard/subscription")
+                        ? "text-amber-200"
+                        : "text-neutral-400 hover:text-neutral-100"
+                    }`}
+                  >
+                    <IconMenuList className="h-5 w-5" aria-hidden />
+                    <span>Abonnement</span>
+                  </Link>
+                )}
                 <Link
                   href={organisationsHref}
                   className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${

@@ -424,7 +424,7 @@ function getDemoTexts(locale: Locale) {
     return {
       heroTitle: "Vollständige Demo: Café/Restaurant Menü mit allen Vorlagen",
       heroSubtitle:
-        "Diese Seite zeigt den kompletten Ablauf: Blöcke erstellen, Gerichte mit Namen und Preis eingeben, Design wählen (Classic, Lounge, Oriental, Minimal und weitere), dann QR auf Tisch und an der Tür einsetzen.",
+        "Diese Seite zeigt den kompletten Ablauf: mehrere Organisationen in einem Konto verwalten, pro Organisation mehrere Menüs anlegen, Inhalte in mehreren Sprachen pflegen und dann QR auf Tisch und an der Tür einsetzen.",
       steps: [
         {
           kicker: "Schritt 1",
@@ -472,7 +472,7 @@ function getDemoTexts(locale: Locale) {
     return {
       heroTitle: "Démo complète: menu café/resto avec tous les modèles",
       heroSubtitle:
-        "Cette page montre le scénario total: création des blocs, saisie des plats avec nom et prix, choix du design (Classic, Lounge, Oriental, Minimal, etc.), puis usage du QR sur table et sur porte.",
+        "Cette page montre le scénario complet: gérer plusieurs organisations dans un seul compte, créer plusieurs menus par organisation, gérer le multilingue, puis utiliser les QR sur table et sur porte.",
       steps: [
         {
           kicker: "Etape 1",
@@ -519,7 +519,7 @@ function getDemoTexts(locale: Locale) {
   return {
     heroTitle: "Complete demo: cafe/restaurant menu with all templates",
     heroSubtitle:
-      "This page shows the full scenario: create menu blocks, enter dish name and price, choose style (Classic, Lounge, Oriental, Minimal, etc.), then deploy QR on tables and at the door.",
+      "This page shows the full scenario: manage multiple organisations in one account, create multiple menus per organisation, maintain multilingual content, then deploy QR on tables and at the door.",
     steps: [
       {
         kicker: "Step 1",

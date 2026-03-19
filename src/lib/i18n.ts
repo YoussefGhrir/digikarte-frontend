@@ -94,9 +94,9 @@ export const translations = {
     en: "Digital QR menus for restaurants, cafés and bars",
   },
   heroSubtitle: {
-    de: "Erstelle flexible digitale Karten für alle Servicebereiche deines Betriebs: Frühstück, Getränke, Cocktails, Snacks, Tagesangebote oder Dessert. Jeder Bereich bekommt einen eigenen QR-Code und bleibt in Echtzeit aktuell.",
-    fr: "Crée des cartes digitales flexibles pour tous les services de ton établissement: petit-déjeuner, boissons, cocktails, snacks, suggestions du jour ou desserts. Chaque carte a son QR dédié et reste à jour en temps réel.",
-    en: "Create flexible digital menus for every service moment: breakfast, drinks, cocktails, snacks, daily specials or desserts. Each menu gets its own QR and stays updated in real time.",
+    de: "Verwalte mehrere Organisationen in einem Konto (Restaurant, Café, Bar) und erstelle pro Organisation mehrere digitale Karten für jeden Service: Frühstück, Getränke, Cocktails, Snacks, Tagesangebote oder Dessert. Jede Karte erhält ihren eigenen QR-Code und bleibt in Echtzeit aktuell.",
+    fr: "Gère plusieurs organisations dans un seul compte (restaurant, café, bar) et crée, pour chaque organisation, plusieurs cartes digitales selon le service: petit-déjeuner, boissons, cocktails, snacks, suggestions du jour ou desserts. Chaque carte a son QR dédié et reste à jour en temps réel.",
+    en: "Manage multiple organisations in one account (restaurant, cafe, bar) and create multiple digital menus per organisation for every service moment: breakfast, drinks, cocktails, snacks, daily specials, or desserts. Each menu gets its own QR and stays updated in real time.",
   },
   ctaGetStarted: {
     de: "Jetzt starten",
@@ -356,9 +356,9 @@ export const translations = {
     en: "Simple menu management",
   },
   feature1Text: {
-    de: "Lege beliebig viele Menüs an (Hauptkarte, Mittagsmenü, Getränkekarte …) und pflege deine Gerichte mit Preis, Beschreibung und Bild – alles an einem Ort.",
-    fr: "Crée autant de menus que nécessaire (carte principale, menu du midi, carte des boissons…) et gère tes plats avec prix, description et photo, le tout au même endroit.",
-    en: "Create as many menus as you need (main menu, lunch menu, drinks menu…) and manage dishes with price, description and image in one place.",
+    de: "Lege beliebig viele Organisationen und Menüs an (Hauptkarte, Mittagsmenü, Getränkekarte …) und pflege Gerichte mit Preis, Beschreibung und Bild – alles zentral an einem Ort.",
+    fr: "Crée autant d’organisations et de menus que nécessaire (carte principale, menu du midi, carte des boissons…) et gère tes plats avec prix, description et photo, le tout au même endroit.",
+    en: "Create as many organisations and menus as you need (main menu, lunch menu, drinks menu…) and manage dishes with price, description, and image in one place.",
   },
   feature2Title: {
     de: "QR-Codes in mehreren Stilen",
@@ -376,9 +376,9 @@ export const translations = {
     en: "Multilingual menus",
   },
   feature3Text: {
-    de: "Zeige deine Menüs in Deutsch, Französisch und Englisch – ideal für internationale Gäste.",
-    fr: "Affiche tes menus en allemand, français et anglais – idéal pour une clientèle internationale.",
-    en: "Display your menus in German, French and English – ideal for international guests.",
+    de: "Zeige deine Menüs in Deutsch, Französisch und Englisch – ideal für internationale Gäste und mehrere Standorte.",
+    fr: "Affiche tes menus en allemand, français et anglais – idéal pour une clientèle internationale et plusieurs établissements.",
+    en: "Display your menus in German, French, and English - ideal for international guests and multi-venue operations.",
   },
   authRegisterFooter: {
     de: "Schließen Sie sich den Betrieben an, die das Gästeerlebnis modernisieren.",
