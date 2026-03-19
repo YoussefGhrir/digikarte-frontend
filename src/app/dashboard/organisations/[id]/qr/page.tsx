@@ -79,31 +79,16 @@ export default function OrganisationQrPage() {
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {menus.map((menu) => {
-            const menuPreviewUrl =
-              typeof window !== "undefined"
-                ? `${window.location.origin}/menu/${menu.slug}`
-                : `https://digi-karte.com/menu/${menu.slug}`;
             return (
               <Link
                 key={menu.id}
                 href={`/dashboard/organisations/${orgId}/menus/${menu.id}/qr`}
                 className="flex cursor-pointer flex-col rounded-2xl border border-neutral-800 bg-neutral-900/60 overflow-hidden transition hover:border-amber-500/40 hover:bg-neutral-900/80 shadow-lg shadow-black/20"
               >
-                <div className="w-full h-[200px] rounded-t-2xl overflow-hidden border-b border-neutral-800 bg-neutral-200 relative">
-                  <div
-                    className="absolute top-0 left-0 origin-top-left"
-                    style={{
-                      width: "500%",
-                      height: 1000,
-                      transform: "scale(0.2)",
-                    }}
-                  >
-                    <iframe
-                      src={menuPreviewUrl}
-                      title={menu.title}
-                      className="w-full border-0 pointer-events-none"
-                      style={{ width: "100%", height: 1000 }}
-                    />
+                <div className="flex h-[200px] w-full items-center justify-center rounded-t-2xl border-b border-neutral-800 bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-700 px-4">
+                  <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-center">
+                    <p className="text-xs uppercase tracking-[0.2em] text-amber-300">QR</p>
+                    <p className="mt-1 text-sm font-medium text-neutral-200">{menu.title}</p>
                   </div>
                 </div>
                 <div className="p-4 flex flex-col items-center">

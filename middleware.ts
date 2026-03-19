@@ -38,9 +38,16 @@ const FRENCH_COUNTRIES = new Set([
   "BI",
 ]);
 
+const GERMAN_COUNTRIES = new Set([
+  "DE",
+  "AT",
+  "LI",
+]);
+
 function resolveLocale(countryCode: string | null, acceptLanguage: string | null): Locale {
   if (countryCode) {
     const cc = countryCode.toUpperCase();
+    if (GERMAN_COUNTRIES.has(cc)) return "de";
     if (FRENCH_COUNTRIES.has(cc)) return "fr";
     return "en";
   }
@@ -57,6 +64,7 @@ function resolveLocale(countryCode: string | null, acceptLanguage: string | null
 }
 
 export function middleware(req: NextRequest) {
+  const pathname = req.nextUrl.pathname;
   const host = req.headers.get("host") ?? "";
   if (host.toLowerCase() === "www.digi-karte.com") {
     const apexUrl = req.nextUrl.clone();
@@ -64,14 +72,8 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(apexUrl, 301);
   }
 
-  if (req.nextUrl.pathname === "/") {
-    const localized = req.nextUrl.clone();
-    localized.pathname = "/de/";
-    return NextResponse.redirect(localized, 302);
-  }
-
   const existing = req.cookies.get(COOKIE_KEY)?.value;
-  if (isLocale(existing)) return NextResponse.next();
+  const hasLocaleCookie = isLocale(existing);
 
   const country =
     req.headers.get("cf-ipcountry") ||
@@ -81,12 +83,35 @@ export function middleware(req: NextRequest) {
     null;
 
   const acceptLanguage = req.headers.get("accept-language");
+  const resolvedLocale = hasLocaleCookie ? existing : resolveLocale(country, acceptLanguage);
 
-  const locale = resolveLocale(country, acceptLanguage);
+  if (pathname === "/") {
+    const localized = req.nextUrl.clone();
+    localized.pathname = `/${resolvedLocale}/`;
+    return NextResponse.redirect(localized, 302);
+  }
+
+  // Keep legacy public URLs working while forcing canonical locale-first paths.
+  const legacyRedirects: Record<string, string> = {
+    "/digitale-speisekarte": "/de/digitale-speisekarte/",
+    "/qr-code-menu": "/de/qr-code-menu/",
+    "/menu-digital-restaurant": "/fr/menu-digital-restaurant/",
+    "/digital-menu-restaurant": "/en/digital-menu-restaurant/",
+    "/blog": "/de/blog/",
+  };
+  const normalizedPath = pathname.endsWith("/") && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
+  const legacyTarget = legacyRedirects[normalizedPath];
+  if (legacyTarget) {
+    const url = req.nextUrl.clone();
+    url.pathname = legacyTarget;
+    return NextResponse.redirect(url, 301);
+  }
+
+  if (hasLocaleCookie) return NextResponse.next();
 
   const res = NextResponse.next();
   const secure = req.nextUrl.protocol === "https:";
-  res.cookies.set(COOKIE_KEY, locale, {
+  res.cookies.set(COOKIE_KEY, resolvedLocale, {
     path: "/",
     maxAge: 60 * 60 * 24 * 365 * 2, // 2 years
     sameSite: "lax",

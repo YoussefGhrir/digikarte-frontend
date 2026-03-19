@@ -5,11 +5,13 @@ import { localeLabels, t, type Locale } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const { user, loading } = useAuth();
   const { locale, setLocale } = useLanguage();
+  const router = useRouter();
 
   const languages: Locale[] = ["de", "fr", "en"];
   const [langOpen, setLangOpen] = useState(false);
@@ -89,6 +91,7 @@ export default function Home() {
                       type="button"
                       onClick={() => {
                         setLocale(lang);
+                        router.push(`/${lang}/`);
                         setLangOpen(false);
                       }}
                       className={`flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-left transition ${

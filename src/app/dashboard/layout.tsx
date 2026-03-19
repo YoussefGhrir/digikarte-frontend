@@ -65,9 +65,9 @@ export default function DashboardLayout({
   const langRef = useRef<HTMLDivElement | null>(null);
   const orgRef = useRef<HTMLDivElement | null>(null);
   const orgSidebarRef = useRef<HTMLDivElement | null>(null);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const mobileNavBtnRef = useRef<HTMLButtonElement | null>(null);
-  const mobileNavRef = useRef<HTMLDivElement | null>(null);
+  const [mobileProfileMenuOpen, setMobileProfileMenuOpen] = useState(false);
+  const mobileProfileBtnRef = useRef<HTMLButtonElement | null>(null);
+  const mobileProfileMenuRef = useRef<HTMLDivElement | null>(null);
 
   const [orgs, setOrgs] = useState<OrganizationDto[]>([]);
   const [orgsLoading, setOrgsLoading] = useState(true);
@@ -88,18 +88,17 @@ export default function DashboardLayout({
   }, [loading, token, router]);
 
   useEffect(() => {
-    // Ferme le menu mobile dès qu'on change de page.
-    setMobileNavOpen(false);
+    setMobileProfileMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    if (!mobileNavOpen) return;
+    if (!mobileProfileMenuOpen) return;
 
     function onPointerDown(e: MouseEvent | TouchEvent) {
       const target = e.target as Node;
-      const insideMenu = mobileNavRef.current?.contains(target);
-      const insideBtn = mobileNavBtnRef.current?.contains(target);
-      if (!insideMenu && !insideBtn) setMobileNavOpen(false);
+      const insideMenu = mobileProfileMenuRef.current?.contains(target);
+      const insideBtn = mobileProfileBtnRef.current?.contains(target);
+      if (!insideMenu && !insideBtn) setMobileProfileMenuOpen(false);
     }
 
     document.addEventListener("mousedown", onPointerDown);
@@ -108,7 +107,7 @@ export default function DashboardLayout({
       document.removeEventListener("mousedown", onPointerDown);
       document.removeEventListener("touchstart", onPointerDown);
     };
-  }, [mobileNavOpen]);
+  }, [mobileProfileMenuOpen]);
 
   // On rafraîchit le profil (pour récupérer subscriptionBypass) avant d'appliquer le paywall.
   useEffect(() => {
@@ -629,134 +628,6 @@ export default function DashboardLayout({
 
           {/* Droite : sélecteur de langue + profil */}
           <div className="ml-auto flex shrink-0 items-center gap-3 text-xs text-neutral-400">
-            {/* Menu mobile (3 points) */}
-            <div className="relative lg:hidden">
-              <button
-                ref={mobileNavBtnRef}
-                type="button"
-                onClick={() => setMobileNavOpen((o) => !o)}
-                aria-label={t("dashboardOpenMobileNavigation", locale)}
-                aria-expanded={mobileNavOpen}
-                className="flex h-9 w-9 items-center justify-center rounded-xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-sm hover:bg-neutral-900"
-              >
-                <span aria-hidden className="text-xl leading-none">
-                  ⋯
-                </span>
-              </button>
-
-              {mobileNavOpen && (
-                <div className="fixed inset-0 z-50 flex justify-center pt-[60px] px-4">
-                  <div className="absolute inset-0 bg-black/60" />
-                  <div
-                    ref={mobileNavRef}
-                    className="relative w-full max-w-[420px] max-h-[calc(100vh-96px)] overflow-y-auto overflow-x-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-xl shadow-black/60"
-                  >
-                    <div className="p-2 space-y-1">
-                      {isSuperAdmin ? (
-                        <>
-                          <Link
-                            href="/dashboard/admin"
-                            onClick={() => setMobileNavOpen(false)}
-                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                          >
-                            <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
-                            <span>{t("dashboardAdmin", locale)}</span>
-                          </Link>
-                          <Link
-                            href="/dashboard/admin/users"
-                            onClick={() => setMobileNavOpen(false)}
-                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                          >
-                            <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
-                            <span>{t("dashboardAdminVipUsers", locale)}</span>
-                          </Link>
-                          <Link
-                            href="/dashboard/admin/users/normal"
-                            onClick={() => setMobileNavOpen(false)}
-                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                          >
-                            <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
-                            <span>{t("dashboardAdminNormalUsers", locale)}</span>
-                          </Link>
-                        </>
-                      ) : (
-                        <>
-                          {!subscriptionBypass && (
-                            <Link
-                              href="/dashboard/subscription"
-                              onClick={() => setMobileNavOpen(false)}
-                              className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                            >
-                              <IconQr className="h-4 w-4 shrink-0" aria-hidden />
-                              <span>{t("subscriptionNav", locale)}</span>
-                            </Link>
-                          )}
-
-                          <Link
-                            href="/dashboard"
-                            onClick={() => setMobileNavOpen(false)}
-                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                          >
-                            <IconHome className="h-4 w-4 shrink-0" aria-hidden />
-                            <span>{t("dashboardNavDashboard", locale)}</span>
-                          </Link>
-
-                          <Link
-                            href={
-                              currentOrg
-                                ? `/dashboard/organisations/${currentOrg.id}`
-                                : "/dashboard?view=organisations"
-                            }
-                            onClick={() => setMobileNavOpen(false)}
-                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                          >
-                            <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
-                            <span>{t("dashboardNavOrganisations", locale)}</span>
-                          </Link>
-
-                          <Link
-                            href={
-                              currentOrg
-                                ? `/dashboard/organisations/${currentOrg.id}/qr`
-                                : "/dashboard?view=organisations"
-                            }
-                            onClick={() => setMobileNavOpen(false)}
-                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                          >
-                            <IconQr className="h-4 w-4 shrink-0" aria-hidden />
-                            <span>{t("menuQrTab", locale)}</span>
-                          </Link>
-                        </>
-                      )}
-
-                      <div className="mt-2 border-t border-neutral-800" />
-
-                      <Link
-                        href="/dashboard/profile"
-                        onClick={() => setMobileNavOpen(false)}
-                        className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                      >
-                        <IconHome className="h-4 w-4 shrink-0 text-amber-200" aria-hidden />
-                        <span>{t("dashboardNavProfile", locale)}</span>
-                      </Link>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMobileNavOpen(false);
-                          logout();
-                        }}
-                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-neutral-50 hover:bg-neutral-900/90"
-                      >
-                        <IconLogout className="h-4 w-4 shrink-0 text-red-200" aria-hidden />
-                        <span>{t("profileLogout", locale)}</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
             <div ref={langRef} className="relative">
               <button
                 type="button"
@@ -866,8 +737,107 @@ export default function DashboardLayout({
                 {t("dashboardNavProfile", locale)}
               </span>
             </Link>
+            <button
+              ref={mobileProfileBtnRef}
+              type="button"
+              onClick={() => setMobileProfileMenuOpen((v) => !v)}
+              aria-expanded={mobileProfileMenuOpen}
+              aria-label={t("dashboardNavProfile", locale)}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-800 bg-neutral-900 sm:hidden"
+            >
+              {user?.profilePhotoBase64 ? (
+                <div className="relative h-8 w-8 overflow-hidden rounded-full border border-amber-500/40 bg-neutral-800">
+                  <img
+                    src={`data:image/jpeg;base64,${user.profilePhotoBase64}`}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-800 text-xs font-semibold text-amber-300">
+                  {(user?.prenom?.[0] ?? user?.nom?.[0] ?? "?").toUpperCase()}
+                </div>
+              )}
+            </button>
           </div>
         </header>
+        {mobileProfileMenuOpen && (
+          <div className="fixed inset-0 z-[70] flex items-start justify-center px-4 pt-16 sm:hidden">
+            <div className="absolute inset-0 bg-black/65" />
+            <div
+              ref={mobileProfileMenuRef}
+              className="relative w-full max-w-[420px] overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 shadow-2xl shadow-black/70"
+            >
+              <div className="border-b border-neutral-800 px-4 py-3">
+                <p className="text-sm font-semibold text-neutral-100">
+                  {user?.prenom} {user?.nom}
+                </p>
+                <p className="text-[11px] uppercase tracking-[0.15em] text-neutral-500">
+                  {t("dashboardNavProfile", locale)}
+                </p>
+              </div>
+              <div className="p-2">
+                {isSuperAdmin ? (
+                  <>
+                    <Link href="/dashboard/admin" onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                      <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
+                      <span>{t("dashboardAdmin", locale)}</span>
+                    </Link>
+                    <Link href="/dashboard/admin/users" onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                      <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
+                      <span>{t("dashboardAdminVipUsers", locale)}</span>
+                    </Link>
+                    <Link href="/dashboard/admin/users/normal" onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                      <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
+                      <span>{t("dashboardAdminNormalUsers", locale)}</span>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    {!subscriptionBypass && (
+                      <Link href="/dashboard/subscription" onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                        <IconQr className="h-4 w-4 shrink-0" aria-hidden />
+                        <span>{t("subscriptionNav", locale)}</span>
+                      </Link>
+                    )}
+                    <Link href="/dashboard" onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                      <IconHome className="h-4 w-4 shrink-0" aria-hidden />
+                      <span>{t("dashboardNavDashboard", locale)}</span>
+                    </Link>
+                    <Link href={organisationsHref} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                      <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
+                      <span>{t("dashboardNavOrganisations", locale)}</span>
+                    </Link>
+                    <Link href={qrHref} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                      <IconQr className="h-4 w-4 shrink-0" aria-hidden />
+                      <span>{t("menuQrTab", locale)}</span>
+                    </Link>
+                    <Link href={menusHref} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                      <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
+                      <span>{t("dashboardNavMenusOfOrg", locale)}</span>
+                    </Link>
+                  </>
+                )}
+                <div className="my-2 border-t border-neutral-800" />
+                <Link href="/dashboard/profile" onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-amber-200 hover:bg-neutral-900">
+                  <IconHome className="h-4 w-4 shrink-0" aria-hidden />
+                  <span>{t("dashboardNavProfile", locale)}</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileProfileMenuOpen(false);
+                    logout();
+                  }}
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-red-300 hover:bg-red-950/30 hover:text-red-200"
+                >
+                  <IconLogout className="h-4 w-4 shrink-0" aria-hidden />
+                  <span>{t("profileLogout", locale)}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <main className="flex-1 overflow-y-auto bg-neutral-950/95 px-4 py-6 pb-24 sm:px-6 sm:pb-28 lg:px-10 lg:py-8 lg:pb-0">
           {pathname?.match(/\/dashboard\/organisations\/[^/]+\/menus\/[^/]+/) ? (
@@ -880,13 +850,13 @@ export default function DashboardLayout({
         {/* Navbar mobile fixe (navigation toujours visible) */}
         <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-neutral-800 bg-neutral-950/90 backdrop-blur lg:hidden">
           <div
-            className={`grid items-center ${isSuperAdmin ? "grid-cols-3" : subscriptionBypass ? "grid-cols-4" : "grid-cols-5"} px-2 py-2`}
+            className="flex flex-wrap items-start justify-between gap-y-1 px-2 py-2"
           >
             {isSuperAdmin ? (
               <>
                 <Link
                   href="/dashboard/admin"
-                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                  className={`flex min-w-[72px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     pathname === "/dashboard/admin"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
@@ -897,7 +867,7 @@ export default function DashboardLayout({
                 </Link>
                 <Link
                   href="/dashboard/admin/users"
-                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                  className={`flex min-w-[72px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     pathname === "/dashboard/admin/users" ||
                     pathname === "/dashboard/admin/users/normal"
                       ? "text-amber-200"
@@ -909,7 +879,7 @@ export default function DashboardLayout({
                 </Link>
                 <Link
                   href="/dashboard/admin/users/normal"
-                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                  className={`flex min-w-[72px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     pathname === "/dashboard/admin/users/normal"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
@@ -918,12 +888,43 @@ export default function DashboardLayout({
                   <IconMenuList className="h-5 w-5" aria-hidden />
                   <span>{t("dashboardAdminNormalShort", locale)}</span>
                 </Link>
+                <Link
+                  href="/dashboard/profile"
+                  className={`flex min-w-[72px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                    pathname === "/dashboard/profile"
+                      ? "text-amber-200"
+                      : "text-neutral-400 hover:text-neutral-100"
+                  }`}
+                >
+                  {user?.profilePhotoBase64 ? (
+                    <div className="relative h-5 w-5 overflow-hidden rounded-full border border-amber-500/40 bg-neutral-800">
+                      <img
+                        src={`data:image/jpeg;base64,${user.profilePhotoBase64}`}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-800 text-[9px] font-semibold text-amber-300">
+                      {(user?.prenom?.[0] ?? user?.nom?.[0] ?? "?").toUpperCase()}
+                    </div>
+                  )}
+                  <span>{t("dashboardNavProfile", locale)}</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => logout()}
+                  className="flex min-w-[72px] flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold text-red-300 hover:text-red-200"
+                >
+                  <IconLogout className="h-5 w-5" aria-hidden />
+                  <span>{t("profileLogout", locale)}</span>
+                </button>
               </>
             ) : (
               <>
                 <Link
                   href="/dashboard"
-                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                  className={`flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     pathname === "/dashboard" && dashboardView !== "organisations"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
@@ -935,7 +936,7 @@ export default function DashboardLayout({
                 {!subscriptionBypass && (
                   <Link
                     href={subscriptionHref}
-                    className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                    className={`flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                       pathname?.startsWith("/dashboard/subscription")
                         ? "text-amber-200"
                         : "text-neutral-400 hover:text-neutral-100"
@@ -947,7 +948,7 @@ export default function DashboardLayout({
                 )}
                 <Link
                   href={organisationsHref}
-                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                  className={`flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     pathname === "/dashboard" && dashboardView === "organisations"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
@@ -958,7 +959,7 @@ export default function DashboardLayout({
                 </Link>
                 <Link
                   href={qrHref}
-                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                  className={`flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     pathname?.startsWith(`/dashboard/organisations/${currentOrgIdSafe ?? ""}/qr`) &&
                     currentOrgIdSafe != null
                       ? "text-amber-200"
@@ -970,7 +971,7 @@ export default function DashboardLayout({
                 </Link>
                 <Link
                   href={menusHref}
-                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                  className={`flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
                     currentOrgIdSafe != null && pathname?.startsWith(`/dashboard/organisations/${currentOrgIdSafe}`) && !pathname?.includes("/qr")
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
@@ -979,6 +980,38 @@ export default function DashboardLayout({
                   <IconHome className="h-5 w-5" aria-hidden />
                   <span>Menus</span>
                 </Link>
+
+                <Link
+                  href="/dashboard/profile"
+                  className={`flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                    pathname === "/dashboard/profile"
+                      ? "text-amber-200"
+                      : "text-neutral-400 hover:text-neutral-100"
+                  }`}
+                >
+                  {user?.profilePhotoBase64 ? (
+                    <div className="relative h-5 w-5 overflow-hidden rounded-full border border-amber-500/40 bg-neutral-800">
+                      <img
+                        src={`data:image/jpeg;base64,${user.profilePhotoBase64}`}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-800 text-[9px] font-semibold text-amber-300">
+                      {(user?.prenom?.[0] ?? user?.nom?.[0] ?? "?").toUpperCase()}
+                    </div>
+                  )}
+                  <span>{t("dashboardNavProfile", locale)}</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => logout()}
+                  className="flex min-w-[64px] flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold text-red-300 hover:text-red-200"
+                >
+                  <IconLogout className="h-5 w-5" aria-hidden />
+                  <span>{t("profileLogout", locale)}</span>
+                </button>
               </>
             )}
           </div>
