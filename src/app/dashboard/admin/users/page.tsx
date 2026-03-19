@@ -17,6 +17,7 @@ import {
   type AdminUserDto,
   isApiError,
 } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 
 function statusBadge(status: string) {
   const s = (status ?? "").toUpperCase();
@@ -114,8 +115,10 @@ function ModalShell({
 
 export default function AdminUsersPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const pathname = usePathname();
   const isNormalRoute = pathname?.includes("/dashboard/admin/users/normal") ?? false;
+  const isSuperAdmin = Boolean((user as any)?.superAdmin);
 
   const [users, setUsers] = useState<AdminUserDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -127,6 +130,7 @@ export default function AdminUsersPage() {
   const [q, setQ] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("prenom");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
 
   const [createOpen, setCreateOpen] = useState(false);
   const [createSubmitting, setCreateSubmitting] = useState(false);
@@ -138,6 +142,7 @@ export default function AdminUsersPage() {
     telephone: "",
     password: "",
     subscriptionBypass: true,
+    admin: false,
   });
 
   const [editUser, setEditUser] = useState<AdminUserDto | null>(null);
@@ -148,6 +153,7 @@ export default function AdminUsersPage() {
     prenom: "",
     telephone: "",
     subscriptionBypass: true,
+    admin: false,
   });
 
   const [resetUser, setResetUser] = useState<AdminUserDto | null>(null);
@@ -202,13 +208,20 @@ export default function AdminUsersPage() {
           ? users.filter((u) => u.subscriptionBypass)
           : users.filter((u) => !u.subscriptionBypass);
 
-    const base = query
+    const baseByQuery = query
       ? viewFiltered.filter((u) => {
           const hay =
             `${u.nom} ${u.prenom} ${u.email} ${u.telephone} ${u.country ?? ""}`.toLowerCase();
           return hay.includes(query);
         })
       : viewFiltered;
+    const base =
+      statusFilter === "all"
+        ? baseByQuery
+        : baseByQuery.filter((u) => {
+            const active = isActiveSubscription(u.subscriptionStatus);
+            return statusFilter === "active" ? active : !active;
+          });
 
     const dir = sortDir === "asc" ? 1 : -1;
     const sorted = [...base].sort((a, b) => {
@@ -237,7 +250,7 @@ export default function AdminUsersPage() {
     });
 
     return sorted;
-  }, [q, sortDir, sortKey, users, view]);
+  }, [q, sortDir, sortKey, users, view, statusFilter]);
 
   function openAccessAction(user: AdminUserDto) {
     setActionError("");
@@ -276,6 +289,7 @@ export default function AdminUsersPage() {
       prenom: u.prenom,
       telephone: u.telephone,
       subscriptionBypass: u.subscriptionBypass,
+      admin: Boolean(u.admin),
     });
   }
 
@@ -293,6 +307,7 @@ export default function AdminUsersPage() {
         telephone: "",
         password: "",
         subscriptionBypass: true,
+        admin: false,
       });
 
       await reload();
@@ -409,7 +424,7 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
+      <div className="rounded-3xl border border-neutral-700 bg-gradient-to-br from-neutral-950 via-neutral-950 to-neutral-900/90 p-4 shadow-[0_14px_40px_rgba(0,0,0,0.45)]">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex-1">
             <label className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">Recherche</label>
@@ -417,15 +432,25 @@ export default function AdminUsersPage() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Email, nom, pays, téléphone…"
-              className="mt-2 w-full rounded-xl border border-neutral-800 bg-neutral-950/50 px-3 py-2.5 text-sm text-neutral-100 outline-none focus:border-amber-500"
+              className="mt-2 w-full rounded-2xl border border-neutral-700 bg-neutral-950/80 px-3.5 py-3 text-sm text-neutral-100 shadow-inner outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
             />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">Statut</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+              className="rounded-xl border border-neutral-700 bg-neutral-950/80 px-3 py-2.5 text-sm text-neutral-200 outline-none transition focus:border-sky-400"
+            >
+              <option value="all">Tous</option>
+              <option value="active">Actif</option>
+              <option value="inactive">Inactif</option>
+            </select>
             <label className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">Tri</label>
             <select
               value={sortKey}
               onChange={(e) => setSortKey(e.target.value as SortKey)}
-              className="rounded-xl border border-neutral-800 bg-neutral-950/50 px-3 py-2.5 text-sm text-neutral-200 outline-none"
+              className="rounded-xl border border-neutral-700 bg-neutral-950/80 px-3 py-2.5 text-sm text-neutral-200 outline-none transition focus:border-emerald-400"
             >
               <option value="prenom">Prénom</option>
               <option value="nom">Nom</option>
@@ -440,7 +465,7 @@ export default function AdminUsersPage() {
             <button
               type="button"
               onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
-              className="rounded-xl border border-neutral-800 bg-neutral-950/50 px-3 py-2.5 text-sm font-semibold text-neutral-200 hover:bg-neutral-900"
+              className="rounded-xl border border-neutral-700 bg-neutral-950/80 px-3 py-2.5 text-sm font-semibold text-neutral-200 hover:bg-neutral-900"
             >
               {sortDir.toUpperCase()}
             </button>
@@ -500,15 +525,22 @@ export default function AdminUsersPage() {
                       </div>
                     </td>
                     <td className="py-3">
-                      <span
-                        className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${
-                          active
-                            ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
-                            : "bg-red-500/10 text-red-300 border-red-500/30"
-                        }`}
-                      >
-                        {active ? "Abonnement actif" : "Abonnement inactif"}
-                      </span>
+                      <div className="flex flex-col gap-1.5">
+                        <span
+                          className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${
+                            active
+                              ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
+                              : "bg-red-500/10 text-red-300 border-red-500/30"
+                          }`}
+                        >
+                          {active ? "Abonnement actif" : "Abonnement inactif"}
+                        </span>
+                        <span className={`inline-flex w-fit items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${
+                          u.admin ? "border-violet-400/40 bg-violet-500/10 text-violet-200" : "border-neutral-700 bg-neutral-900/60 text-neutral-400"
+                        }`}>
+                          {u.admin ? "Admin" : "User"}
+                        </span>
+                      </div>
                     </td>
                     <td className="py-3">
                       <div className="flex flex-wrap gap-2">
@@ -565,17 +597,19 @@ export default function AdminUsersPage() {
                         >
                           Reset
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setDeleteUser(u);
-                            setDeleteError("");
-                          }}
-                          className="rounded-xl bg-red-500/90 px-3 py-2 text-xs font-semibold text-white hover:bg-red-400"
-                          aria-label="Delete"
-                        >
-                          <IconTrash className="inline-block h-4 w-4" />
-                        </button>
+                        {isSuperAdmin && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setDeleteUser(u);
+                              setDeleteError("");
+                            }}
+                            className="rounded-xl bg-red-500/90 px-3 py-2 text-xs font-semibold text-white hover:bg-red-400"
+                            aria-label="Delete"
+                          >
+                            <IconTrash className="inline-block h-4 w-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -658,10 +692,29 @@ export default function AdminUsersPage() {
                   type="checkbox"
                   checked={createForm.subscriptionBypass}
                   onChange={(e) => setCreateForm((s) => ({ ...s, subscriptionBypass: e.target.checked }))}
+                  className="h-4 w-4 rounded border-neutral-600 bg-neutral-900 text-amber-500 focus:ring-amber-400/70"
                 />
                 Oui
               </label>
             </div>
+
+            {isSuperAdmin && (
+              <div className="flex items-center justify-between gap-3 rounded-xl border border-violet-500/30 bg-violet-500/10 px-4 py-3">
+                <div>
+                  <p className="text-sm font-semibold text-violet-100">Accès admin</p>
+                  <p className="mt-1 text-xs text-violet-200/80">Cet utilisateur peut accéder à l'espace admin (sans droits super admin).</p>
+                </div>
+                <label className="flex items-center gap-2 text-sm text-violet-100">
+                  <input
+                    type="checkbox"
+                    checked={createForm.admin}
+                    onChange={(e) => setCreateForm((s) => ({ ...s, admin: e.target.checked }))}
+                    className="h-4 w-4 rounded border-violet-300/60 bg-violet-950/50 text-violet-400 focus:ring-violet-400/70"
+                  />
+                  Admin
+                </label>
+              </div>
+            )}
 
             <div className="flex justify-end gap-2 pt-2">
               <button
@@ -735,10 +788,29 @@ export default function AdminUsersPage() {
                   type="checkbox"
                   checked={editForm.subscriptionBypass}
                   onChange={(e) => setEditForm((s) => ({ ...s, subscriptionBypass: e.target.checked }))}
+                  className="h-4 w-4 rounded border-neutral-600 bg-neutral-900 text-amber-500 focus:ring-amber-400/70"
                 />
                 Oui
               </label>
             </div>
+
+            {isSuperAdmin && (
+              <div className="flex items-center justify-between gap-3 rounded-xl border border-violet-500/30 bg-violet-500/10 px-4 py-3">
+                <div>
+                  <p className="text-sm font-semibold text-violet-100">Accès admin</p>
+                  <p className="mt-1 text-xs text-violet-200/80">Super admin reste séparé et intouchable.</p>
+                </div>
+                <label className="flex items-center gap-2 text-sm text-violet-100">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(editForm.admin)}
+                    onChange={(e) => setEditForm((s) => ({ ...s, admin: e.target.checked }))}
+                    className="h-4 w-4 rounded border-violet-300/60 bg-violet-950/50 text-violet-400 focus:ring-violet-400/70"
+                  />
+                  Admin
+                </label>
+              </div>
+            )}
 
             {editForm.subscriptionBypass && !isNormalRoute && (
               <button

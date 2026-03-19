@@ -111,6 +111,8 @@ export interface ProfileDto {
   telephone: string;
   profilePhotoBase64: string | null;
   subscriptionBypass: boolean;
+  admin?: boolean;
+  superAdmin?: boolean;
 }
 
 export function authGetProfile() {
@@ -526,6 +528,8 @@ export interface AdminUserDto {
   subscriptionStatus: string;
   subscriptionPlan: string | null;
   subscriptionBypass: boolean;
+  admin?: boolean;
+  superAdmin?: boolean;
 }
 
 export interface AdminCountryMetricsDto {
@@ -567,6 +571,7 @@ export function adminCreateUser(data: {
   telephone: string;
   password: string;
   subscriptionBypass?: boolean;
+  admin?: boolean;
 }) {
   return api<AdminUserDto>("/api/admin/users", {
     method: "POST",
@@ -574,7 +579,7 @@ export function adminCreateUser(data: {
   });
 }
 
-export function adminUpdateUser(id: number, data: { nom?: string; prenom?: string; telephone?: string; subscriptionBypass?: boolean }) {
+export function adminUpdateUser(id: number, data: { nom?: string; prenom?: string; telephone?: string; subscriptionBypass?: boolean; admin?: boolean }) {
   return api<AdminUserDto>(`/api/admin/users/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),

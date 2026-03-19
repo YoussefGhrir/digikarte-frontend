@@ -11,6 +11,8 @@ interface User {
   prenom: string;
   profilePhotoBase64?: string | null;
   subscriptionBypass: boolean;
+  admin?: boolean;
+  superAdmin?: boolean;
 }
 
 interface AuthContextValue {
@@ -51,6 +53,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser({
           ...(parsed as User),
           subscriptionBypass: typeof parsed?.subscriptionBypass === "boolean" ? parsed.subscriptionBypass : false,
+          admin: Boolean(parsed?.admin),
+          superAdmin: Boolean(parsed?.superAdmin),
         });
       } catch {
         localStorage.removeItem(STORAGE_KEY);
@@ -68,6 +72,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       nom: res.nom,
       prenom: res.prenom,
       subscriptionBypass: false, // remplacé après refreshUser() via /api/auth/me
+      admin: false,
+      superAdmin: false,
     };
     setUser(u);
     setToken(res.token);
@@ -87,6 +93,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           prenom: profile.prenom,
           profilePhotoBase64: profile.profilePhotoBase64 ?? null,
           subscriptionBypass: Boolean(profile.subscriptionBypass),
+          admin: Boolean(profile.admin),
+          superAdmin: Boolean(profile.superAdmin),
         };
         if (typeof window !== "undefined") {
           localStorage.setItem(USER_KEY, JSON.stringify(next));
@@ -102,8 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (email: string, password: string) => {
       const res = await authLogin({ email, password });
       persist(res);
-      const isAdmin = email.trim().toLowerCase() === "gharghour";
-      router.push(isAdmin ? "/dashboard/admin" : "/dashboard");
+      router.push("/dashboard");
     },
     [persist, router]
   );

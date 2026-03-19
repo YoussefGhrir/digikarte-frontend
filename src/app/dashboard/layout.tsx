@@ -77,10 +77,10 @@ export default function DashboardLayout({
   const [subscription, setSubscription] = useState<SubscriptionDto | null>(null);
   const [subscriptionChecked, setSubscriptionChecked] = useState(false);
   const [profileChecked, setProfileChecked] = useState(false);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
 
-  const isAdmin =
-    user?.email?.toLowerCase() === "gharghour" ||
-    user?.email?.toLowerCase() === "gharghour@digikarte.local";
+  const isAdmin = Boolean((user as any)?.admin || (user as any)?.superAdmin);
+  const isSuperAdmin = Boolean((user as any)?.superAdmin);
   const subscriptionBypass = Boolean((user as any)?.subscriptionBypass);
 
   useEffect(() => {
@@ -138,6 +138,10 @@ export default function DashboardLayout({
     let cancelled = false;
     async function loadSubscription() {
       if (!token || !profileChecked) return;
+      // Evite de recharger l'abonnement à chaque navigation.
+      if (subscriptionChecked) {
+        return;
+      }
       if (onAdminArea || isAdmin || subscriptionBypass) {
         // Accès direct => ne pas rediriger vers /dashboard/subscription
         setSubscription(null);
@@ -148,6 +152,7 @@ export default function DashboardLayout({
         return;
       }
       try {
+        setSubscriptionLoading(true);
         const sub = await subscriptionGetMe();
         if (cancelled) return;
         setSubscription(sub);
@@ -180,14 +185,24 @@ export default function DashboardLayout({
           }
         }
       } finally {
-        if (!cancelled) setSubscriptionChecked(true);
+        if (!cancelled) {
+          setSubscriptionChecked(true);
+          setSubscriptionLoading(false);
+        }
       }
     }
     loadSubscription();
     return () => {
       cancelled = true;
     };
-  }, [token, pathname, router, logout, profileChecked, subscriptionBypass, isAdmin, onAdminArea]);
+  }, [token, pathname, router, logout, profileChecked, subscriptionBypass, isAdmin, onAdminArea, subscriptionChecked]);
+
+  useEffect(() => {
+    if (!pathname?.startsWith("/dashboard/admin")) return;
+    if (!isSuperAdmin && !loading) {
+      router.replace("/dashboard");
+    }
+  }, [pathname, isSuperAdmin, router, loading]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -267,7 +282,7 @@ export default function DashboardLayout({
     if (token) {
       loadOrgs();
     }
-  }, [token, path, activeOrgId, router, logout]);
+  }, [token, router, logout]);
 
   function handleSelectOrg(id: number) {
     setCurrentOrgId(id);
@@ -415,8 +430,9 @@ export default function DashboardLayout({
 
         <nav className="flex-1 space-y-1 text-[13px] font-medium">
           {!isAdmin &&
-            !subscriptionBypass &&
-            navItems(locale).map((item) => {
+            navItems(locale)
+              .filter((item) => !(subscriptionBypass && item.href === "/dashboard/subscription"))
+              .map((item) => {
               const isProfile = pathname === "/dashboard/profile";
 
               let active = false;
@@ -448,7 +464,7 @@ export default function DashboardLayout({
               );
             })}
 
-          {isAdmin && (
+          {isSuperAdmin && (
             <>
               <Link
                 href="/dashboard/admin"
@@ -604,9 +620,9 @@ export default function DashboardLayout({
                 </span>
               </Link>
             )}
-            {isAdmin && (
+          {isSuperAdmin && (
               <span className="hidden truncate rounded-xl border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-left text-sm font-semibold text-amber-200 lg:block">
-                Owner / Admin
+                Super Admin
               </span>
             )}
           </div>
@@ -636,7 +652,7 @@ export default function DashboardLayout({
                     className="relative w-full max-w-[420px] max-h-[calc(100vh-96px)] overflow-y-auto overflow-x-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-xl shadow-black/60"
                   >
                     <div className="p-2 space-y-1">
-                      {isAdmin ? (
+                      {isSuperAdmin ? (
                         <>
                           <Link
                             href="/dashboard/admin"
@@ -665,13 +681,24 @@ export default function DashboardLayout({
                         </>
                       ) : (
                         <>
+                          {!subscriptionBypass && (
+                            <Link
+                              href="/dashboard/subscription"
+                              onClick={() => setMobileNavOpen(false)}
+                              className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                            >
+                              <IconQr className="h-4 w-4 shrink-0" aria-hidden />
+                              <span>{t("subscriptionNav", locale)}</span>
+                            </Link>
+                          )}
+
                           <Link
-                            href="/dashboard/subscription"
+                            href="/dashboard"
                             onClick={() => setMobileNavOpen(false)}
                             className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
                           >
-                            <IconQr className="h-4 w-4 shrink-0" aria-hidden />
-                            <span>{t("subscriptionNav", locale)}</span>
+                            <IconHome className="h-4 w-4 shrink-0" aria-hidden />
+                            <span>{t("dashboardNavDashboard", locale)}</span>
                           </Link>
 
                           <Link
@@ -853,9 +880,9 @@ export default function DashboardLayout({
         {/* Navbar mobile fixe (navigation toujours visible) */}
         <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-neutral-800 bg-neutral-950/90 backdrop-blur lg:hidden">
           <div
-            className={`grid items-center ${isAdmin ? "grid-cols-3" : subscriptionBypass ? "grid-cols-3" : "grid-cols-4"} px-2 py-2`}
+            className={`grid items-center ${isSuperAdmin ? "grid-cols-3" : subscriptionBypass ? "grid-cols-4" : "grid-cols-5"} px-2 py-2`}
           >
-            {isAdmin ? (
+            {isSuperAdmin ? (
               <>
                 <Link
                   href="/dashboard/admin"
@@ -894,6 +921,17 @@ export default function DashboardLayout({
               </>
             ) : (
               <>
+                <Link
+                  href="/dashboard"
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
+                    pathname === "/dashboard" && dashboardView !== "organisations"
+                      ? "text-amber-200"
+                      : "text-neutral-400 hover:text-neutral-100"
+                  }`}
+                >
+                  <IconHome className="h-5 w-5" aria-hidden />
+                  <span>Home</span>
+                </Link>
                 {!subscriptionBypass && (
                   <Link
                     href={subscriptionHref}
