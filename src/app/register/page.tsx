@@ -6,6 +6,7 @@ import { useLanguage } from "@/lib/language-context";
 import { API_BASE, isApiError } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
+import { prefixWithLocale, swapLocaleInBrowserPath } from "@/lib/locale-path";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 export default function RegisterPage() {
@@ -73,7 +74,7 @@ export default function RegisterPage() {
 
   useEffect(() => {
     if (token) {
-      router.replace("/dashboard");
+      router.replace(prefixWithLocale("/dashboard", locale));
       return;
     }
 
@@ -107,11 +108,8 @@ export default function RegisterPage() {
   const isBusy = pendingAction !== null;
   const isFormPending = pendingAction === "form";
   const isGooglePending = pendingAction === "google";
-  const localize = (path: string, lang = locale) => `/${lang}${path.startsWith("/") ? path : `/${path}`}`;
-  const swapLocaleInPath = (lang: Locale) => {
-    const current = pathname || "/";
-    return current.replace(/^\/(de|fr|en)(?=\/|$)/, `/${lang}`);
-  };
+  const localize = (path: string, lang = locale) => prefixWithLocale(path, lang);
+  const swapLocaleInPath = (lang: Locale) => swapLocaleInBrowserPath(pathname || "/", lang);
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-950 to-neutral-900 text-neutral-50">

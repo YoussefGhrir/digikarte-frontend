@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminGetMetrics, type AdminMetricsDto, isApiError } from "@/lib/api";
 import { useLanguage } from "@/lib/language-context";
+import { prefixWithLocale } from "@/lib/locale-path";
 import { t } from "@/lib/i18n";
 
 function formatCurrency(amount: number, currency: string, locale: string) {
@@ -48,7 +49,7 @@ export default function AdminDashboardPage() {
       } catch (e) {
         if (cancelled) return;
         if (isApiError(e) && (e.status === 401 || e.status === 403)) {
-          router.replace("/login");
+          router.replace(prefixWithLocale("/login", locale));
           return;
         }
         setError(e instanceof Error ? e.message : "Erreur metrics");
@@ -60,7 +61,7 @@ export default function AdminDashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, [router]);
+  }, [router, locale]);
 
   const revenue = useMemo(() => {
     if (!metrics) return null;

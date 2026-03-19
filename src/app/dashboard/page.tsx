@@ -13,6 +13,7 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { t } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
+import { prefixWithLocale, stripLocaleFromPathname } from "@/lib/locale-path";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
@@ -44,6 +45,7 @@ export default function DashboardPage() {
   const [totalMenus, setTotalMenus] = useState<number>(0);
   const router = useRouter();
   const pathname = usePathname();
+  const path = stripLocaleFromPathname(pathname ?? "/");
   const searchParams = useSearchParams();
   const { logout } = useAuth();
 
@@ -167,8 +169,8 @@ export default function DashboardPage() {
       }
       setDeletingOrg(null);
       await load();
-      if (pathname === `/dashboard/organisations/${deletedId}`) {
-        router.push("/dashboard");
+      if (path === `/dashboard/organisations/${deletedId}`) {
+        router.push(prefixWithLocale("/dashboard", locale));
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur");
@@ -239,7 +241,7 @@ export default function DashboardPage() {
               )}
             </div>
             <Link
-              href={`/dashboard/organisations/${currentOrg.id}`}
+              href={prefixWithLocale(`/dashboard/organisations/${currentOrg.id}`, locale)}
               className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-blue-500 px-4 py-2 text-sm font-medium text-white shadow hover:bg-blue-400 sm:mt-0"
             >
               {t("orgMenusTitle", locale)} · {currentOrg.name}
@@ -663,7 +665,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
                     {/* Contenu carte */}
-                    <Link href={`/dashboard/organisations/${org.id}`} className="flex flex-1 flex-col p-4">
+                    <Link href={prefixWithLocale(`/dashboard/organisations/${org.id}`, locale)} className="flex flex-1 flex-col p-4">
                       <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-amber-400/90">
                         {t("dashboardOrgLabel", locale)}
                       </p>

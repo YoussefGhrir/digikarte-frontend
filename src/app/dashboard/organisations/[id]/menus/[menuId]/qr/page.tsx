@@ -11,6 +11,7 @@ import {
 } from "@/lib/qr-pdf-from-dom";
 import { t } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
+import { prefixWithLocale } from "@/lib/locale-path";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -339,14 +340,14 @@ export default function MenuQrPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="w-full min-w-0 space-y-6 overflow-x-hidden">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-forum text-2xl text-neutral-50">{t("menuQrTab", locale)}</h1>
           <p className="mt-1 text-sm text-neutral-500">{t("menuQrPreviewHint", locale)}</p>
         </div>
         <Link
-          href={`/dashboard/organisations/${orgId}/qr`}
+          href={prefixWithLocale(`/dashboard/organisations/${orgId}/qr`, locale)}
           className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-neutral-600 bg-neutral-800 px-4 py-2.5 text-sm font-medium text-neutral-200 hover:bg-neutral-700"
         >
           {t("dashboardBack", locale)}

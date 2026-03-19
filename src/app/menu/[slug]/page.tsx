@@ -2,6 +2,7 @@
 
 import { menuPublicBySlug, type MenuPublicDto } from "@/lib/api";
 import { useLanguage } from "@/lib/language-context";
+import { prefixWithLocale } from "@/lib/locale-path";
 import { t, type Locale } from "@/lib/i18n";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -149,7 +150,7 @@ export default function PublicMenuPage() {
               </div>
               <div className="flex flex-col gap-3 md:items-end">
                 <a
-                  href="/register"
+                  href={prefixWithLocale("/register", locale)}
                   className="rounded-full bg-amber-400 px-7 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_20px_60px_rgba(251,191,36,0.7)] hover:bg-amber-300"
                 >
                   {t("ctaGetStarted", locale)}
@@ -207,19 +208,19 @@ function DemoScenarioPage({
           <p className="mt-3 max-w-4xl text-sm leading-relaxed text-neutral-300">{text.heroSubtitle}</p>
           <div className="mt-4 flex flex-wrap gap-2 text-xs">
             <a
-              href="/"
+              href={prefixWithLocale("/", locale)}
               className="inline-flex items-center rounded-full border border-neutral-700 bg-neutral-950 px-3 py-1.5 text-[11px] text-neutral-200 hover:border-amber-400 hover:text-amber-200"
             >
               ← {t("menuDemoBackHome", locale)}
             </a>
             <a
-              href="/register"
+              href={prefixWithLocale("/register", locale)}
               className="inline-flex items-center rounded-full border border-emerald-500/60 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-semibold text-emerald-200 hover:bg-emerald-500/20"
             >
               {t("menuDemoRegister", locale)}
             </a>
             <a
-              href="/login"
+              href={prefixWithLocale("/login", locale)}
               className="inline-flex items-center rounded-full border border-neutral-600 bg-neutral-950 px-3 py-1.5 text-[11px] text-neutral-200 hover:border-amber-400 hover:text-amber-200"
             >
               {t("ctaLogin", locale)}
@@ -263,7 +264,7 @@ function DemoScenarioPage({
                   return (
                     <a
                       key={template.id}
-                      href={`/menu/demo?template=${template.id}`}
+                      href={prefixWithLocale(`/menu/demo?template=${template.id}`, locale)}
                       className={`rounded-xl border px-3 py-1.5 text-[11px] transition ${
                         active
                           ? "border-amber-300 bg-amber-400/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"

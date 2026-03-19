@@ -20,6 +20,7 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { t } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
+import { prefixWithLocale } from "@/lib/locale-path";
 
 function statusBadge(status: string) {
   const s = (status ?? "").toUpperCase();
@@ -183,7 +184,7 @@ export default function AdminUsersPage() {
       setUsers(data);
     } catch (e) {
       if (isApiError(e) && (e.status === 401 || e.status === 403)) {
-        router.replace("/login");
+        router.replace(prefixWithLocale("/login", locale));
         return;
       }
       setError(e instanceof Error ? e.message : "Erreur chargement users");
@@ -276,7 +277,7 @@ export default function AdminUsersPage() {
       setActionUser(null);
       setActionMode(null);
       const nextPath = nextBypass ? "/dashboard/admin/users" : "/dashboard/admin/users/normal";
-      router.push(nextPath);
+      router.push(prefixWithLocale(nextPath, locale));
     } catch (e) {
       setActionError(e instanceof Error ? e.message : "Erreur action");
     } finally {
@@ -331,9 +332,9 @@ export default function AdminUsersPage() {
 
       // Si on change subscriptionBypass, rediriger vers la bonne table.
       if (updated?.subscriptionBypass) {
-        router.push("/dashboard/admin/users");
+        router.push(prefixWithLocale("/dashboard/admin/users", locale));
       } else {
-        router.push("/dashboard/admin/users/normal");
+        router.push(prefixWithLocale("/dashboard/admin/users/normal", locale));
       }
 
       // Pas de reload immédiat : la redirection rechargera la bonne table.
@@ -351,7 +352,7 @@ export default function AdminUsersPage() {
     try {
       await adminUpdateUser(editUser.userId, { subscriptionBypass: false });
       setEditUser(null);
-      router.push("/dashboard/admin/users/normal");
+      router.push(prefixWithLocale("/dashboard/admin/users/normal", locale));
     } catch (e) {
       setEditError(e instanceof Error ? e.message : "Erreur exige abonnement");
     } finally {

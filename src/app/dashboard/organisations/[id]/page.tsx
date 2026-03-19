@@ -16,6 +16,7 @@ import { PRICE_CURRENCY_CODES } from "@/components/menu-templates";
 import { useAuth } from "@/lib/auth-context";
 import { t, locales, localeLabels, translations, type Locale } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
+import { prefixWithLocale } from "@/lib/locale-path";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -48,14 +49,14 @@ export default function OrganisationPage() {
       setMenus(menusData);
     } catch (e) {
       if (isApiError(e) && (e.status === 401 || e.status === 403)) {
-        logout({ redirectTo: "/" });
+        logout({ redirectTo: prefixWithLocale("/", locale) });
         return;
       }
       setError(e instanceof Error ? e.message : "Erreur");
     } finally {
       setLoading(false);
     }
-  }, [id, logout]);
+  }, [id, logout, locale]);
 
   useEffect(() => {
     load();
@@ -123,9 +124,9 @@ export default function OrganisationPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="w-full min-w-0 space-y-8 overflow-x-hidden">
       <Link
-        href="/dashboard"
+        href={prefixWithLocale("/dashboard", locale)}
         className="inline-flex items-center gap-1.5 text-sm text-neutral-400 hover:text-amber-300"
       >
         <span aria-hidden>←</span>
@@ -331,7 +332,7 @@ export default function OrganisationPage() {
                   {menu.items?.length ?? 0} {t("orgItemsCount", locale)}
                 </p>
                 <Link
-                  href={`/dashboard/organisations/${id}/menus/${menu.id}`}
+                  href={prefixWithLocale(`/dashboard/organisations/${id}/menus/${menu.id}`, locale)}
                   className="mt-3 inline-block cursor-pointer rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white shadow hover:bg-blue-400"
                 >
                   {t("menuViewButton", locale)}

@@ -3,6 +3,7 @@
 import { useAuth } from "@/lib/auth-context";
 import { localeLabels, t, type Locale } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
+import { prefixWithLocale } from "@/lib/locale-path";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -111,7 +112,7 @@ export default function Home() {
 
           {user && (
             <Link
-              href="/dashboard"
+              href={prefixWithLocale("/dashboard", locale)}
               className="rounded-full border border-emerald-500/50 bg-emerald-500/10 px-3 py-1.5 text-[10px] font-medium text-emerald-800 dark:text-emerald-100 hover:bg-emerald-500/20 sm:px-3.5 sm:text-[11px]"
             >
               {t("headerDashboardButton", locale)}
@@ -119,13 +120,13 @@ export default function Home() {
           )}
 
           <Link
-            href="/login"
+            href={prefixWithLocale("/login", locale)}
             className="rounded-full border border-neutral-400 dark:border-neutral-700 px-3 py-1.5 text-[10px] font-medium text-neutral-700 dark:text-neutral-200 hover:border-amber-500/70 hover:bg-amber-500/10 sm:px-3.5 sm:text-[11px]"
           >
             {t("ctaLogin", locale)}
           </Link>
           <Link
-            href="/register"
+            href={prefixWithLocale("/register", locale)}
             className="rounded-full bg-amber-400 px-3.5 py-1.5 text-[11px] font-semibold text-neutral-900 shadow-[0_18px_45px_rgba(251,191,36,0.45)] hover:bg-amber-300 sm:px-4 sm:text-xs"
           >
             {t("ctaGetStarted", locale)}
@@ -150,13 +151,13 @@ export default function Home() {
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Link
-                href="/register"
+                href={prefixWithLocale("/register", locale)}
                 className="rounded-full bg-amber-400 px-6 py-2 text-sm font-semibold text-neutral-900 shadow-[0_20px_60px_rgba(251,191,36,0.6)] hover:bg-amber-300"
               >
                 {t("heroPrimaryCta", locale)}
               </Link>
               <Link
-                href="/menu/demo"
+                href={prefixWithLocale("/menu/demo", locale)}
                 className="rounded-full border border-neutral-400 dark:border-neutral-700/80 bg-neutral-200 dark:bg-neutral-900/70 px-6 py-2 text-sm font-medium text-neutral-800 dark:text-neutral-100 hover:border-amber-500/60 hover:bg-amber-500/5"
               >
                 {t("heroSecondaryCta", locale)}
@@ -362,7 +363,7 @@ export default function Home() {
                       <li>• {t("subscriptionFeatureSupport", locale)}</li>
                     </ul>
                     <Link
-                      href="/register"
+                      href={prefixWithLocale("/register", locale)}
                       className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2 text-xs font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(16,185,129,0.55)] transition hover:-translate-y-0.5 hover:bg-emerald-300 md:mt-auto"
                     >
                       {t("pricingCtaChoosePlan", locale)}
@@ -396,7 +397,7 @@ export default function Home() {
                       <li>• {t("subscriptionFeatureSupport", locale)}</li>
                     </ul>
                     <Link
-                      href="/register"
+                      href={prefixWithLocale("/register", locale)}
                       className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-amber-400 px-4 py-2 text-xs font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(251,191,36,0.5)] transition hover:-translate-y-0.5 hover:bg-amber-300 md:mt-auto"
                     >
                       {t("pricingCtaChoosePlan", locale)}
@@ -429,7 +430,7 @@ export default function Home() {
                       <li>• {t("subscriptionFeatureSupport", locale)}</li>
                     </ul>
                     <Link
-                      href="/register"
+                      href={prefixWithLocale("/register", locale)}
                       className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-4 py-2 text-xs font-semibold text-neutral-900 shadow-[0_14px_30px_rgba(16,185,129,0.5)] transition hover:-translate-y-0.5 hover:bg-emerald-300 md:mt-auto"
                     >
                       {t("pricingCtaChoosePlan", locale)}
@@ -522,7 +523,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-3 md:items-end">
               <Link
-                href="/register"
+                href={prefixWithLocale("/register", locale)}
                 className="rounded-full bg-amber-400 px-7 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_20px_60px_rgba(251,191,36,0.7)] hover:bg-amber-300"
               >
                 {t("ctaGetStarted", locale)}

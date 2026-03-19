@@ -6,6 +6,7 @@ import { useLanguage } from "@/lib/language-context";
 import { API_BASE, isApiError } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
+import { prefixWithLocale, swapLocaleInBrowserPath } from "@/lib/locale-path";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 export default function LoginPage() {
@@ -25,7 +26,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (token) {
-      router.replace("/dashboard");
+      router.replace(prefixWithLocale("/dashboard", locale));
       return;
     }
 
@@ -58,7 +59,9 @@ export default function LoginPage() {
         }
       }
 
-      router.replace(justRegistered ? "/dashboard/subscription" : "/dashboard");
+      router.replace(
+        prefixWithLocale(justRegistered ? "/dashboard/subscription" : "/dashboard", locale),
+      );
     }
   }, [token, router, searchParams, locale]);
 
@@ -82,11 +85,8 @@ export default function LoginPage() {
   const isBusy = pendingAction !== null;
   const isFormPending = pendingAction === "form";
   const isGooglePending = pendingAction === "google";
-  const localize = (path: string, lang = locale) => `/${lang}${path.startsWith("/") ? path : `/${path}`}`;
-  const swapLocaleInPath = (lang: Locale) => {
-    const current = pathname || "/";
-    return current.replace(/^\/(de|fr|en)(?=\/|$)/, `/${lang}`);
-  };
+  const localize = (path: string, lang = locale) => prefixWithLocale(path, lang);
+  const swapLocaleInPath = (lang: Locale) => swapLocaleInBrowserPath(pathname || "/", lang);
 
   const languages: Locale[] = ["de", "fr", "en"];
   const [langOpen, setLangOpen] = useState(false);

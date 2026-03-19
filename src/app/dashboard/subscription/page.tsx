@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/language-context";
+import { prefixWithLocale } from "@/lib/locale-path";
 import { t, type Locale } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -66,10 +67,10 @@ export default function SubscriptionPage() {
 
   useEffect(() => {
     if (Boolean((user as any)?.subscriptionBypass)) {
-      router.replace("/dashboard");
+      router.replace(prefixWithLocale("/dashboard", locale));
       return;
     }
-  }, [router, (user as any)?.subscriptionBypass]);
+  }, [router, locale, (user as any)?.subscriptionBypass]);
 
   useEffect(() => {
     let cancelled = false;
@@ -99,7 +100,7 @@ export default function SubscriptionPage() {
       } catch (e) {
         if (cancelled) return;
         if (isApiError(e) && (e.status === 401 || e.status === 403)) {
-          router.replace("/login");
+          router.replace(prefixWithLocale("/login", locale));
           return;
         }
         setError(e instanceof Error ? e.message : "Erreur abonnement");
@@ -111,7 +112,7 @@ export default function SubscriptionPage() {
     return () => {
       cancelled = true;
     };
-  }, [router, (user as any)?.subscriptionBypass]);
+  }, [router, locale, (user as any)?.subscriptionBypass]);
 
   const isTrial = sub?.status === "TRIALING";
   const isActive = sub?.status === "ACTIVE";
@@ -221,7 +222,7 @@ export default function SubscriptionPage() {
   }
 
   return (
-    <div className="relative space-y-8 text-neutral-100">
+    <div className="relative w-full min-w-0 space-y-8 overflow-x-hidden text-neutral-100">
       {loading && (
         <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-black/70">
           <div className="flex flex-col items-center gap-3">

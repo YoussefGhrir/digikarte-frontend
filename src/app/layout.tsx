@@ -112,14 +112,14 @@ export default function RootLayout({
         <body
           className={`${inter.variable} ${jetbrainsMono.variable} ${forum.variable} ${dmSans.variable} ${dancingScript.variable} overflow-x-hidden antialiased`}
         >
-          <AuthProvider>
-            <LanguageProvider initialLocale={cookieLocale}>
+          <LanguageProvider initialLocale={cookieLocale}>
+            <AuthProvider>
               <div className="flex min-h-screen flex-col overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
                 <main className="flex-1">{children}</main>
                 <Footer />
               </div>
-            </LanguageProvider>
-          </AuthProvider>
+            </AuthProvider>
+          </LanguageProvider>
         </body>
       </html>
     );
@@ -159,14 +159,14 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} ${forum.variable} ${dmSans.variable} ${dancingScript.variable} overflow-x-hidden antialiased`}
       >
-        <AuthProvider>
-          <LanguageProvider initialLocale={initialLocale}>
+        <LanguageProvider initialLocale={initialLocale}>
+          <AuthProvider>
             <div className="flex min-h-screen flex-col overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
               <main className="flex-1">{children}</main>
               <Footer />
             </div>
-          </LanguageProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

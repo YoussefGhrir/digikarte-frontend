@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useLanguage } from "@/lib/language-context";
+import { prefixWithLocale } from "@/lib/locale-path";
 
 export default function Footer() {
+  const { locale } = useLanguage();
   return (
     <footer className="border-t border-neutral-800/70 bg-black/60">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-6 py-4 text-[11px] text-neutral-400 md:flex-row md:items-center md:justify-between">
@@ -11,20 +14,20 @@ export default function Footer() {
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <Link
-            href="/impressum"
+            href={prefixWithLocale("/impressum", locale)}
             className="transition-colors hover:text-amber-300"
           >
             Impressum
           </Link>
           <span className="h-3 w-px bg-neutral-700" />
           <Link
-            href="/datenschutz"
+            href={prefixWithLocale("/datenschutz", locale)}
             className="transition-colors hover:text-amber-300"
           >
             Datenschutzerklärung
           </Link>
           <span className="h-3 w-px bg-neutral-700" />
-          <Link href="/agb" className="transition-colors hover:text-amber-300">
+          <Link href={prefixWithLocale("/agb", locale)} className="transition-colors hover:text-amber-300">
             AGB
           </Link>
           <span className="h-3 w-px bg-neutral-700" />

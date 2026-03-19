@@ -7,8 +7,9 @@ import { useLanguage } from "@/lib/language-context";
 import { orgList, type OrganizationDto, isApiError, subscriptionGetMe, type SubscriptionDto } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
+import { prefixWithLocale, stripLocaleFromPathname, swapLocaleInBrowserPath } from "@/lib/locale-path";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function navItems(_locale: Locale) {
   return [
@@ -58,12 +59,14 @@ export default function DashboardLayout({
   const { locale, setLocale } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
-  const localizePath = (path: string, lang = locale) => `/${lang}${path.startsWith("/") ? path : `/${path}`}`;
-  const swapLocaleInPath = (lang: Locale) => {
-    const current = pathname || "/dashboard";
-    return current.replace(/^\/(de|fr|en)(?=\/|$)/, `/${lang}`);
-  };
-  const onAdminArea = Boolean(pathname?.startsWith("/dashboard/admin"));
+  /** Route interne sans préfixe /de|/fr|/en (alignée sur les fichiers app/dashboard/...). */
+  const path = stripLocaleFromPathname(pathname ?? "/");
+  const localizePath = useCallback(
+    (p: string, lang: Locale = locale) => prefixWithLocale(p, lang),
+    [locale],
+  );
+  const swapLocaleInPath = (lang: Locale) => swapLocaleInBrowserPath(pathname || "/", lang);
+  const onAdminArea = Boolean(path.startsWith("/dashboard/admin"));
 
   const languages: Locale[] = ["de", "fr", "en"];
   const [langOpen, setLangOpen] = useState(false);
@@ -150,8 +153,8 @@ export default function DashboardLayout({
         // Accès direct => ne pas rediriger vers /dashboard/subscription
         setSubscription(null);
         setSubscriptionChecked(true);
-        if (subscriptionBypass && pathname?.startsWith("/dashboard/subscription")) {
-          router.replace("/dashboard");
+        if (subscriptionBypass && path.startsWith("/dashboard/subscription")) {
+          router.replace(localizePath("/dashboard"));
         }
         return;
       }
@@ -166,8 +169,8 @@ export default function DashboardLayout({
           !sub ||
           status === "EXPIRED" ||
           status === "CANCELLED";
-        if (needsPaywall && !pathname?.startsWith("/dashboard/subscription")) {
-          router.replace("/dashboard/subscription");
+        if (needsPaywall && !path.startsWith("/dashboard/subscription")) {
+          router.replace(localizePath("/dashboard/subscription"));
         }
       } catch (e) {
         if (cancelled) return;
@@ -178,14 +181,14 @@ export default function DashboardLayout({
           }
           // Toute autre erreur API (404, 500, etc.) = pas d'abonnement actif
           setSubscription(null);
-          if (!pathname?.startsWith("/dashboard/subscription")) {
-            router.replace("/dashboard/subscription");
+          if (!path.startsWith("/dashboard/subscription")) {
+            router.replace(localizePath("/dashboard/subscription"));
           }
         } else {
           // Erreur inconnue: se comporter comme aucun abonnement
           setSubscription(null);
-          if (!pathname?.startsWith("/dashboard/subscription")) {
-            router.replace("/dashboard/subscription");
+          if (!path.startsWith("/dashboard/subscription")) {
+            router.replace(localizePath("/dashboard/subscription"));
           }
         }
       } finally {
@@ -199,14 +202,14 @@ export default function DashboardLayout({
     return () => {
       cancelled = true;
     };
-  }, [token, pathname, router, logout, profileChecked, subscriptionBypass, isAdmin, onAdminArea, subscriptionChecked]);
+  }, [token, pathname, path, router, logout, profileChecked, subscriptionBypass, isAdmin, onAdminArea, subscriptionChecked, localizePath]);
 
   useEffect(() => {
-    if (!pathname?.startsWith("/dashboard/admin")) return;
+    if (!path.startsWith("/dashboard/admin")) return;
     if (!isSuperAdmin && !loading) {
-      router.replace("/dashboard");
+      router.replace(localizePath("/dashboard"));
     }
-  }, [pathname, isSuperAdmin, router, loading]);
+  }, [path, isSuperAdmin, router, loading, localizePath]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -226,7 +229,6 @@ export default function DashboardLayout({
   }, []);
 
   const searchParams = useSearchParams();
-  const path = pathname ?? "";
   const dashboardView = path === "/dashboard" ? searchParams.get("view") : null;
   let activeOrgId: number | null = null;
   const match = path.match(/^\/dashboard\/organisations\/(\d+)/);
@@ -270,7 +272,7 @@ export default function DashboardLayout({
           path.startsWith("/dashboard/organisations") &&
           !path.startsWith(`/dashboard/organisations/${initialId}`)
         ) {
-          router.replace(`/dashboard/organisations/${initialId}`);
+          router.replace(localizePath(`/dashboard/organisations/${initialId}`));
         }
       } catch (e) {
         if (isApiError(e) && (e.status === 401 || e.status === 403 || e.status === 404)) {
@@ -286,7 +288,7 @@ export default function DashboardLayout({
     if (token) {
       loadOrgs();
     }
-  }, [token, router, logout]);
+  }, [token, router, logout, path, activeOrgId, localizePath]);
 
   function handleSelectOrg(id: number) {
     setCurrentOrgId(id);
@@ -294,8 +296,8 @@ export default function DashboardLayout({
       window.localStorage.setItem("currentOrgId", String(id));
     }
     setOrgDropdownOpen(false);
-    if (!pathname?.startsWith(`/dashboard/organisations/${id}`)) {
-      router.push(`/dashboard/organisations/${id}`);
+    if (!path.startsWith(`/dashboard/organisations/${id}`)) {
+      router.push(localizePath(`/dashboard/organisations/${id}`));
     }
   }
 
@@ -313,7 +315,7 @@ export default function DashboardLayout({
 
   // Tant que nous n'avons pas vérifié l'abonnement (et qu'on n'est pas déjà
   // sur la page d'abonnement), afficher un écran de chargement.
-  if (!subscriptionChecked && !pathname?.startsWith("/dashboard/subscription") && !onAdminArea && !subscriptionBypass) {
+  if (!subscriptionChecked && !path.startsWith("/dashboard/subscription") && !onAdminArea && !subscriptionBypass) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-950">
         <p className="text-sm tracking-[0.3em] text-neutral-400 uppercase">
@@ -337,7 +339,7 @@ export default function DashboardLayout({
     !isAdmin &&
     !subscriptionBypass &&
     !onAdminArea &&
-    !pathname?.startsWith("/dashboard/subscription")
+    !path.startsWith("/dashboard/subscription")
   ) {
     return null;
   }
@@ -437,10 +439,10 @@ export default function DashboardLayout({
             navItems(locale)
               .filter((item) => !(subscriptionBypass && item.href === "/dashboard/subscription"))
               .map((item) => {
-              const isProfile = pathname === "/dashboard/profile";
+              const isProfile = path === "/dashboard/profile";
 
               let active = false;
-              const isDashboardRoot = pathname === "/dashboard";
+              const isDashboardRoot = path === "/dashboard";
               const isOrganisationsView =
                 isDashboardRoot && dashboardView === "organisations";
 
@@ -449,7 +451,7 @@ export default function DashboardLayout({
               } else if (item.href === "/dashboard?view=organisations") {
                 active = isOrganisationsView;
               } else if (item.href === "/dashboard/subscription") {
-                active = pathname?.startsWith("/dashboard/subscription") ?? false;
+                active = path.startsWith("/dashboard/subscription");
               }
 
               return (
@@ -471,9 +473,9 @@ export default function DashboardLayout({
           {isSuperAdmin && (
             <>
               <Link
-                href="/dashboard/admin"
+                href={localizePath("/dashboard/admin")}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
-                  pathname === "/dashboard/admin"
+                  path === "/dashboard/admin"
                     ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
                     : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
                 }`}
@@ -482,9 +484,9 @@ export default function DashboardLayout({
                 <span className="tracking-wide">{t("dashboardAdmin", locale)}</span>
               </Link>
               <Link
-                href="/dashboard/admin/users"
+                href={localizePath("/dashboard/admin/users")}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
-                  pathname === "/dashboard/admin/users"
+                  path === "/dashboard/admin/users"
                     ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
                     : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
                 }`}
@@ -493,9 +495,9 @@ export default function DashboardLayout({
                 <span className="tracking-wide">{t("dashboardAdminVipUsers", locale)}</span>
               </Link>
               <Link
-                href="/dashboard/admin/users/normal"
+                href={localizePath("/dashboard/admin/users/normal")}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
-                  pathname === "/dashboard/admin/users/normal"
+                  path === "/dashboard/admin/users/normal"
                     ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
                     : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
                 }`}
@@ -509,11 +511,11 @@ export default function DashboardLayout({
           {!isAdmin && currentOrg && (
             <>
               <Link
-                href={`/dashboard/organisations/${currentOrg.id}`}
+                href={localizePath(`/dashboard/organisations/${currentOrg.id}`)}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
-                  (pathname === `/dashboard/organisations/${currentOrg.id}` ||
-                    (pathname?.startsWith(`/dashboard/organisations/${currentOrg.id}/menus/`) &&
-                      !pathname?.endsWith("/qr")))
+                  (path === `/dashboard/organisations/${currentOrg.id}` ||
+                    (path.startsWith(`/dashboard/organisations/${currentOrg.id}/menus/`) &&
+                      !path.endsWith("/qr")))
                     ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
                     : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
                 }`}
@@ -527,10 +529,10 @@ export default function DashboardLayout({
                 </div>
               </Link>
               <Link
-                href={`/dashboard/organisations/${currentOrg.id}/qr`}
+                href={localizePath(`/dashboard/organisations/${currentOrg.id}/qr`)}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
-                  pathname === `/dashboard/organisations/${currentOrg.id}/qr` ||
-                  (pathname?.startsWith(`/dashboard/organisations/${currentOrg.id}/`) && pathname?.includes("/qr"))
+                  path === `/dashboard/organisations/${currentOrg.id}/qr` ||
+                  (path.startsWith(`/dashboard/organisations/${currentOrg.id}/`) && path.includes("/qr"))
                     ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
                     : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
                 }`}
@@ -551,9 +553,9 @@ export default function DashboardLayout({
         <div className="mt-auto border-t border-neutral-800 pt-4 space-y-2">
           {user && (
             <Link
-              href="/dashboard/profile"
+              href={localizePath("/dashboard/profile")}
               className={`flex items-center gap-3 rounded-xl px-3 py-2 text-left transition ${
-                pathname === "/dashboard/profile"
+                path === "/dashboard/profile"
                   ? "bg-amber-500/15 text-amber-300"
                   : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-100"
               }`}
@@ -615,7 +617,7 @@ export default function DashboardLayout({
             {/* Nom de l'organisation à gauche (cliquable → dashboard ou page org) */}
             {!isAdmin && !orgsLoading && orgs.length > 0 && currentOrg && (
               <Link
-                href="/dashboard"
+                href={localizePath("/dashboard")}
                 className="hidden truncate rounded-xl px-3 py-1.5 text-left text-sm font-medium text-neutral-200 transition hover:bg-neutral-900/80 hover:text-amber-200 lg:block"
               >
                 <span className="block truncate">{currentOrg.name}</span>
@@ -723,7 +725,7 @@ export default function DashboardLayout({
             )}
 
             <Link
-              href="/dashboard/profile"
+              href={localizePath("/dashboard/profile")}
               className="hidden items-center gap-2 sm:flex"
             >
               {user?.profilePhotoBase64 ? (
@@ -785,15 +787,15 @@ export default function DashboardLayout({
               <div className="p-2">
                 {isSuperAdmin ? (
                   <>
-                    <Link href="/dashboard/admin" onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                    <Link href={localizePath("/dashboard/admin")} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
                       <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
                       <span>{t("dashboardAdmin", locale)}</span>
                     </Link>
-                    <Link href="/dashboard/admin/users" onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                    <Link href={localizePath("/dashboard/admin/users")} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
                       <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
                       <span>{t("dashboardAdminVipUsers", locale)}</span>
                     </Link>
-                    <Link href="/dashboard/admin/users/normal" onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                    <Link href={localizePath("/dashboard/admin/users/normal")} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
                       <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
                       <span>{t("dashboardAdminNormalUsers", locale)}</span>
                     </Link>
@@ -801,31 +803,31 @@ export default function DashboardLayout({
                 ) : (
                   <>
                     {!subscriptionBypass && (
-                      <Link href="/dashboard/subscription" onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                      <Link href={localizePath("/dashboard/subscription")} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
                         <IconQr className="h-4 w-4 shrink-0" aria-hidden />
                         <span>{t("subscriptionNav", locale)}</span>
                       </Link>
                     )}
-                    <Link href="/dashboard" onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                    <Link href={localizePath("/dashboard")} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
                       <IconHome className="h-4 w-4 shrink-0" aria-hidden />
                       <span>{t("dashboardNavDashboard", locale)}</span>
                     </Link>
-                    <Link href={organisationsHref} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                    <Link href={localizePath(organisationsHref)} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
                       <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
                       <span>{t("dashboardNavOrganisations", locale)}</span>
                     </Link>
-                    <Link href={qrHref} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                    <Link href={localizePath(qrHref)} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
                       <IconQr className="h-4 w-4 shrink-0" aria-hidden />
                       <span>{t("menuQrTab", locale)}</span>
                     </Link>
-                    <Link href={menusHref} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
+                    <Link href={localizePath(menusHref)} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-900">
                       <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
                       <span>{t("dashboardNavMenusOfOrg", locale)}</span>
                     </Link>
                   </>
                 )}
                 <div className="my-2 border-t border-neutral-800" />
-                <Link href="/dashboard/profile" onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-amber-200 hover:bg-neutral-900">
+                <Link href={localizePath("/dashboard/profile")} onClick={() => setMobileProfileMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-amber-200 hover:bg-neutral-900">
                   <IconHome className="h-4 w-4 shrink-0" aria-hidden />
                   <span>{t("dashboardNavProfile", locale)}</span>
                 </Link>
@@ -845,179 +847,122 @@ export default function DashboardLayout({
           </div>
         )}
 
-        <main className="flex-1 overflow-y-auto bg-neutral-950/95 px-4 py-6 pb-24 sm:px-6 sm:pb-28 lg:px-10 lg:py-8 lg:pb-0">
-          {pathname?.match(/\/dashboard\/organisations\/[^/]+\/menus\/[^/]+/) ? (
-            <div className="w-full min-w-0">{children}</div>
+        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-neutral-950/95 px-4 py-6 pb-24 sm:px-6 sm:pb-28 lg:px-10 lg:py-8 lg:pb-0">
+          {path.match(/^\/dashboard\/organisations\/[^/]+\/menus\/[^/]+/) ? (
+            <div className="w-full min-w-0 max-w-full">{children}</div>
           ) : (
-            <div className="mx-auto max-w-6xl">{children}</div>
+            <div className="mx-auto w-full min-w-0 max-w-6xl">{children}</div>
           )}
         </main>
 
         {/* Navbar mobile fixe (navigation toujours visible) */}
         <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-neutral-800 bg-neutral-950/90 backdrop-blur lg:hidden">
           <div
-            className="flex flex-wrap items-start justify-between gap-y-1 px-2 py-2"
+            className="flex items-stretch justify-between gap-x-0.5 px-1.5 py-2"
           >
             {isSuperAdmin ? (
               <>
                 <Link
-                  href="/dashboard/admin"
-                  className={`flex min-w-[72px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
-                    pathname === "/dashboard/admin"
+                  href={localizePath("/dashboard/admin")}
+                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
+                    path === "/dashboard/admin"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
                   }`}
                 >
-                  <IconBuilding className="h-5 w-5" aria-hidden />
-                  <span>{t("dashboardAdmin", locale)}</span>
+                  <IconBuilding className="h-5 w-5 shrink-0" aria-hidden />
+                  <span className="text-center leading-tight">{t("dashboardAdmin", locale)}</span>
                 </Link>
                 <Link
-                  href="/dashboard/admin/users"
-                  className={`flex min-w-[72px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
-                    pathname === "/dashboard/admin/users" ||
-                    pathname === "/dashboard/admin/users/normal"
+                  href={localizePath("/dashboard/admin/users")}
+                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
+                    path === "/dashboard/admin/users" ||
+                    path === "/dashboard/admin/users/normal"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
                   }`}
                 >
-                  <IconMenuList className="h-5 w-5" aria-hidden />
-                  <span>{t("dashboardAdminVipShort", locale)}</span>
+                  <IconMenuList className="h-5 w-5 shrink-0" aria-hidden />
+                  <span className="text-center leading-tight">{t("dashboardAdminVipShort", locale)}</span>
                 </Link>
                 <Link
-                  href="/dashboard/admin/users/normal"
-                  className={`flex min-w-[72px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
-                    pathname === "/dashboard/admin/users/normal"
+                  href={localizePath("/dashboard/admin/users/normal")}
+                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
+                    path === "/dashboard/admin/users/normal"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
-                  }`}
+                       }`}
                 >
-                  <IconMenuList className="h-5 w-5" aria-hidden />
-                  <span>{t("dashboardAdminNormalShort", locale)}</span>
+                  <IconMenuList className="h-5 w-5 shrink-0" aria-hidden />
+                  <span className="text-center leading-tight">{t("dashboardAdminNormalShort", locale)}</span>
                 </Link>
-                <Link
-                  href="/dashboard/profile"
-                  className={`flex min-w-[72px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
-                    pathname === "/dashboard/profile"
-                      ? "text-amber-200"
-                      : "text-neutral-400 hover:text-neutral-100"
-                  }`}
-                >
-                  {user?.profilePhotoBase64 ? (
-                    <div className="relative h-5 w-5 overflow-hidden rounded-full border border-amber-500/40 bg-neutral-800">
-                      <img
-                        src={`data:image/jpeg;base64,${user.profilePhotoBase64}`}
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-800 text-[9px] font-semibold text-amber-300">
-                      {(user?.prenom?.[0] ?? user?.nom?.[0] ?? "?").toUpperCase()}
-                    </div>
-                  )}
-                  <span>{t("dashboardNavProfile", locale)}</span>
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => logout()}
-                  className="flex min-w-[72px] flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold text-red-300 hover:text-red-200"
-                >
-                  <IconLogout className="h-5 w-5" aria-hidden />
-                  <span>{t("profileLogout", locale)}</span>
-                </button>
               </>
             ) : (
               <>
                 <Link
-                  href="/dashboard"
-                  className={`flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
-                    pathname === "/dashboard" && dashboardView !== "organisations"
+                  href={localizePath("/dashboard")}
+                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
+                    path === "/dashboard" && dashboardView !== "organisations"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
                   }`}
                 >
-                  <IconHome className="h-5 w-5" aria-hidden />
-                  <span>{t("dashboardMobileHomeShort", locale)}</span>
+                  <IconHome className="h-5 w-5 shrink-0" aria-hidden />
+                  <span className="text-center leading-tight">{t("dashboardMobileHomeShort", locale)}</span>
                 </Link>
-                {!subscriptionBypass && (
-                  <Link
-                    href={subscriptionHref}
-                    className={`flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
-                      pathname?.startsWith("/dashboard/subscription")
-                        ? "text-amber-200"
-                        : "text-neutral-400 hover:text-neutral-100"
-                    }`}
-                  >
-                    <IconMenuList className="h-5 w-5" aria-hidden />
-                    <span>{t("subscriptionNav", locale)}</span>
-                  </Link>
-                )}
+                {!isAdmin &&
+                  (subscriptionBypass ? (
+                    <div
+                      className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-0.5 py-2"
+                      aria-hidden
+                    />
+                  ) : (
+                    <Link
+                      href={localizePath(subscriptionHref)}
+                      className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
+                        path.startsWith("/dashboard/subscription")
+                          ? "text-amber-200"
+                          : "text-neutral-400 hover:text-neutral-100"
+                      }`}
+                    >
+                      <IconMenuList className="h-5 w-5 shrink-0" aria-hidden />
+                      <span className="text-center leading-tight">{t("subscriptionNav", locale)}</span>
+                    </Link>
+                  ))}
                 <Link
-                  href={organisationsHref}
-                  className={`flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
-                    pathname === "/dashboard" && dashboardView === "organisations"
+                  href={localizePath(organisationsHref)}
+                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
+                    path === "/dashboard" && dashboardView === "organisations"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
                   }`}
                 >
-                  <IconBuilding className="h-5 w-5" aria-hidden />
-                  <span>{t("dashboardMobileOrgsShort", locale)}</span>
+                  <IconBuilding className="h-5 w-5 shrink-0" aria-hidden />
+                  <span className="text-center leading-tight">{t("dashboardMobileOrgsShort", locale)}</span>
                 </Link>
                 <Link
-                  href={qrHref}
-                  className={`flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
-                    pathname?.startsWith(`/dashboard/organisations/${currentOrgIdSafe ?? ""}/qr`) &&
+                  href={localizePath(qrHref)}
+                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
+                    path.startsWith(`/dashboard/organisations/${currentOrgIdSafe ?? ""}/qr`) &&
                     currentOrgIdSafe != null
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
                   }`}
                 >
-                  <IconQr className="h-5 w-5" aria-hidden />
-                  <span>QR</span>
+                  <IconQr className="h-5 w-5 shrink-0" aria-hidden />
+                  <span className="text-center leading-tight">QR</span>
                 </Link>
                 <Link
-                  href={menusHref}
-                  className={`flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
-                    currentOrgIdSafe != null && pathname?.startsWith(`/dashboard/organisations/${currentOrgIdSafe}`) && !pathname?.includes("/qr")
+                  href={localizePath(menusHref)}
+                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
+                    currentOrgIdSafe != null && path.startsWith(`/dashboard/organisations/${currentOrgIdSafe}`) && !path.includes("/qr")
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
                   }`}
                 >
-                  <IconHome className="h-5 w-5" aria-hidden />
-                  <span>Menus</span>
+                  <IconMenuList className="h-5 w-5 shrink-0" aria-hidden />
+                  <span className="text-center leading-tight">Menus</span>
                 </Link>
-
-                <Link
-                  href="/dashboard/profile"
-                  className={`flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold ${
-                    pathname === "/dashboard/profile"
-                      ? "text-amber-200"
-                      : "text-neutral-400 hover:text-neutral-100"
-                  }`}
-                >
-                  {user?.profilePhotoBase64 ? (
-                    <div className="relative h-5 w-5 overflow-hidden rounded-full border border-amber-500/40 bg-neutral-800">
-                      <img
-                        src={`data:image/jpeg;base64,${user.profilePhotoBase64}`}
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-800 text-[9px] font-semibold text-amber-300">
-                      {(user?.prenom?.[0] ?? user?.nom?.[0] ?? "?").toUpperCase()}
-                    </div>
-                  )}
-                  <span>{t("dashboardNavProfile", locale)}</span>
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => logout()}
-                  className="flex min-w-[64px] flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold text-red-300 hover:text-red-200"
-                >
-                  <IconLogout className="h-5 w-5" aria-hidden />
-                  <span>{t("profileLogout", locale)}</span>
-                </button>
               </>
             )}
           </div>

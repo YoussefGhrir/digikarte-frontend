@@ -12,6 +12,7 @@ import {
 } from "@/lib/api";
 import { errorMessageFromCode, t, type Locale } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
+import { prefixWithLocale } from "@/lib/locale-path";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -51,11 +52,11 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!loading && !token) {
-      router.replace("/login");
+      router.replace(prefixWithLocale("/login", locale));
       return;
     }
     if (token) loadProfile();
-  }, [loading, token, router, loadProfile]);
+  }, [loading, token, router, loadProfile, locale]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -150,7 +151,7 @@ export default function ProfilePage() {
   const initial = (profile.prenom?.[0] ?? profile.nom?.[0] ?? "?").toUpperCase();
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8">
+    <div className="mx-auto w-full min-w-0 max-w-2xl space-y-8 overflow-x-hidden">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">
           {t("profileKicker", locale)}

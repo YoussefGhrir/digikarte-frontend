@@ -27,6 +27,7 @@ import {
 } from "@/components/menu-templates";
 import { t } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
+import { prefixWithLocale } from "@/lib/locale-path";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -577,9 +578,9 @@ export default function MenuDetailPage() {
   }
 
   return (
-    <div className="flex h-auto min-h-[560px] w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 shadow-xl lg:h-[calc(100vh-5rem)] lg:flex-row">
+    <div className="flex h-auto min-h-[560px] w-full min-w-0 max-w-full flex-col overflow-hidden overflow-x-hidden rounded-2xl border border-neutral-800 bg-neutral-950 shadow-xl lg:h-[calc(100vh-5rem)] lg:flex-row">
       <aside
-        className="flex shrink-0 flex-col border-b border-neutral-800 bg-neutral-900/80 lg:border-b-0 lg:border-r"
+        className="order-2 flex shrink-0 flex-col border-t border-neutral-800 bg-neutral-900/80 lg:order-none lg:border-t-0 lg:border-r"
         style={{ width: isDesktop ? asideWidth : "100%" }}
       >
         <div className="flex items-center justify-between border-b border-neutral-800 px-4 py-3">
@@ -587,7 +588,7 @@ export default function MenuDetailPage() {
             {t("menuContentTab", locale)}
           </h2>
           <Link
-            href={`/dashboard/organisations/${orgId}`}
+            href={prefixWithLocale(`/dashboard/organisations/${orgId}`, locale)}
             className="text-[11px] font-medium text-neutral-500 hover:text-neutral-200"
           >
             ← {t("dashboardBack", locale)}
@@ -975,7 +976,7 @@ export default function MenuDetailPage() {
           {/* Liens & QR */}
           <div className="flex flex-col gap-2 pt-2 border-t border-neutral-800">
             <a
-              href={`/menu/${menu.slug}`}
+              href={prefixWithLocale(`/menu/${menu.slug}`, locale)}
               target="_blank"
               rel="noopener noreferrer"
               className="text-center rounded-lg border border-amber-500/50 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-200 hover:bg-amber-500/20"
@@ -1009,7 +1010,7 @@ export default function MenuDetailPage() {
         </div>
       )}
 
-      <main className="flex min-w-0 flex-1 flex-col border-l border-neutral-800/80 bg-neutral-950">
+      <main className="order-1 flex min-h-0 min-w-0 flex-1 flex-col border-b border-neutral-800/80 bg-neutral-950 lg:order-none lg:border-b-0 lg:border-l lg:border-t-0">
         <div className="border-b border-neutral-800 px-4 py-2 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
@@ -1022,9 +1023,9 @@ export default function MenuDetailPage() {
             )}
           </div>
         </div>
-        <div className="flex-1 overflow-hidden bg-neutral-900">
+        <div className="min-h-0 flex-1 overflow-hidden overflow-x-hidden bg-neutral-900">
           {menu?.slug ? (
-            <div className="flex h-full w-full items-start justify-center py-4">
+            <div className="flex h-full w-full touch-manipulation items-start justify-center py-4">
               <div className="relative h-full w-[430px] max-w-full rounded-[32px] border border-neutral-800 bg-black/90 shadow-[0_25px_70px_rgba(0,0,0,0.9)] overflow-hidden">
                 {/* Barre type téléphone */}
                 <div className="pointer-events-none absolute inset-x-16 top-2 h-1.5 rounded-full bg-neutral-700/80" />
@@ -1032,7 +1033,7 @@ export default function MenuDetailPage() {
                   key={`${menu.slug}-${menu.displayTemplate ?? "classic"}-${menu.colorTheme ?? "default"}`}
                   src={`/menu/${menu.slug}`}
                   title={previewMenu?.title || t("menu", locale)}
-                  className="mt-4 h-[calc(100vh-9rem)] w-full border-0 rounded-b-[32px] bg-black"
+                  className="mt-4 h-[min(520px,calc(100dvh-11rem))] w-full border-0 rounded-b-[32px] bg-black lg:h-[calc(100vh-9rem)]"
                 />
               </div>
             </div>
@@ -1579,7 +1580,7 @@ export default function MenuDetailPage() {
             />
             <div className="mt-4 pt-4 border-t border-neutral-800">
               <Link
-                href={`/dashboard/organisations/${orgId}/menus/${menuId}/qr`}
+                href={prefixWithLocale(`/dashboard/organisations/${orgId}/menus/${menuId}/qr`, locale)}
                 className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2.5 text-sm font-medium text-amber-200 hover:bg-amber-500/20"
               >
                 {t("menuQrGoToManagement", locale)} →

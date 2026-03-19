@@ -3,6 +3,8 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authGetProfile, authLogin, authRegister, AuthResponse } from "./api";
+import { useLanguage } from "./language-context";
+import { prefixWithLocale } from "./locale-path";
 
 interface User {
   userId: number;
@@ -42,6 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { locale } = useLanguage();
 
   useEffect(() => {
     const t = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
@@ -110,9 +113,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (email: string, password: string) => {
       const res = await authLogin({ email, password });
       persist(res);
-      router.push("/dashboard");
+      router.push(prefixWithLocale("/dashboard", locale));
     },
-    [persist, router]
+    [persist, router, locale]
   );
 
   const register = useCallback(
@@ -127,9 +130,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       persist(res);
       // Après création de compte, forcer le passage par la page d'abonnement
       // pour démarrer l'essai avec carte bancaire.
-      router.push("/dashboard/subscription");
+      router.push(prefixWithLocale("/dashboard/subscription", locale));
     },
-    [persist, router]
+    [persist, router, locale]
   );
 
   const logout = useCallback(
@@ -142,11 +145,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (target) {
         router.replace(target);
       } else {
-        // Par défaut, renvoyer proprement vers la page d'accueil publique
-        router.push("/");
+        // Par défaut, renvoyer proprement vers la page d'accueil publique (locale dans l’URL)
+        router.push(prefixWithLocale("/", locale));
       }
     },
-    [router]
+    [router, locale]
   );
 
   return (

@@ -87,7 +87,7 @@ export function KeywordLanding({
           <Link href={blogLink} className="underline">
             Blog und Praxisleitfaden
           </Link>
-          <Link href="/register" className="underline">
+          <Link href={`/${locale}/register`} className="underline">
             Kostenlos starten
           </Link>
         </div>
