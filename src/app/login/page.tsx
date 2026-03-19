@@ -26,13 +26,37 @@ export default function LoginPage() {
       return;
     }
 
+    const googleError = searchParams.get("googleError");
+    if (googleError === "OAUTH_FAILED") {
+      setError(t("authErrorGeneric", locale));
+    }
+
     const googleToken = searchParams.get("googleToken");
+    const emailParam = searchParams.get("email");
+
     if (googleToken) {
-      // Flux Google: si on revient avec un token déjà émis par le backend,
-      // on redirige simplement vers le dashboard (le backend a déjà validé le compte).
+      if (typeof window !== "undefined") {
+        localStorage.setItem("token", googleToken);
+
+        if (emailParam) {
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              userId: 0,
+              email: emailParam,
+              nom: "",
+              prenom: "",
+              subscriptionBypass: false,
+              admin: false,
+              superAdmin: false,
+            })
+          );
+        }
+      }
+
       router.replace("/dashboard");
     }
-  }, [token, router, searchParams]);
+  }, [token, router, searchParams, locale]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
