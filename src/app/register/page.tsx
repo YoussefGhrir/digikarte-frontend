@@ -21,7 +21,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const GOOGLE_LOGIN_URL = `${API_BASE}/api/auth/google/login`;
+  const GOOGLE_LOGIN_URL = `${API_BASE}/api/auth/google/login-url`;
 
   const languages: Locale[] = ["de", "fr", "en"];
   const [langOpen, setLangOpen] = useState(false);
@@ -250,8 +250,20 @@ export default function RegisterPage() {
             <div className="mb-5">
               <button
                 type="button"
-                onClick={() => {
-                  window.location.href = `${GOOGLE_LOGIN_URL}?lang=${locale}&source=register`;
+                onClick={async () => {
+                  try {
+                    const res = await fetch(
+                      `${GOOGLE_LOGIN_URL}?lang=${locale}&source=register`
+                    );
+                    const data = (await res.json()) as { url?: string };
+                    if (data.url) {
+                      window.location.href = data.url;
+                    } else {
+                      setError(t("authErrorGeneric", locale));
+                    }
+                  } catch {
+                    setError(t("authErrorGeneric", locale));
+                  }
                 }}
                 className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-neutral-700 bg-white px-4 py-2.75 text-sm font-semibold text-neutral-900 shadow-[0_12px_40px_rgba(0,0,0,0.85)] transition hover:-translate-y-0.5 hover:border-neutral-500 hover:bg-neutral-50"
               >
