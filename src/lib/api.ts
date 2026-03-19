@@ -466,6 +466,16 @@ export function subscriptionCreateCheckoutSession(plan: SubscriptionPlan, locale
   });
 }
 
+export function subscriptionConfirmCheckout(sessionId: string) {
+  return api<{ stripeCustomerId: string | null; stripeSubscriptionId: string | null }>(
+    "/api/billing/checkout/confirm",
+    {
+      method: "POST",
+      body: JSON.stringify({ sessionId }),
+    }
+  );
+}
+
 /** Annule l'abonnement courant (utilisé pour arrêter un essai ou un abonnement). */
 export function subscriptionCancel() {
   return api<void>("/api/billing/me/subscription/cancel", {

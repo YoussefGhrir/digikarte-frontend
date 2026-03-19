@@ -7,6 +7,7 @@ import { t, type Locale } from "@/lib/i18n";
 import {
   subscriptionGetMe,
   subscriptionCreateCheckoutSession,
+  subscriptionConfirmCheckout,
   subscriptionListInvoices,
   subscriptionCancel,
   subscriptionSkipTrial,
@@ -67,6 +68,20 @@ export default function SubscriptionPage() {
       setLoading(true);
       setError("");
       try {
+        // Si retour Stripe success avec session_id, persister immédiatement les IDs côté backend
+        if (typeof window !== "undefined") {
+          const params = new URLSearchParams(window.location.search);
+          const success = params.get("success");
+          const sessionId = params.get("session_id");
+          if (success === "1" && sessionId) {
+            try {
+              await subscriptionConfirmCheckout(sessionId);
+            } catch {
+              // best-effort: on continue quand même le refresh
+            }
+          }
+        }
+
         const [s, inv] = await Promise.all([subscriptionGetMe(), subscriptionListInvoices()]);
         if (!cancelled) {
           setSub(s);
