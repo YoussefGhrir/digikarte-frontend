@@ -536,6 +536,16 @@ export const translations = {
     fr: "Retour à l'accueil",
     en: "Back to home",
   },
+  authGoogleButton: {
+    de: "Mit Google fortfahren",
+    fr: "Continuer avec Google",
+    en: "Continue with Google",
+  },
+  authGoogleHintRegister: {
+    de: "Wenn du bereits mit Google registriert bist, wirst du direkt angemeldet.",
+    fr: "Si vous avez déjà créé un compte avec Google, vous serez connecté directement.",
+    en: "If you've already created an account with Google, you'll be signed in directly.",
+  },
   // Dashboard
   dashboardNavDashboard: {
     de: "Dashboard",

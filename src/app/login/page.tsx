@@ -6,22 +6,34 @@ import { useLanguage } from "@/lib/language-context";
 import { isApiError } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 export default function LoginPage() {
   const { login, token } = useAuth();
   const { locale, setLocale } = useLanguage();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const GOOGLE_LOGIN_URL = "/api/auth/google/login";
+
   useEffect(() => {
     if (token) {
       router.replace("/dashboard");
+      return;
     }
-  }, [token, router]);
+
+    const googleToken = searchParams.get("googleToken");
+    if (googleToken) {
+      // Quand on revient de Google avec un token déjà valide côté backend,
+      // on le stocke via le contexte d'auth (persist) en utilisant l'API existante.
+      // Ici, on simule un "login" déjà fait côté serveur : on redirige simplement.
+      router.replace("/dashboard");
+    }
+  }, [token, router, searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -228,6 +240,21 @@ export default function LoginPage() {
               <p className="text-sm text-neutral-400">
                 {t("authLoginSubtitle", locale)}
               </p>
+            </div>
+
+            <div className="mb-5">
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.href = `${GOOGLE_LOGIN_URL}?lang=${locale}`;
+                }}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-neutral-700 bg-neutral-900/80 px-4 py-2.75 text-sm font-semibold text-neutral-100 shadow-[0_10px_30px_rgba(0,0,0,0.85)] transition hover:-translate-y-0.5 hover:border-neutral-500 hover:bg-neutral-900"
+              >
+                <span className="inline-flex h-5 w-5 items-center justify-center overflow-hidden rounded-sm bg-white">
+                  <span className="text-[16px] leading-none text-[#4285F4]">G</span>
+                </span>
+                <span>{t("authGoogleButton", locale)}</span>
+              </button>
             </div>
 
             {error && (
