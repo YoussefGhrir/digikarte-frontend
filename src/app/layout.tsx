@@ -38,17 +38,25 @@ const dancingScript = Dancing_Script({
 export const metadata: Metadata = {
   title: "DigiKarte – Menu digital",
   description: "Créez et gérez vos menus digitaux avec codes QR",
+  manifest: "/site.webmanifest",
   icons: {
-    // Heroku/audits demandent souvent explicitement `/favicon.ico`.
-    icon: "/favicon.ico",
-    // Garder l'icône brandée pour l'écran d'accueil Apple.
-    apple: "/digikarte-favicon.png",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  minimumScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -64,6 +72,7 @@ export default function RootLayout({
     "LU",
     "BE",
     "CH",
+    "IT",
     // North / West Africa (example list)
     "TN", // Tunisia
     "DZ", // Algeria
