@@ -614,7 +614,7 @@ export default function DashboardLayout({
               {mobileNavOpen && (
                 <div
                   ref={mobileNavRef}
-                  className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-xl shadow-black/60"
+                  className="absolute left-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-xl shadow-black/60"
                 >
                   <div className="p-2 space-y-1">
                     {isAdmin ? (
@@ -728,7 +728,7 @@ export default function DashboardLayout({
               </button>
 
               {langOpen && (
-                <div className="absolute right-0 z-40 mt-1 w-40 rounded-2xl border border-neutral-800 bg-neutral-950/95 p-1 text-[11px] shadow-xl shadow-black/60">
+                <div className="absolute right-0 z-60 mt-1 w-40 rounded-2xl border border-neutral-800 bg-neutral-950 p-1 text-[11px] text-neutral-50 shadow-xl shadow-black/60">
                   {languages.map((lang) => (
                       <button
                         key={lang}
@@ -740,7 +740,7 @@ export default function DashboardLayout({
                         className={`flex w-full cursor-pointer items-center gap-2 rounded-xl px-2 py-1.5 text-left transition ${
                           locale === lang
                             ? "bg-emerald-500/15 text-emerald-200"
-                            : "text-neutral-50 hover:bg-neutral-900"
+                            : "text-neutral-200 hover:bg-neutral-900"
                         }`}
                       >
                       <FlagIcon code={lang} />
