@@ -619,99 +619,102 @@ export default function DashboardLayout({
               </button>
 
               {mobileNavOpen && (
-                <div
-                  ref={mobileNavRef}
-                  className="absolute left-0 top-full z-50 mt-2 w-[calc(100vw-2rem)] max-w-64 max-h-[calc(100vh-12rem)] overflow-y-auto overflow-x-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-xl shadow-black/60"
-                >
-                  <div className="p-2 space-y-1">
-                    {isAdmin ? (
-                      <>
-                        <Link
-                          href="/dashboard/admin"
-                          onClick={() => setMobileNavOpen(false)}
-                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                        >
-                          <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
-                          <span>Admin</span>
-                        </Link>
-                        <Link
-                          href="/dashboard/admin/users"
-                          onClick={() => setMobileNavOpen(false)}
-                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                        >
-                          <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
-                          <span>Gestion users VIP</span>
-                        </Link>
-                        <Link
-                          href="/dashboard/admin/users/normal"
-                          onClick={() => setMobileNavOpen(false)}
-                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                        >
-                          <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
-                          <span>Gestion users normal</span>
-                        </Link>
-                      </>
-                    ) : (
-                      <>
-                        <Link
-                          href="/dashboard/subscription"
-                          onClick={() => setMobileNavOpen(false)}
-                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                        >
-                          <IconQr className="h-4 w-4 shrink-0" aria-hidden />
-                          <span>Abonnement</span>
-                        </Link>
+                <div className="fixed inset-0 z-50 flex justify-center pt-[60px] px-4">
+                  <div className="absolute inset-0 bg-black/60" />
+                  <div
+                    ref={mobileNavRef}
+                    className="relative w-full max-w-[420px] max-h-[calc(100vh-96px)] overflow-y-auto overflow-x-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-xl shadow-black/60"
+                  >
+                    <div className="p-2 space-y-1">
+                      {isAdmin ? (
+                        <>
+                          <Link
+                            href="/dashboard/admin"
+                            onClick={() => setMobileNavOpen(false)}
+                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                          >
+                            <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
+                            <span>Admin</span>
+                          </Link>
+                          <Link
+                            href="/dashboard/admin/users"
+                            onClick={() => setMobileNavOpen(false)}
+                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                          >
+                            <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
+                            <span>Gestion users VIP</span>
+                          </Link>
+                          <Link
+                            href="/dashboard/admin/users/normal"
+                            onClick={() => setMobileNavOpen(false)}
+                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                          >
+                            <IconMenuList className="h-4 w-4 shrink-0" aria-hidden />
+                            <span>Gestion users normal</span>
+                          </Link>
+                        </>
+                      ) : (
+                        <>
+                          <Link
+                            href="/dashboard/subscription"
+                            onClick={() => setMobileNavOpen(false)}
+                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                          >
+                            <IconQr className="h-4 w-4 shrink-0" aria-hidden />
+                            <span>{t("subscriptionNav", locale)}</span>
+                          </Link>
 
-                        <Link
-                          href={
-                            currentOrg
-                              ? `/dashboard/organisations/${currentOrg.id}`
-                              : "/dashboard?view=organisations"
-                          }
-                          onClick={() => setMobileNavOpen(false)}
-                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                        >
-                          <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
-                          <span>Gestion organisations</span>
-                        </Link>
+                          <Link
+                            href={
+                              currentOrg
+                                ? `/dashboard/organisations/${currentOrg.id}`
+                                : "/dashboard?view=organisations"
+                            }
+                            onClick={() => setMobileNavOpen(false)}
+                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                          >
+                            <IconBuilding className="h-4 w-4 shrink-0" aria-hidden />
+                            <span>{t("dashboardNavOrganisations", locale)}</span>
+                          </Link>
 
-                        <Link
-                          href={
-                            currentOrg
-                              ? `/dashboard/organisations/${currentOrg.id}/qr`
-                              : "/dashboard?view=organisations"
-                          }
-                          onClick={() => setMobileNavOpen(false)}
-                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                        >
-                          <IconQr className="h-4 w-4 shrink-0" aria-hidden />
-                          <span>Gestion QR code</span>
-                        </Link>
-                      </>
-                    )}
+                          <Link
+                            href={
+                              currentOrg
+                                ? `/dashboard/organisations/${currentOrg.id}/qr`
+                                : "/dashboard?view=organisations"
+                            }
+                            onClick={() => setMobileNavOpen(false)}
+                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                          >
+                            <IconQr className="h-4 w-4 shrink-0" aria-hidden />
+                            <span>{t("menuQrTab", locale)}</span>
+                          </Link>
+                        </>
+                      )}
 
-                    <div className="mt-2 border-t border-neutral-800" />
+                      <div className="mt-2 border-t border-neutral-800" />
 
-                    <Link
-                      href="/dashboard/profile"
-                      onClick={() => setMobileNavOpen(false)}
-                      className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
-                    >
-                      <IconHome className="h-4 w-4 shrink-0 text-amber-200" aria-hidden />
-                      <span>Profile</span>
-                    </Link>
+                      <Link
+                        href="/dashboard/profile"
+                        onClick={() => setMobileNavOpen(false)}
+                        className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-50 hover:bg-neutral-900/90"
+                      >
+                        <IconHome className="h-4 w-4 shrink-0 text-amber-200" aria-hidden />
+                        <span>{t("dashboardNavProfile", locale)}</span>
+                      </Link>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMobileNavOpen(false);
-                        logout();
-                      }}
-                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-neutral-50 hover:bg-neutral-900/90"
-                    >
-                      <IconLogout className="h-4 w-4 shrink-0 text-red-200" aria-hidden />
-                      <span>Logout</span>
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMobileNavOpen(false);
+                          logout();
+                        }}
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-neutral-50 hover:bg-neutral-900/90"
+                      >
+                        <IconLogout className="h-4 w-4 shrink-0 text-red-200" aria-hidden />
+                        <span>{t("profileLogout", locale)}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}

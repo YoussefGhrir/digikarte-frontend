@@ -89,7 +89,7 @@ export default function RootLayout({
   const cookieLocale = cookies().get(COOKIE_KEY)?.value;
   if (isLocale(cookieLocale)) {
     return (
-      <html lang={cookieLocale}>
+      <html lang={cookieLocale} className="dark">
         <body
           className={`${inter.variable} ${jetbrainsMono.variable} ${forum.variable} ${dmSans.variable} ${dancingScript.variable} antialiased`}
         >
@@ -134,7 +134,7 @@ export default function RootLayout({
   }
 
   return (
-    <html lang={initialLocale}>
+    <html lang={initialLocale} className="dark">
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} ${forum.variable} ${dmSans.variable} ${dancingScript.variable} antialiased`}
       >
