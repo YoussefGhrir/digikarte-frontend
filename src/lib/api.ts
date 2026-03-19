@@ -1,7 +1,9 @@
 import type { Locale } from "@/lib/i18n";
 
-// Backend déployé sur Heroku (utilisé partout, plus de localhost)
-const API_BASE = "https://digicarte-043d88a805be.herokuapp.com";
+// Backend API (configurable en prod via NEXT_PUBLIC_API_BASE_URL)
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ||
+  "https://digicarte-043d88a805be.herokuapp.com";
 
 function getToken(): string | null {
   if (typeof window === "undefined") return null;
