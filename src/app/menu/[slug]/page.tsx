@@ -2,10 +2,15 @@
 
 import { menuPublicBySlug, type MenuPublicDto } from "@/lib/api";
 import { useLanguage } from "@/lib/language-context";
-import { t } from "@/lib/i18n";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { MenuTemplateRenderer } from "@/components/menu-templates";
+import { t, type Locale } from "@/lib/i18n";
+import { useParams, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import {
+  MenuTemplateRenderer,
+  getDemoMenuPublicDto,
+  normalizeTemplateId,
+  type MenuTemplateId,
+} from "@/components/menu-templates";
 
 const menuBg = {
   backgroundColor: "var(--eerie-black)",
@@ -17,19 +22,32 @@ const menuBg = {
 
 export default function PublicMenuPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = params.slug as string;
   const { locale } = useLanguage();
+  const isDemo = (slug ?? "").toLowerCase() === "demo";
+  const selectedTemplate = useMemo<MenuTemplateId>(() => {
+    const value = searchParams.get("template");
+    if (!value) return "classic";
+    return normalizeTemplateId(value);
+  }, [searchParams]);
   const [menu, setMenu] = useState<MenuPublicDto | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!isDemo);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (isDemo) {
+      setLoading(false);
+      setError("");
+      setMenu(null);
+      return;
+    }
     if (!slug) return;
     menuPublicBySlug(slug)
       .then(setMenu)
       .catch(() => setError("notFound"))
       .finally(() => setLoading(false));
-  }, [slug]);
+  }, [isDemo, slug]);
 
   if (loading) {
     return (
@@ -45,6 +63,29 @@ export default function PublicMenuPage() {
   }
 
   if (error || !menu) {
+    if (isDemo) {
+      const demoMenu = getDemoMenuPublicDto(selectedTemplate);
+      demoMenu.organizationName = "DigiKarte Demo Cafe";
+      demoMenu.title =
+        locale === "de"
+          ? "Demo Menu: Café & Restaurant"
+          : locale === "fr"
+            ? "Menu Démo: Café & Restaurant"
+            : "Demo Menu: Cafe & Restaurant";
+      demoMenu.description =
+        locale === "de"
+          ? "Vollständiger Ablauf mit Blöcken, Preisen, Vorlagen und QR-Nutzung."
+          : locale === "fr"
+            ? "Parcours complet: blocs, prix, modèles et utilisation des QR."
+            : "Complete walkthrough: blocks, prices, templates and QR usage.";
+      return (
+        <DemoScenarioPage
+          locale={locale}
+          selectedTemplate={selectedTemplate}
+          demoMenu={demoMenu}
+        />
+      );
+    }
     return (
       <div
         className="flex min-h-screen flex-col items-center justify-center gap-4 p-8 font-dm"
@@ -123,4 +164,228 @@ export default function PublicMenuPage() {
   }
 
   return <MenuTemplateRenderer menu={menu} locale={locale} />;
+}
+
+function DemoScenarioPage({
+  locale,
+  selectedTemplate,
+  demoMenu,
+}: {
+  locale: Locale;
+  selectedTemplate: MenuTemplateId;
+  demoMenu: MenuPublicDto;
+}) {
+  const text = getDemoTexts(locale);
+  const templateItems: { id: MenuTemplateId; label: string }[] = [
+    { id: "classic", label: t("menuTemplateClassic", locale) },
+    { id: "cafe", label: t("menuTemplateCafe", locale) },
+    { id: "bistro", label: t("menuTemplateBistro", locale) },
+    { id: "minimal", label: t("menuTemplateMinimal", locale) },
+    { id: "cards", label: t("menuTemplateCards", locale) },
+    { id: "elegant", label: t("menuTemplateElegant", locale) },
+    { id: "restaurant", label: t("menuTemplateRestaurant", locale) },
+    { id: "terrasse", label: t("menuTemplateTerrasse", locale) },
+    { id: "lounge", label: t("menuTemplateLounge", locale) },
+    { id: "loungeOriental", label: t("menuTemplateLoungeOriental", locale) },
+    { id: "cafeResto", label: t("menuTemplateCafeResto", locale) },
+    { id: "steakhouseCoffee", label: t("menuTemplateSteakhouseCoffee", locale) },
+  ];
+
+  return (
+    <div className="min-h-screen bg-neutral-950 text-neutral-100">
+      <div className="mx-auto max-w-6xl px-5 py-8 md:px-8 md:py-10">
+        <section className="rounded-3xl border border-amber-500/35 bg-neutral-900/70 p-6 shadow-xl md:p-8">
+          <p className="text-[11px] uppercase tracking-[0.3em] text-amber-300">
+            DigiKarte · Demo
+          </p>
+          <h1 className="mt-3 font-forum text-3xl text-neutral-50 md:text-4xl">{text.heroTitle}</h1>
+          <p className="mt-3 max-w-4xl text-sm leading-relaxed text-neutral-300">{text.heroSubtitle}</p>
+        </section>
+
+        <section className="mt-6 grid gap-4 md:grid-cols-3">
+          {text.steps.map((step) => (
+            <article key={step.title} className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-5">
+              <p className="text-[11px] uppercase tracking-[0.24em] text-amber-300">{step.kicker}</p>
+              <h2 className="mt-2 font-forum text-xl text-neutral-50">{step.title}</h2>
+              <p className="mt-2 text-xs leading-relaxed text-neutral-300">{step.text}</p>
+            </article>
+          ))}
+        </section>
+
+        <section className="mt-6 rounded-3xl border border-neutral-800 bg-neutral-900/70 p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-forum text-2xl text-neutral-50">{text.templatesTitle}</h2>
+            <p className="text-xs text-neutral-400">{text.templatesHint}</p>
+          </div>
+          <div className="mt-4 grid gap-2 md:grid-cols-3">
+            {templateItems.map((template) => {
+              const active = template.id === selectedTemplate;
+              return (
+                <a
+                  key={template.id}
+                  href={`/menu/demo?template=${template.id}`}
+                  className={`rounded-xl border px-3 py-2 text-sm transition ${
+                    active
+                      ? "border-amber-400 bg-amber-400/15 text-amber-200"
+                      : "border-neutral-700 bg-neutral-950/40 text-neutral-300 hover:border-neutral-500 hover:text-neutral-100"
+                  }`}
+                >
+                  {template.label}
+                </a>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="mt-6 overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900/70">
+          <div className="border-b border-neutral-800 px-5 py-4 text-sm text-neutral-300">
+            {text.previewTitle}:{" "}
+            <span className="font-semibold text-amber-300">
+              {templateItems.find((x) => x.id === selectedTemplate)?.label ?? selectedTemplate}
+            </span>
+          </div>
+          <MenuTemplateRenderer menu={demoMenu} locale={locale} />
+        </section>
+
+        <section className="mt-6 grid gap-4 md:grid-cols-2">
+          <article className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-5">
+            <h3 className="font-forum text-xl text-neutral-50">{text.qrTableTitle}</h3>
+            <p className="mt-2 text-xs leading-relaxed text-neutral-300">{text.qrTableText}</p>
+            <ul className="mt-3 space-y-1 text-xs text-neutral-400">
+              <li>{text.qrTablePoint1}</li>
+              <li>{text.qrTablePoint2}</li>
+              <li>{text.qrTablePoint3}</li>
+            </ul>
+          </article>
+          <article className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-5">
+            <h3 className="font-forum text-xl text-neutral-50">{text.qrDoorTitle}</h3>
+            <p className="mt-2 text-xs leading-relaxed text-neutral-300">{text.qrDoorText}</p>
+            <ul className="mt-3 space-y-1 text-xs text-neutral-400">
+              <li>{text.qrDoorPoint1}</li>
+              <li>{text.qrDoorPoint2}</li>
+              <li>{text.qrDoorPoint3}</li>
+            </ul>
+          </article>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+function getDemoTexts(locale: Locale) {
+  if (locale === "de") {
+    return {
+      heroTitle: "Vollständige Demo: Café/Restaurant Menü mit allen Vorlagen",
+      heroSubtitle:
+        "Diese Seite zeigt den kompletten Ablauf: Blöcke erstellen, Gerichte mit Namen und Preis eingeben, Design wählen (Classic, Lounge, Oriental, Minimal und weitere), dann QR auf Tisch und an der Tür einsetzen.",
+      steps: [
+        {
+          kicker: "Schritt 1",
+          title: "Blöcke anlegen",
+          text: "Lege zuerst Kategorien an, z. B. Frühstück, Kaffee, Kalte Getränke, Desserts. Jeder Block strukturiert dein Menü für Gäste.",
+        },
+        {
+          kicker: "Schritt 2",
+          title: "Gerichte erfassen",
+          text: "Für jedes Gericht: Name, Preis und Beschreibung eingeben. Beispiel: Cappuccino 3,50 EUR, Avocado Toast 9,90 EUR, Tiramisu 5,20 EUR.",
+        },
+        {
+          kicker: "Schritt 3",
+          title: "Modell + QR veröffentlichen",
+          text: "Wähle eine Vorlage und drucke QR als Tisch-Sticker oder Tür-Poster. Der Link bleibt gleich, Inhalte werden in Echtzeit aktualisiert.",
+        },
+      ],
+      templatesTitle: "Alle verfügbaren Vorlagen",
+      templatesHint: "Klicke auf ein Modell, um dieselben Menüdaten im gewählten Stil zu sehen.",
+      previewTitle: "Live-Vorschau",
+      qrTableTitle: "QR auf dem Tisch (Szenario)",
+      qrTableText:
+        "Nutze kleine Sticker pro Tisch (z. B. Tisch 1, Tisch 2). Gäste scannen beim Sitzen und öffnen direkt das Menü in ihrer Sprache.",
+      qrTablePoint1: "1) Im Dashboard: QR-Codes > PDF-Sticker (Tische)",
+      qrTablePoint2: "2) Aufkleber drucken und auf Tischaufsteller kleben",
+      qrTablePoint3: "3) Preise/Artikel ändern, QR bleibt identisch",
+      qrDoorTitle: "QR an der Tür (Szenario)",
+      qrDoorText:
+        "Nutze ein großes Poster am Eingang oder Fenster. Gäste sehen sofort die Karte vor dem Betreten (Take-away oder Reservierung).",
+      qrDoorPoint1: "1) Im Dashboard: QR-Codes > PDF-Poster (Tür)",
+      qrDoorPoint2: "2) A4/A3 gut sichtbar an Eingang und Schaufenster",
+      qrDoorPoint3: "3) Gleiches Menü, gleiche URL, jederzeit editierbar",
+    };
+  }
+  if (locale === "fr") {
+    return {
+      heroTitle: "Démo complète: menu café/resto avec tous les modèles",
+      heroSubtitle:
+        "Cette page montre le scénario total: création des blocs, saisie des plats avec nom et prix, choix du design (Classic, Lounge, Oriental, Minimal, etc.), puis usage du QR sur table et sur porte.",
+      steps: [
+        {
+          kicker: "Etape 1",
+          title: "Créer les blocs",
+          text: "Commence par les catégories: petit-déjeuner, cafés, boissons froides, desserts. Chaque bloc organise ton menu.",
+        },
+        {
+          kicker: "Etape 2",
+          title: "Saisir les plats",
+          text: "Pour chaque plat: nom, prix et description. Exemple: Cappuccino 3,50 EUR, Avocado Toast 9,90 EUR, Tiramisu 5,20 EUR.",
+        },
+        {
+          kicker: "Etape 3",
+          title: "Choisir modèle + publier QR",
+          text: "Choisis le modèle visuel puis imprime QR en sticker table ou affiche porte. Le lien reste fixe et le contenu se met a jour.",
+        },
+      ],
+      templatesTitle: "Tous les modèles disponibles",
+      templatesHint: "Clique sur un modèle pour voir le meme menu en style réel.",
+      previewTitle: "Aperçu en direct",
+      qrTableTitle: "QR sur la table (scénario)",
+      qrTableText:
+        "Utilise des stickers par table (Table 1, Table 2). Les clients scannent assis et voient directement le menu dans leur langue.",
+      qrTablePoint1: "1) Dashboard: QR codes > PDF Stickers (tables)",
+      qrTablePoint2: "2) Imprimer puis coller sur chevalet ou table",
+      qrTablePoint3: "3) Modifier prix/plats sans changer le QR",
+      qrDoorTitle: "QR sur la porte (scénario)",
+      qrDoorText:
+        "Utilise une affiche grand format a l'entrée/vitrine. Les clients voient la carte avant d'entrer (utile pour emporter).",
+      qrDoorPoint1: "1) Dashboard: QR codes > PDF Affiche (porte)",
+      qrDoorPoint2: "2) Positionner A4/A3 a l'entree et vitrine",
+      qrDoorPoint3: "3) Meme menu, meme URL, toujours editable",
+    };
+  }
+  return {
+    heroTitle: "Complete demo: cafe/restaurant menu with all templates",
+    heroSubtitle:
+      "This page shows the full scenario: create menu blocks, enter dish name and price, choose style (Classic, Lounge, Oriental, Minimal, etc.), then deploy QR on tables and at the door.",
+    steps: [
+      {
+        kicker: "Step 1",
+        title: "Create blocks",
+        text: "Start with categories such as breakfast, coffee, cold drinks, desserts. Each block structures your menu clearly.",
+      },
+      {
+        kicker: "Step 2",
+        title: "Enter dishes",
+        text: "For each dish, add name, price, and description. Example: Cappuccino EUR 3.50, Avocado Toast EUR 9.90, Tiramisu EUR 5.20.",
+      },
+      {
+        kicker: "Step 3",
+        title: "Pick template + publish QR",
+        text: "Choose a visual template and print QR as table stickers or a door poster. The link stays stable while content updates live.",
+      },
+    ],
+    templatesTitle: "All available templates",
+    templatesHint: "Click a template to preview the same real menu in that style.",
+    previewTitle: "Live preview",
+    qrTableTitle: "QR on table (scenario)",
+    qrTableText:
+      "Use small stickers per table. Guests scan while seated and instantly open the menu in their preferred language.",
+    qrTablePoint1: "1) Dashboard: QR codes > PDF Stickers (tables)",
+    qrTablePoint2: "2) Print and place on table tents",
+    qrTablePoint3: "3) Update prices/items, QR stays unchanged",
+    qrDoorTitle: "QR at door (scenario)",
+    qrDoorText:
+      "Use a large poster at the entrance/window. Guests can check the menu before entering (great for takeaway).",
+    qrDoorPoint1: "1) Dashboard: QR codes > PDF Poster (door)",
+    qrDoorPoint2: "2) Place A4/A3 at entrance and shop window",
+    qrDoorPoint3: "3) Same menu, same URL, always editable",
+  };
 }
