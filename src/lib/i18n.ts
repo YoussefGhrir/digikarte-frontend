@@ -89,14 +89,14 @@ export const translations = {
     en: "Digital QR menu studio",
   },
   heroTitle: {
-    de: "Digitale Speisekarten mit QR-Code",
-    fr: "Menus digitaux avec QR code",
-    en: "Digital menus with QR codes",
+    de: "Digitale Menüs mit QR-Code für Restaurant, Café und Bar",
+    fr: "Menus digitaux QR pour restaurant, café et bar",
+    en: "Digital QR menus for restaurants, cafés and bars",
   },
   heroSubtitle: {
-    de: "Erstelle mehrere digitale Menüs für deine Organisation (Frühstück, Getränke, Dessert …). Jedes Menü erhält automatisch einen eigenen QR-Code, den deine Gäste scannen – die Inhalte bleiben immer aktuell.",
-    fr: "Crée plusieurs menus digitaux pour ton établissement (petit-déjeuner, boissons, desserts…). Chaque menu reçoit automatiquement son propre code QR que tes clients scannent, toujours à jour.",
-    en: "Create multiple digital menus for your venue (breakfast, drinks, desserts…). Each menu automatically gets its own QR code for guests to scan, always up to date.",
+    de: "Erstelle flexible digitale Karten für alle Servicebereiche deines Betriebs: Frühstück, Getränke, Cocktails, Snacks, Tagesangebote oder Dessert. Jeder Bereich bekommt einen eigenen QR-Code und bleibt in Echtzeit aktuell.",
+    fr: "Crée des cartes digitales flexibles pour tous les services de ton établissement: petit-déjeuner, boissons, cocktails, snacks, suggestions du jour ou desserts. Chaque carte a son QR dédié et reste à jour en temps réel.",
+    en: "Create flexible digital menus for every service moment: breakfast, drinks, cocktails, snacks, daily specials or desserts. Each menu gets its own QR and stays updated in real time.",
   },
   ctaGetStarted: {
     de: "Jetzt starten",
@@ -139,9 +139,9 @@ export const translations = {
     en: "Multi-location",
   },
   heroBadge2Text: {
-    de: "Mehrere Restaurants, ein einziges Konto.",
-    fr: "Plusieurs restaurants, un seul compte.",
-    en: "Multiple venues, a single account.",
+    de: "Restaurant, Café und Bar zentral in einem Konto.",
+    fr: "Restaurant, café et bar gérés dans un seul compte.",
+    en: "Manage restaurant, cafe and bar in one account.",
   },
   heroBadge3Title: {
     de: "In Echtzeit aktuell",
@@ -204,9 +204,9 @@ export const translations = {
     en: "Menus updated instantly after every change.",
   },
   sectionWhyTitle: {
-    de: "Warum Gastronomen DigiKarte wählen",
-    fr: "Pourquoi les restaurateurs choisissent DigiKarte ?",
-    en: "Why restaurateurs choose DigiKarte",
+    de: "Warum Hospitality-Teams DigiKarte wählen",
+    fr: "Pourquoi les équipes horeca choisissent DigiKarte ?",
+    en: "Why hospitality teams choose DigiKarte",
   },
   sectionFlowTitle: {
     de: "Ein fließendes Erlebnis – vom Scan bis zum Dessert",
@@ -224,9 +224,9 @@ export const translations = {
     en: "Create your menus",
   },
   step1Text: {
-    de: "Lege deine Organisation an (Café, Restaurant, Bar) und erstelle ein oder mehrere Menüs – zum Beispiel Hauptkarte, Mittagsmenü und Getränkekarte.",
-    fr: "Crée ton établissement (café, restaurant, bar) et ajoute un ou plusieurs menus – par exemple carte principale, menu du midi et carte des boissons.",
-    en: "Create your venue (café, restaurant, bar) and add one or several menus – for example main menu, lunch menu and drinks menu.",
+    de: "Lege deinen Betrieb an (Restaurant, Café oder Bar) und erstelle mehrere Karten je nach Service: Hauptkarte, Lunch, Drinks, Bar-Menu oder Happy Hour.",
+    fr: "Crée ton établissement (restaurant, café ou bar) et ajoute plusieurs cartes selon le service: carte principale, midi, boissons, bar menu ou happy hour.",
+    en: "Create your venue (restaurant, cafe or bar) and add multiple menus per service: main menu, lunch, drinks, bar menu or happy hour.",
   },
   step2Title: {
     de: "Erzeuge deine 3D-QRs",
@@ -366,9 +366,9 @@ export const translations = {
     en: "QR codes in multiple styles",
   },
   feature2Text: {
-    de: "Für jedes Menü wird ein eigener QR-Code erzeugt – in mehreren Designs für Tischaufsteller, Aufkleber oder Plakate.",
-    fr: "Chaque menu reçoit son propre code QR, disponible en plusieurs designs pour chevalets, stickers ou affiches.",
-    en: "Each menu gets its own QR code, with multiple design styles for table tents, stickers or posters.",
+    de: "Für jede Karte wird ein eigener QR-Code erzeugt – mit mehreren Designs für Tischaufsteller, Sticker und Tür-/Fensterplakate.",
+    fr: "Chaque carte reçoit son propre QR code, avec plusieurs styles pour chevalets, stickers et affiches porte/vitrine.",
+    en: "Each menu gets its own QR code, with multiple styles for table tents, stickers, and door/window posters.",
   },
   feature3Title: {
     de: "Mehrsprachige Speisekarten",

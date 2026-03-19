@@ -228,25 +228,31 @@ function DemoScenarioPage({
         </section>
 
         {/* Bloc principal en 2 colonnes sur desktop */}
-        <section className="mt-5 grid gap-5 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:items-start">
+        <section className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_420px] xl:items-start">
           {/* Colonne gauche : étapes + templates */}
           <div className="space-y-4">
             <div className="grid gap-3 md:grid-cols-3">
               {text.steps.map((step) => (
                 <article
                   key={step.title}
-                  className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4 text-xs"
+                  className={`rounded-2xl border p-4 text-xs ${
+                    step.kicker.endsWith("1")
+                      ? "border-amber-400/35 bg-gradient-to-br from-amber-500/15 to-neutral-900/80"
+                      : step.kicker.endsWith("2")
+                        ? "border-emerald-400/35 bg-gradient-to-br from-emerald-500/15 to-neutral-900/80"
+                        : "border-sky-400/35 bg-gradient-to-br from-sky-500/15 to-neutral-900/80"
+                  }`}
                 >
-                  <p className="text-[10px] uppercase tracking-[0.24em] text-amber-300">
+                  <p className="text-[10px] uppercase tracking-[0.24em] text-neutral-200">
                     {step.kicker}
                   </p>
                   <h2 className="mt-1.5 font-forum text-base text-neutral-50">{step.title}</h2>
-                  <p className="mt-1.5 leading-relaxed text-neutral-300">{step.text}</p>
+                  <p className="mt-1.5 leading-relaxed text-neutral-200">{step.text}</p>
                 </article>
               ))}
             </div>
 
-            <div className="rounded-3xl border border-neutral-800 bg-neutral-900/70 p-4">
+            <div className="rounded-3xl border border-fuchsia-400/30 bg-gradient-to-br from-fuchsia-500/10 via-neutral-900/85 to-neutral-900/85 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="font-forum text-lg text-neutral-50">{text.templatesTitle}</h2>
                 <p className="text-[11px] text-neutral-400">{text.templatesHint}</p>
@@ -260,8 +266,8 @@ function DemoScenarioPage({
                       href={`/menu/demo?template=${template.id}`}
                       className={`rounded-xl border px-3 py-1.5 text-[11px] transition ${
                         active
-                          ? "border-amber-400 bg-amber-400/15 text-amber-200"
-                          : "border-neutral-700 bg-neutral-950/40 text-neutral-300 hover:border-neutral-500 hover:text-neutral-100"
+                          ? "border-amber-300 bg-amber-400/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
+                          : "border-neutral-700 bg-neutral-950/50 text-neutral-300 hover:border-fuchsia-300/60 hover:text-neutral-100"
                       }`}
                     >
                       {template.label}
@@ -273,22 +279,31 @@ function DemoScenarioPage({
           </div>
 
           {/* Colonne droite : preview + QR scénarios */}
-          <div className="space-y-4">
-            <div className="overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900/70">
-              <div className="border-b border-neutral-800 px-4 py-3 text-xs text-neutral-300">
-                {text.previewTitle}:{" "}
-                <span className="font-semibold text-amber-300">
+          <div className="space-y-4 xl:sticky xl:top-4">
+            <div className="overflow-hidden rounded-3xl border border-sky-400/35 bg-gradient-to-br from-sky-500/15 via-neutral-900/90 to-neutral-900/90">
+              <div className="border-b border-sky-300/20 px-4 py-3 text-xs text-neutral-300">
+                {text.previewTitle}
+                <span className="ml-1.5 font-semibold text-sky-200">
                   {templateItems.find((x) => x.id === selectedTemplate)?.label ?? selectedTemplate}
                 </span>
               </div>
-              <MenuTemplateRenderer menu={demoMenu} locale={locale} />
+              <div className="px-3 py-3">
+                <div className="mx-auto w-[300px] max-w-full rounded-[2rem] border border-neutral-700 bg-neutral-950 p-2 shadow-[0_20px_55px_rgba(0,0,0,0.75)]">
+                  <div className="mb-2 flex justify-center">
+                    <span className="h-1.5 w-20 rounded-full bg-neutral-700" />
+                  </div>
+                  <div className="h-[520px] overflow-y-auto rounded-[1.5rem] border border-neutral-800 bg-black">
+                    <MenuTemplateRenderer menu={demoMenu} locale={locale} />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="grid gap-3 md:grid-cols-1">
-              <article className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4 text-xs">
+              <article className="rounded-2xl border border-emerald-400/35 bg-gradient-to-br from-emerald-500/10 to-neutral-900/85 p-4 text-xs">
                 <h3 className="font-forum text-lg text-neutral-50">{text.qrTableTitle}</h3>
                 <p className="mt-1.5 leading-relaxed text-neutral-300">{text.qrTableText}</p>
-                <div className="mt-3 rounded-2xl border border-neutral-700 bg-neutral-950/70 p-3">
+                <div className="mt-3 rounded-2xl border border-emerald-300/25 bg-neutral-950/75 p-3">
                   <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
                     {text.visualTableLabel}
                   </p>
@@ -301,10 +316,10 @@ function DemoScenarioPage({
                 </ul>
               </article>
 
-              <article className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4 text-xs">
+              <article className="rounded-2xl border border-violet-400/35 bg-gradient-to-br from-violet-500/10 to-neutral-900/85 p-4 text-xs">
                 <h3 className="font-forum text-lg text-neutral-50">{text.qrDoorTitle}</h3>
                 <p className="mt-1.5 leading-relaxed text-neutral-300">{text.qrDoorText}</p>
-                <div className="mt-3 rounded-2xl border border-neutral-700 bg-neutral-950/70 p-3">
+                <div className="mt-3 rounded-2xl border border-violet-300/25 bg-neutral-950/75 p-3">
                   <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
                     {text.visualDoorLabel}
                   </p>
