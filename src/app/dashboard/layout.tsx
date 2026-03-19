@@ -58,6 +58,11 @@ export default function DashboardLayout({
   const { locale, setLocale } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
+  const localizePath = (path: string, lang = locale) => `/${lang}${path.startsWith("/") ? path : `/${path}`}`;
+  const swapLocaleInPath = (lang: Locale) => {
+    const current = pathname || "/dashboard";
+    return current.replace(/^\/(de|fr|en)(?=\/|$)/, `/${lang}`);
+  };
   const onAdminArea = Boolean(pathname?.startsWith("/dashboard/admin"));
 
   const languages: Locale[] = ["de", "fr", "en"];
@@ -84,7 +89,7 @@ export default function DashboardLayout({
   const subscriptionBypass = Boolean((user as any)?.subscriptionBypass);
 
   useEffect(() => {
-    if (!loading && !token) router.replace("/");
+    if (!loading && !token) router.replace(localizePath("/"));
   }, [loading, token, router]);
 
   useEffect(() => {
@@ -168,7 +173,7 @@ export default function DashboardLayout({
         if (cancelled) return;
         if (isApiError(e)) {
           if (e.status === 401 || e.status === 403) {
-            logout({ redirectTo: "/" });
+            logout({ redirectTo: localizePath("/") });
             return;
           }
           // Toute autre erreur API (404, 500, etc.) = pas d'abonnement actif
@@ -269,7 +274,7 @@ export default function DashboardLayout({
         }
       } catch (e) {
         if (isApiError(e) && (e.status === 401 || e.status === 403 || e.status === 404)) {
-          logout({ redirectTo: "/" });
+          logout({ redirectTo: localizePath("/") });
           return;
         }
         setOrgsError(e instanceof Error ? e.message : "Erreur organisations");
@@ -450,7 +455,7 @@ export default function DashboardLayout({
               return (
                 <Link
                   key={item.href + (item.view ?? "")}
-                  href={item.href}
+                  href={localizePath(item.href)}
                   className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
                     active && !isProfile
                       ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
@@ -653,6 +658,7 @@ export default function DashboardLayout({
                         type="button"
                         onClick={() => {
                           setLocale(lang);
+                          router.push(swapLocaleInPath(lang));
                           setLangOpen(false);
                         }}
                         className={`flex w-full cursor-pointer items-center gap-2 rounded-xl px-2 py-1.5 text-left transition ${

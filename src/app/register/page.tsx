@@ -6,12 +6,13 @@ import { useLanguage } from "@/lib/language-context";
 import { API_BASE, isApiError } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 export default function RegisterPage() {
   const { register, token } = useAuth();
   const { locale, setLocale } = useLanguage();
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
@@ -106,13 +107,18 @@ export default function RegisterPage() {
   const isBusy = pendingAction !== null;
   const isFormPending = pendingAction === "form";
   const isGooglePending = pendingAction === "google";
+  const localize = (path: string, lang = locale) => `/${lang}${path.startsWith("/") ? path : `/${path}`}`;
+  const swapLocaleInPath = (lang: Locale) => {
+    const current = pathname || "/";
+    return current.replace(/^\/(de|fr|en)(?=\/|$)/, `/${lang}`);
+  };
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-950 to-neutral-900 text-neutral-50">
       {/* Retour accueil */}
       <div className="absolute left-4 top-4 z-30 md:left-6 md:top-5">
         <Link
-          href="/"
+          href={localize("/")}
           className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-950/50 px-3 py-1.5 text-[11px] font-medium text-amber-200 shadow-lg backdrop-blur transition hover:border-amber-400 hover:bg-amber-900/40 hover:text-amber-100"
         >
           <span aria-hidden>←</span>
@@ -152,6 +158,7 @@ export default function RegisterPage() {
                     disabled={isBusy}
                     onClick={() => {
                       setLocale(lang);
+                      router.push(swapLocaleInPath(lang));
                       setLangOpen(false);
                     }}
                     className={`flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-left transition ${
@@ -433,7 +440,7 @@ export default function RegisterPage() {
               <p className="pt-3 text-center text-xs text-neutral-500">
                 {t("authHasAccount", locale)}{" "}
                 <Link
-                  href="/login"
+                  href={localize("/login")}
                   className="font-medium text-amber-300 hover:text-amber-200"
                 >
                   {t("authGoLogin", locale)}

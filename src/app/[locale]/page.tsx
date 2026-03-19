@@ -129,35 +129,53 @@ export default function LocalizedHomePage({ params }: { params: { locale: string
   };
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-14">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.2),_transparent_45%),radial-gradient(circle_at_bottom,_rgba(16,185,129,0.12),_transparent_45%)]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <h1 className="text-4xl font-semibold">{data.h1}</h1>
-      <p className="mt-4 text-lg text-neutral-300">{data.intro}</p>
-      <section className="mt-10 space-y-4">
-        <h2 className="text-2xl font-semibold">Digi-Karte fur SaaS B2B Gastronomie</h2>
-        <p>
-          Erstelle ein digitales Menü, drucke QR Codes fur Tische und Tur, und aktualisiere Inhalte sofort. Ideal fur
-          Restaurants in Deutschland, Frankreich, Spanien, Italien, Belgien, Osterreich und der Schweiz.
-        </p>
-      </section>
-      <section className="mt-10 rounded-xl border border-neutral-800 p-5">
-        <h2 className="text-2xl font-semibold">Schneller Einstieg</h2>
-        <p className="mt-2 text-neutral-300">
-          Starte mit einer branchenspezifischen Seite oder vertiefe dein Wissen im Blog, um dein SEO und dein digitales
-          Gasterlebnis systematisch auszubauen.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-3">
-          <Link href="/de/digitale-speisekarte/" className="underline">
-            Digitale Speisekarte
-          </Link>
-          <Link href="/de/qr-code-menu/" className="underline">
-            QR Code Menu
-          </Link>
-          <Link href="/de/blog/" className="underline">
-            SEO Blog fur Restaurants
-          </Link>
+      <section className="mx-auto max-w-6xl px-6 pb-10 pt-14">
+        <div className="rounded-3xl border border-neutral-700/70 bg-neutral-950/70 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.55)] backdrop-blur">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-300">Digi-Karte SaaS</p>
+          <h1 className="mt-3 text-4xl font-semibold text-neutral-50 md:text-5xl">{data.h1}</h1>
+          <p className="mt-4 max-w-3xl text-lg text-neutral-300">{data.intro}</p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link
+              href={`/${locale}/`}
+              className="rounded-full bg-amber-400 px-5 py-2 text-sm font-semibold text-neutral-900 shadow-[0_14px_35px_rgba(251,191,36,0.45)] hover:bg-amber-300"
+            >
+              Startseite
+            </Link>
+            <Link href={`/${locale}/blog/`} className="rounded-full border border-neutral-600 px-5 py-2 text-sm text-neutral-200 hover:border-amber-400/50 hover:text-amber-200">
+              Blog
+            </Link>
+            <Link href={`/${locale}/register`} className="rounded-full border border-emerald-500/50 px-5 py-2 text-sm text-emerald-200 hover:bg-emerald-500/10">
+              Kostenlos starten
+            </Link>
+          </div>
         </div>
+      </section>
+
+      <section className="mx-auto grid max-w-6xl gap-4 px-6 pb-16 md:grid-cols-3">
+        <article className="rounded-2xl border border-neutral-700/70 bg-neutral-950/75 p-6">
+          <h2 className="text-xl font-semibold text-neutral-50">Digitale Speisekarte</h2>
+          <p className="mt-2 text-neutral-300">Mobile-first Menus fur Restaurant, Bar und Cafe mit sofortigen Updates.</p>
+          <Link href="/de/digitale-speisekarte/" className="mt-4 inline-block text-amber-200 underline">
+            Mehr erfahren
+          </Link>
+        </article>
+        <article className="rounded-2xl border border-neutral-700/70 bg-neutral-950/75 p-6">
+          <h2 className="text-xl font-semibold text-neutral-50">QR Code Menu</h2>
+          <p className="mt-2 text-neutral-300">QR-Sticker und Poster fur Tisch, Tur und Fenster mit einem stabilen Link.</p>
+          <Link href="/de/qr-code-menu/" className="mt-4 inline-block text-amber-200 underline">
+            QR optimieren
+          </Link>
+        </article>
+        <article className="rounded-2xl border border-neutral-700/70 bg-neutral-950/75 p-6">
+          <h2 className="text-xl font-semibold text-neutral-50">SEO Wachstum</h2>
+          <p className="mt-2 text-neutral-300">Inhalte, hreflang und Struktur fur starke organische Sichtbarkeit.</p>
+          <Link href="/de/blog/" className="mt-4 inline-block text-amber-200 underline">
+            Zum Blog
+          </Link>
+        </article>
       </section>
     </main>
   );

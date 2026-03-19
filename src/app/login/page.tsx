@@ -6,12 +6,13 @@ import { useLanguage } from "@/lib/language-context";
 import { API_BASE, isApiError } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 export default function LoginPage() {
   const { login, token } = useAuth();
   const { locale, setLocale } = useLanguage();
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -81,6 +82,11 @@ export default function LoginPage() {
   const isBusy = pendingAction !== null;
   const isFormPending = pendingAction === "form";
   const isGooglePending = pendingAction === "google";
+  const localize = (path: string, lang = locale) => `/${lang}${path.startsWith("/") ? path : `/${path}`}`;
+  const swapLocaleInPath = (lang: Locale) => {
+    const current = pathname || "/";
+    return current.replace(/^\/(de|fr|en)(?=\/|$)/, `/${lang}`);
+  };
 
   const languages: Locale[] = ["de", "fr", "en"];
   const [langOpen, setLangOpen] = useState(false);
@@ -132,7 +138,7 @@ export default function LoginPage() {
       {/* Retour accueil */}
       <div className="absolute left-4 top-4 z-30 md:left-6 md:top-5">
         <Link
-          href="/"
+          href={localize("/")}
           className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/60 px-3 py-1.5 text-[11px] font-medium text-emerald-200 shadow-lg backdrop-blur transition hover:border-emerald-400 hover:bg-emerald-900/40 hover:text-emerald-100"
         >
           <span aria-hidden>←</span>
@@ -172,6 +178,7 @@ export default function LoginPage() {
                     disabled={isBusy}
                     onClick={() => {
                       setLocale(lang);
+                        router.push(swapLocaleInPath(lang));
                       setLangOpen(false);
                     }}
                     className={`flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-left transition ${
@@ -396,7 +403,7 @@ export default function LoginPage() {
               <p className="pt-3 text-center text-xs text-neutral-500">
                 {t("authNoAccount", locale)}{" "}
                 <Link
-                  href="/register"
+                  href={localize("/register")}
                   className="font-medium text-emerald-300 hover:text-emerald-200"
                 >
                   {t("authGoRegister", locale)}

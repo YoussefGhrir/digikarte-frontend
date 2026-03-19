@@ -63,6 +63,18 @@ function resolveLocale(countryCode: string | null, acceptLanguage: string | null
   return "en";
 }
 
+function withLocaleCookie(res: NextResponse, req: NextRequest, locale: Locale) {
+  const secure = req.nextUrl.protocol === "https:";
+  res.cookies.set(COOKIE_KEY, locale, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365 * 2,
+    sameSite: "lax",
+    secure,
+    httpOnly: false,
+  });
+  return res;
+}
+
 export function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
   const host = req.headers.get("host") ?? "";
@@ -85,10 +97,18 @@ export function middleware(req: NextRequest) {
   const acceptLanguage = req.headers.get("accept-language");
   const resolvedLocale = hasLocaleCookie ? existing : resolveLocale(country, acceptLanguage);
 
-  if (pathname === "/") {
+  const normalizedPath = pathname.endsWith("/") && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
+  const localeFromPath = validLocales.find(
+    (locale) => normalizedPath === `/${locale}` || normalizedPath.startsWith(`/${locale}/`),
+  );
+  const strippedPath = localeFromPath
+    ? normalizedPath.replace(new RegExp(`^/${localeFromPath}`), "") || "/"
+    : normalizedPath;
+
+  if (normalizedPath === "/") {
     const localized = req.nextUrl.clone();
     localized.pathname = `/${resolvedLocale}/`;
-    return NextResponse.redirect(localized, 302);
+    return withLocaleCookie(NextResponse.redirect(localized, 302), req, resolvedLocale);
   }
 
   // Keep legacy public URLs working while forcing canonical locale-first paths.
@@ -99,27 +119,29 @@ export function middleware(req: NextRequest) {
     "/digital-menu-restaurant": "/en/digital-menu-restaurant/",
     "/blog": "/de/blog/",
   };
-  const normalizedPath = pathname.endsWith("/") && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
   const legacyTarget = legacyRedirects[normalizedPath];
   if (legacyTarget) {
     const url = req.nextUrl.clone();
     url.pathname = legacyTarget;
-    return NextResponse.redirect(url, 301);
+    return withLocaleCookie(NextResponse.redirect(url, 301), req, resolvedLocale);
   }
 
-  if (hasLocaleCookie) return NextResponse.next();
+  // Force locale-prefixed URLs for the whole site.
+  if (!localeFromPath) {
+    const url = req.nextUrl.clone();
+    url.pathname = `/${resolvedLocale}${normalizedPath}`;
+    return withLocaleCookie(NextResponse.redirect(url, 302), req, resolvedLocale);
+  }
 
-  const res = NextResponse.next();
-  const secure = req.nextUrl.protocol === "https:";
-  res.cookies.set(COOKIE_KEY, resolvedLocale, {
-    path: "/",
-    maxAge: 60 * 60 * 24 * 365 * 2, // 2 years
-    sameSite: "lax",
-    secure,
-    httpOnly: false, // needed so the client can read it
-  });
+  // Internally rewrite locale-prefixed app routes to existing route tree.
+  const rewritePrefixes = ["/dashboard", "/login", "/register", "/impressum", "/datenschutz", "/agb", "/menu"];
+  if (rewritePrefixes.some((prefix) => strippedPath === prefix || strippedPath.startsWith(`${prefix}/`))) {
+    const rewriteUrl = req.nextUrl.clone();
+    rewriteUrl.pathname = strippedPath;
+    return withLocaleCookie(NextResponse.rewrite(rewriteUrl), req, localeFromPath);
+  }
 
-  return res;
+  return withLocaleCookie(NextResponse.next(), req, localeFromPath);
 }
 
 export const config = {
