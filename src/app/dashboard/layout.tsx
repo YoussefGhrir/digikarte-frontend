@@ -117,13 +117,17 @@ export default function DashboardLayout({
     };
   }, [mobileProfileMenuOpen]);
 
-  // On rafraîchit le profil (pour récupérer subscriptionBypass) avant d'appliquer le paywall.
+  // On rafraîchit le profil (photo, subscriptionBypass, etc.) avant d'appliquer le paywall.
   useEffect(() => {
     let cancelled = false;
     async function run() {
       if (!token) return;
       if (onAdminArea || subscriptionBypass) {
-        setProfileChecked(true);
+        try {
+          await refreshUser();
+        } finally {
+          if (!cancelled) setProfileChecked(true);
+        }
         return;
       }
       setProfileChecked(false);

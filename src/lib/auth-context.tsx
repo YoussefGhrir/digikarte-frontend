@@ -113,9 +113,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (email: string, password: string) => {
       const res = await authLogin({ email, password });
       persist(res);
+      await refreshUser();
       router.push(prefixWithLocale("/dashboard", locale));
     },
-    [persist, router, locale]
+    [persist, router, locale, refreshUser]
   );
 
   const register = useCallback(
@@ -128,11 +129,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }) => {
       const res = await authRegister(data);
       persist(res);
+      await refreshUser();
       // Après création de compte, forcer le passage par la page d'abonnement
       // pour démarrer l'essai avec carte bancaire.
       router.push(prefixWithLocale("/dashboard/subscription", locale));
     },
-    [persist, router, locale]
+    [persist, router, locale, refreshUser]
   );
 
   const logout = useCallback(
