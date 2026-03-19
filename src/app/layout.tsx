@@ -39,7 +39,9 @@ export const metadata: Metadata = {
   title: "DigiKarte – Menu digital",
   description: "Créez et gérez vos menus digitaux avec codes QR",
   icons: {
-    icon: "/digikarte-favicon.png",
+    // Heroku/audits demandent souvent explicitement `/favicon.ico`.
+    icon: "/favicon.ico",
+    // Garder l'icône brandée pour l'écran d'accueil Apple.
     apple: "/digikarte-favicon.png",
   },
 };
