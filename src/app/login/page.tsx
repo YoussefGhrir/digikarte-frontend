@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/auth-context";
 import { localeLabels, t, type Locale } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
-import { isApiError } from "@/lib/api";
+import { API_BASE, isApiError } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const GOOGLE_LOGIN_URL = "/api/auth/google/login";
+  const GOOGLE_LOGIN_URL = `${API_BASE}/api/auth/google/login`;
 
   useEffect(() => {
     if (token) {
@@ -248,10 +248,15 @@ export default function LoginPage() {
                 onClick={() => {
                   window.location.href = `${GOOGLE_LOGIN_URL}?lang=${locale}`;
                 }}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-neutral-700 bg-neutral-900/80 px-4 py-2.75 text-sm font-semibold text-neutral-100 shadow-[0_10px_30px_rgba(0,0,0,0.85)] transition hover:-translate-y-0.5 hover:border-neutral-500 hover:bg-neutral-900"
+                className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-neutral-700 bg-neutral-950 px-4 py-2.75 text-sm font-semibold text-neutral-100 shadow-[0_12px_40px_rgba(0,0,0,0.85)] transition hover:-translate-y-0.5 hover:border-neutral-500 hover:bg-neutral-900"
               >
-                <span className="inline-flex h-5 w-5 items-center justify-center overflow-hidden rounded-sm bg-white">
-                  <span className="text-[16px] leading-none text-[#4285F4]">G</span>
+                <span className="inline-flex h-5 w-5 items-center justify-center overflow-hidden rounded-full bg-white">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
+                    <path fill="#EA4335" d="M12 11.3v3.6h5.1c-.2 1.1-.8 2.1-1.8 2.7l2.9 2.2c1.7-1.6 2.8-3.9 2.8-6.6 0-.6-.1-1.2-.2-1.8H12z" />
+                    <path fill="#34A853" d="M6.6 13.8l-.9.7-2.3 1.8C4.7 19.7 8.1 22 12 22c2.4 0 4.5-.8 6-2.2l-2.9-2.2c-.8.5-1.8.8-3.1.8-2.4 0-4.5-1.6-5.2-3.8z" />
+                    <path fill="#4A90E2" d="M3.4 8.7C2.8 10 2.8 11.5 3.4 12.8c.7 2.2 2.8 3.8 5.2 3.8 1.3 0 2.4-.3 3.1-.8v-3.9H6.6z" />
+                    <path fill="#FBBC05" d="M6.6 8.2 9.1 10c.7-.4 1.6-.7 2.9-.7 1.7 0 3.3.6 4.4 1.7l2.6-2.6C17.9 6.9 15.6 6 12 6 8.1 6 4.7 8.3 3.4 11l3.2-2.8z" />
+                  </svg>
                 </span>
                 <span>{t("authGoogleButton", locale)}</span>
               </button>
