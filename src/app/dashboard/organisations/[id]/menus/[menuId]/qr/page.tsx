@@ -221,7 +221,7 @@ export default function MenuQrPage() {
     menuUrl ??
     (typeof window !== "undefined"
       ? `${window.location.origin}/menu/${menu?.slug ?? ""}`
-      : `https://digikarte.de/menu/${menu?.slug ?? ""}`);
+      : `https://digi-karte.com/menu/${menu?.slug ?? ""}`);
 
   /** Capture la couche impression (taille réelle) pour éviter recadrage et artefacts. */
   const handleDownloadStickerImage = useCallback(async () => {

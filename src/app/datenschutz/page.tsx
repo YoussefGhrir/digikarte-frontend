@@ -21,11 +21,11 @@ export default function DatenschutzPage() {
           </h2>
           <p className="whitespace-pre-line">
             Verantwortlich im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:
-            {"\n"}[Name der Firma / des Verantwortlichen]
-            {"\n"}[Straße und Hausnummer]
-            {"\n"}[PLZ und Ort]
-            {"\n"}[Land]
-            {"\n"}E-Mail: [Datenschutz-Kontaktadresse]
+            {"\n"}Youssef Ghrir
+            {"\n"}Straße und Hausnummer: [bitte ergänzen]
+            {"\n"}PLZ und Ort: [bitte ergänzen] Kaiserslautern
+            {"\n"}Deutschland
+            {"\n"}E-Mail: gheriryoussef@gmail.com
           </p>
         </section>
 
@@ -35,9 +35,12 @@ export default function DatenschutzPage() {
           </h2>
           <p>
             Wir verarbeiten personenbezogene Daten zur Bereitstellung und
-            Optimierung unserer digitalen Speisekarten-Plattform, zur
-            Registrierung und Verwaltung von Nutzerkonten, zur Abrechnung
-            unserer Leistungen sowie zur Kommunikation mit dir.
+            zum Betrieb von DigiKarte (digitale Speisekarten und QR-Codes), für
+            die Registrierung und Verwaltung von Nutzerkonten, die Erstellung
+            und Veröffentlichung deiner Inhalte (z. B. Menütexte, Preise, Bilder),
+            sowie zur Abrechnung und Verwaltung von Abonnements. Je nach
+            Nutzung verarbeiten wir auch Zahlungsdaten, die jedoch
+            überwiegend über unseren Zahlungsdienstleister verarbeitet werden.
           </p>
           <p>
             Die Verarbeitung erfolgt insbesondere auf Grundlage von Art. 6 Abs.
@@ -58,18 +61,27 @@ export default function DatenschutzPage() {
             Daten verarbeitet werden:
           </p>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-neutral-300">
-            <li>Stammdaten (z. B. Name, Kontaktdaten, Unternehmensdaten).</li>
+            <li>
+              Stammdaten (z. B. Name, Kontaktdaten wie E-Mail, ggf. Telefon
+              sowie Unternehmens-/Organisationsdaten).
+            </li>
             <li>
               Zugangsdaten (z. B. E-Mail-Adresse, Passwort – als Hash
               gespeichert).
             </li>
             <li>
-              Nutzungsdaten (z. B. aufgerufene Seiten, Interaktionen mit Menüs,
-              Logdaten).
+              Nutzungsdaten (z. B. aufgerufene Seiten, Interaktionen mit Menüs
+              und QR-bezogene Aktionen).
             </li>
             <li>
-              Kommunikationsdaten (z. B. Anfragen per Kontaktformular oder
-              E-Mail).
+              Kommunikationsdaten (z. B. Anfragen per E-Mail im Rahmen des
+              Supports/der Kontaktaufnahme).
+            </li>
+            <li>
+              Bild- und Inhaltsdaten: Profilfoto (z. B. im „Wer wir sind/Portrait“-Bereich),
+              Logo/Platzhalterbilder sowie Bilder, die du für deine Menüs
+              hochlädst bzw. bereitstellst (z. B. als JPEG/PNG/WebP/GIF, je nach
+              Upload-Format).
             </li>
           </ul>
         </section>
@@ -104,17 +116,24 @@ export default function DatenschutzPage() {
             5. Cookies und vergleichbare Technologien
           </h2>
           <p>
-            Soweit wir Cookies oder vergleichbare Technologien einsetzen,
-            dienen diese insbesondere dazu, grundlegende Funktionen der
-            Plattform bereitzustellen (z. B. Login, Session-Verwaltung) sowie
-            die Nutzung zu analysieren und zu verbessern.
+            Wir verwenden insbesondere einen Cookie, um die von dir ausgewählte
+            Sprache zu speichern (Cookie-Key: <span className="font-medium">digikarte-lang</span>).
+            Dieser Cookie wird serverseitig gesetzt und zur Anzeige der
+            passenden Sprache genutzt.
           </p>
-          <p>
-            Soweit gesetzlich erforderlich, holen wir vor dem Setzen nicht
-            technisch notwendiger Cookies deine Einwilligung ein (Art. 6 Abs. 1
-            lit. a DSGVO, § 25 TTDSG). Du kannst deine Einwilligung jederzeit
-            mit Wirkung für die Zukunft widerrufen.
-          </p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-neutral-300">
+            <li>
+              Zweck: Sprach-/Locale-Auswahl für den ersten Eindruck und für
+              zukünftige Besuche.
+            </li>
+            <li>
+              Speicherdauer: ca. 2 Jahre (maxAge).
+            </li>
+            <li>
+              Einstellungen: <code>path=/</code>, <code>SameSite=Lax</code>, Secure
+              abhängig vom Protokoll (HTTPS).
+            </li>
+          </ul>
         </section>
 
         <section className="mt-6 space-y-2 text-sm text-neutral-300">
@@ -128,9 +147,17 @@ export default function DatenschutzPage() {
             Einwilligung erforderlich ist.
           </p>
           <p>
-            Eine Übermittlung in Drittländer (außerhalb der EU/des EWR) erfolgt
-            nur, wenn hierfür ein angemessenes Datenschutzniveau besteht oder
-            geeignete Garantien im Sinne der Art. 44 ff. DSGVO vorliegen.
+            Bei Zahlungen arbeiten wir mit dem Zahlungsdienstleister Stripe
+            zusammen. Dabei können u. a. Zahlungs- und Vertragsdaten (z. B.
+            Stripe-Kunden-/Abonnement-IDs und Zahlungsstatus) zwischen DigiKarte
+            und Stripe ausgetauscht werden. Hosting/Verarbeitung erfolgt je
+            nach Einsatz über unseren Infrastruktur-/Hosting-Anbieter.
+          </p>
+          <p>
+            Eine Übermittlung in Drittländer (außerhalb der EU/des EWR) kann
+            erfolgen, wenn dies zur Leistungserbringung erforderlich ist und
+            ein angemessenes Datenschutzniveau bzw. geeignete Garantien im
+            Sinne der Art. 44 ff. DSGVO vorliegen.
           </p>
         </section>
 

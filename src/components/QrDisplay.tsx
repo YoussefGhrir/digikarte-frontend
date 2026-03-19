@@ -44,7 +44,7 @@ export function QrDisplay({
   const origin =
     typeof window !== "undefined" && window.location.origin
       ? window.location.origin
-      : "https://digikarte.de";
+      : "https://digi-karte.com";
 
   const url = `${origin}/menu/${menuSlug}`;
   const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}`;

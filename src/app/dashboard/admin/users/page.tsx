@@ -458,7 +458,7 @@ export default function AdminUsersPage() {
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-6 text-sm text-neutral-400">Loading users…</div>
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-neutral-800 bg-neutral-950/70">
-          <table className="w-full min-w-[1040px] text-sm">
+          <table className="w-full lg:min-w-[1040px] text-sm">
             <thead className="text-xs uppercase tracking-[0.18em] text-neutral-500">
               <tr className="border-b border-neutral-800">
                 <th className="py-3 text-left font-medium whitespace-nowrap">Prénom</th>

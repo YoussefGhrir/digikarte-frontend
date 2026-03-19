@@ -147,7 +147,7 @@ export default function AdminDashboardPage() {
           <p className="text-xs text-neutral-500">Top pays trié par taux & menus</p>
         </div>
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[720px] text-sm">
+          <table className="w-full lg:min-w-[720px] text-sm">
             <thead className="text-xs uppercase tracking-[0.18em] text-neutral-500">
               <tr className="border-b border-neutral-800">
                 <th className="py-3 text-left font-medium">Pays</th>

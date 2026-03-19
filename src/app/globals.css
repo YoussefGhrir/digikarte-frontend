@@ -379,3 +379,17 @@ body {
   background: radial-gradient(ellipse 80% 50% at 50% 10%, rgba(13,148,136,0.03) 0%, transparent 55%);
   pointer-events: none;
 }
+
+/*
+ * iOS Safari auto-zoom fix:
+ * - quand un champ (<input>/<textarea>/<select>) a une taille de texte < 16px,
+ *   iOS zoome automatiquement au focus.
+ */
+@media (max-width: 640px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+    line-height: 1.2;
+  }
+}

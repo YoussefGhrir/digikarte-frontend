@@ -657,7 +657,7 @@ function ExplainVisualQr() {
   const origin =
     typeof window !== "undefined" && window.location?.origin
       ? window.location.origin
-      : "https://digikarte.de";
+      : "https://digi-karte.com";
   const url = `${origin}/menu/demo`;
   const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(url)}`;
 
@@ -745,7 +745,7 @@ function QrPreview() {
   const origin =
     typeof window !== "undefined" && window.location.origin
       ? window.location.origin
-      : "https://digikarte.de";
+      : "https://digi-karte.com";
 
   const url = `${origin}/menu/demo`;
   const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(

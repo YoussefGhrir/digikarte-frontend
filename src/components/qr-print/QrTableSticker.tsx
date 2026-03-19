@@ -7,7 +7,7 @@ import { useLanguage } from "@/lib/language-context";
 export type QrTableStickerBackground = "light" | "cream" | "dark" | "gradient";
 
 export interface QrTableStickerProps {
-  /** URL du menu (ex: https://digikarte.de/menu/abc123) */
+  /** URL du menu (ex: https://digi-karte.com/menu/abc123) */
   qrValue: string;
   restaurantName: string;
   /** Logo: URL ou data URL (base64) */

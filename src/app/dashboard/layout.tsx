@@ -621,7 +621,7 @@ export default function DashboardLayout({
               {mobileNavOpen && (
                 <div
                   ref={mobileNavRef}
-                  className="absolute left-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-xl shadow-black/60"
+                  className="absolute left-0 top-full z-50 mt-2 w-[calc(100vw-2rem)] max-w-64 max-h-[calc(100vh-12rem)] overflow-y-auto overflow-x-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-neutral-50 shadow-xl shadow-black/60"
                 >
                   <div className="p-2 space-y-1">
                     {isAdmin ? (
@@ -778,7 +778,7 @@ export default function DashboardLayout({
                     <span className="text-[9px]" aria-hidden>{orgDropdownOpen ? "▲" : "▼"}</span>
                   </button>
                   {orgDropdownOpen && (
-                    <div className="absolute right-0 z-40 mt-1 max-h-56 w-64 overflow-y-auto rounded-2xl border border-neutral-800 bg-neutral-950/95 p-1 text-[11px] shadow-xl shadow-black/60">
+                    <div className="absolute right-0 z-40 mt-1 max-h-56 w-[calc(100vw-2rem)] max-w-64 overflow-y-auto rounded-2xl border border-neutral-800 bg-neutral-950/95 p-1 text-[11px] shadow-xl shadow-black/60">
                       {orgs.map((org) => (
                         <button
                           key={org.id}

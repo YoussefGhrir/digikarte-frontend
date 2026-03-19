@@ -38,11 +38,11 @@ export default function AgbPage() {
           </h2>
           <p className="whitespace-pre-line">
             Vertragspartner ist:
-            {"\n"}[Name der Firma / des Anbieters]
-            {"\n"}[Straße und Hausnummer]
-            {"\n"}[PLZ und Ort]
-            {"\n"}[Land]
-            {"\n"}E-Mail: [Kontaktadresse]
+            {"\n"}Youssef Ghrir
+            {"\n"}Straße und Hausnummer: [bitte ergänzen]
+            {"\n"}PLZ und Ort: [bitte ergänzen] Kaiserslautern
+            {"\n"}Deutschland
+            {"\n"}E-Mail: gheriryoussef@gmail.com
           </p>
         </section>
 

@@ -15,16 +15,15 @@ export default function ImpressumPage() {
 
         <section className="mt-8 space-y-2 text-sm text-neutral-300">
           <h2 className="text-lg font-semibold text-neutral-100">
-            Angaben gemäß § 5 TMG
+            Angaben gemäß § 5 DDG
           </h2>
           <p className="whitespace-pre-line text-sm text-neutral-300">
-            {/* TODO: Diese Angaben mit deinen echten Daten ersetzen */}
             Betreiber der Plattform / Diensteanbieter:
-            {"\n"}[Name der Firma / des Einzelunternehmens]
-            {"\n"}[Rechtsform, z. B. GmbH, UG (haftungsbeschränkt), e. K.]
-            {"\n"}[Straße und Hausnummer]
-            {"\n"}[PLZ und Ort]
-            {"\n"}[Land]
+            {"\n"}Youssef Ghrir
+            {"\n"}Rechtsform: [z. B. Einzelunternehmen / e. K. / GmbH – bitte anpassen]
+            {"\n"}Straße und Hausnummer: [bitte ergänzen]
+            {"\n"}PLZ und Ort: [bitte ergänzen] Kaiserslautern
+            {"\n"}Deutschland
           </p>
         </section>
 
@@ -33,19 +32,18 @@ export default function ImpressumPage() {
             Vertreten durch
           </h2>
           <p>
-            {/* TODO: Anpassen */}
-            Gesetzlich vertreten durch: [vollständiger Name der vertretungsberechtigten Person(en)].
+            Gesetzlich vertreten durch: Youssef Ghrir.
           </p>
         </section>
 
         <section className="mt-6 space-y-1 text-sm text-neutral-300">
           <h2 className="text-lg font-semibold text-neutral-100">Kontakt</h2>
           <p>
-            Telefon: [Telefonnummer]
+            Telefon: +49 152 02387840
             <br />
-            E-Mail: [E-Mail-Adresse]
+            E-Mail: gheriryoussef@gmail.com
             <br />
-            Website: [Webadresse, z. B. https://www.deine-domain.de]
+            Website: https://digi-karte.com
           </p>
         </section>
 
@@ -57,9 +55,9 @@ export default function ImpressumPage() {
             {/* Falls zutreffend, ansonsten diesen Abschnitt entfernen */}
             Eintragung im Handelsregister.
             <br />
-            Registergericht: [zuständiges Registergericht]
+            Registergericht: [bitte ergänzen]
             <br />
-            Registernummer: [Handelsregisternummer]
+            Registernummer: [bitte ergänzen]
           </p>
         </section>
 
@@ -71,17 +69,20 @@ export default function ImpressumPage() {
             Umsatzsteuer-Identifikationsnummer gemäß § 27 a
             Umsatzsteuergesetz:
             <br />
-            [Umsatzsteuer-Identifikationsnummer]
+            [USt-IdNr., falls vorhanden]
           </p>
         </section>
 
         <section className="mt-8 space-y-2 text-sm text-neutral-300">
           <h2 className="text-lg font-semibold text-neutral-100">
-            Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
+            Verantwortlich für den Inhalt
           </h2>
           <p>
-            [Vollständiger Name, Anschrift der inhaltlich verantwortlichen
-            Person].
+            Verantwortlich für den Inhalt:
+            <br />
+            Youssef Ghrir
+            <br />
+            [bitte vollständige Adresse ergänzen]
           </p>
         </section>
 
@@ -90,12 +91,12 @@ export default function ImpressumPage() {
             Haftung für Inhalte
           </h2>
           <p>
-            Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene
-            Inhalte auf diesen Seiten nach den allgemeinen Gesetzen
-            verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter
-            jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde
-            Informationen zu überwachen oder nach Umständen zu forschen, die auf
-            eine rechtswidrige Tätigkeit hinweisen.
+            Als Diensteanbieter sind wir für eigene Inhalte auf diesen Seiten
+            nach den allgemeinen Gesetzen verantwortlich. Wir sind als
+            Diensteanbieter jedoch nicht verpflichtet, übermittelte oder
+            gespeicherte fremde Informationen allgemein zu überwachen oder
+            nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit
+            hinweisen.
           </p>
           <p>
             Verpflichtungen zur Entfernung oder Sperrung der Nutzung von

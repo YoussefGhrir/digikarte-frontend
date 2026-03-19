@@ -82,7 +82,7 @@ export default function OrganisationQrPage() {
             const menuPreviewUrl =
               typeof window !== "undefined"
                 ? `${window.location.origin}/menu/${menu.slug}`
-                : `https://digikarte.de/menu/${menu.slug}`;
+                : `https://digi-karte.com/menu/${menu.slug}`;
             return (
               <Link
                 key={menu.id}
