@@ -277,6 +277,26 @@ function DemoScenarioPage({
               </div>
             </div>
 
+            {/* Mobile/Tablet: Live preview avant les cartes QR */}
+            <div className="xl:hidden overflow-hidden rounded-3xl border border-sky-400/35 bg-gradient-to-br from-sky-500/15 via-neutral-900/90 to-neutral-900/90">
+              <div className="border-b border-sky-300/20 px-4 py-3 text-xs text-neutral-300">
+                {text.previewTitle}
+                <span className="ml-1.5 font-semibold text-sky-200">
+                  {templateItems.find((x) => x.id === selectedTemplate)?.label ?? selectedTemplate}
+                </span>
+              </div>
+              <div className="px-3 py-3">
+                <div className="mx-auto w-[300px] max-w-full rounded-[2rem] border border-neutral-700 bg-neutral-950 p-2 shadow-[0_20px_55px_rgba(0,0,0,0.75)]">
+                  <div className="mb-2 flex justify-center">
+                    <span className="h-1.5 w-20 rounded-full bg-neutral-700" />
+                  </div>
+                  <div className="h-[560px] overflow-y-auto rounded-[1.5rem] border border-neutral-800 bg-black">
+                    <MenuTemplateRenderer menu={demoMenu} locale={locale} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* QR horizontaux juste après les modèles */}
             <div className="grid gap-3 md:grid-cols-2">
               <article className="rounded-2xl border border-emerald-400/35 bg-gradient-to-br from-emerald-500/10 to-neutral-900/85 p-4 text-xs">
@@ -316,10 +336,19 @@ function DemoScenarioPage({
                 </ul>
               </article>
             </div>
+
+            <div className="rounded-2xl border border-amber-300/35 bg-gradient-to-r from-amber-500/12 via-neutral-900/85 to-neutral-900/85 p-4">
+              <p className="text-[10px] uppercase tracking-[0.24em] text-amber-200">
+                {text.designerQrKicker}
+              </p>
+              <p className="mt-1.5 text-xs leading-relaxed text-neutral-200">
+                {text.designerQrText}
+              </p>
+            </div>
           </div>
 
           {/* Colonne droite : preview live compact */}
-          <div className="space-y-4 xl:sticky xl:top-4">
+          <div className="hidden space-y-4 xl:sticky xl:top-4 xl:block">
             <div className="overflow-hidden rounded-3xl border border-sky-400/35 bg-gradient-to-br from-sky-500/15 via-neutral-900/90 to-neutral-900/90">
               <div className="border-b border-sky-300/20 px-4 py-3 text-xs text-neutral-300">
                 {text.previewTitle}
@@ -332,7 +361,7 @@ function DemoScenarioPage({
                   <div className="mb-2 flex justify-center">
                     <span className="h-1.5 w-20 rounded-full bg-neutral-700" />
                   </div>
-                  <div className="h-[430px] overflow-y-auto rounded-[1.5rem] border border-neutral-800 bg-black">
+                  <div className="h-[620px] overflow-y-auto rounded-[1.5rem] border border-neutral-800 bg-black">
                     <MenuTemplateRenderer menu={demoMenu} locale={locale} />
                   </div>
                 </div>
@@ -434,6 +463,9 @@ function getDemoTexts(locale: Locale) {
       qrPosterTitle: "Digitales Menü",
       qrPosterSubtitle: "Vor der Bestellung kurz scannen",
       qrPosterCta: "Jetzt scannen",
+      designerQrKicker: "Pro Designer Tipp",
+      designerQrText:
+        "Zusätzlich gibt es einen neutralen, sauberen QR als Bild (PNG) ohne Layout. Dein Designer kann ihn frei in eigene Flyer, Karten oder Markenvisuals integrieren und vollständig personalisieren.",
     };
   }
   if (locale === "fr") {
@@ -479,6 +511,9 @@ function getDemoTexts(locale: Locale) {
       qrPosterTitle: "Menu digital",
       qrPosterSubtitle: "Scannez avant d'entrer",
       qrPosterCta: "Scanner ici",
+      designerQrKicker: "Conseil designer",
+      designerQrText:
+        "Il existe aussi un QR neutre (image PNG propre) sans habillage. Votre designer peut l'utiliser librement dans vos flyers, cartes et visuels de marque avec personnalisation complète.",
     };
   }
   return {
@@ -523,5 +558,8 @@ function getDemoTexts(locale: Locale) {
     qrPosterTitle: "Digital Menu",
     qrPosterSubtitle: "Scan before entering",
     qrPosterCta: "Scan now",
+    designerQrKicker: "Designer tip",
+    designerQrText:
+      "A clean neutral QR image (PNG) is also available without styling. Your designer can reuse it in custom flyers, cards, or branded visuals with full personalization.",
   };
 }

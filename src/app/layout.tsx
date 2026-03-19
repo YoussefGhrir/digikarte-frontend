@@ -58,6 +58,11 @@ export default function RootLayout({
 }>) {
   const COOKIE_KEY = "digikarte-lang";
   const validLocales: Locale[] = ["de", "fr", "en"];
+  const GERMAN_COUNTRIES = new Set([
+    "DE", // Germany
+    "AT", // Austria
+    "LI", // Liechtenstein
+  ]);
   const FRENCH_COUNTRIES = new Set([
     // Europe
     "FR",
@@ -118,17 +123,19 @@ export default function RootLayout({
 
   const cc = country?.toUpperCase();
   let initialLocale: Locale;
-  if (cc && FRENCH_COUNTRIES.has(cc)) {
+  if (cc && GERMAN_COUNTRIES.has(cc)) {
+    initialLocale = "de";
+  } else if (cc && FRENCH_COUNTRIES.has(cc)) {
     initialLocale = "fr";
   } else {
-    // Important: for the "first impression" we rely primarily on geo (country).
-    // If the country is not in our FR list, default to English (not browser language).
+    // First impression: use geo primarily.
     if (!cc) {
-      // If we can't infer country, fallback to browser language to decide FR vs EN.
+      // If country is unavailable, infer from browser language.
       const first = acceptLanguage?.split(",")[0]?.trim();
       const lang = first?.split(";")[0]?.toLowerCase() ?? "";
-      initialLocale = lang.startsWith("fr") ? "fr" : "en";
+      initialLocale = lang.startsWith("de") ? "de" : lang.startsWith("fr") ? "fr" : "en";
     } else {
+      // Known country but not mapped: keep EN default.
       initialLocale = "en";
     }
   }

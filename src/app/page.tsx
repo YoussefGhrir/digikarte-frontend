@@ -42,8 +42,8 @@ export default function Home() {
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[url('/bg-landing.png')] bg-cover bg-center opacity-10" />
 
       {/* Barre haute : logo + langue + auth + thème */}
-      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-3">
+      <header className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
+        <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
           <div className="relative h-11 w-11 overflow-hidden rounded-3xl border border-neutral-200 dark:border-neutral-700 bg-white shadow-md ring-0 outline-none">
             <Image
               src="/digikarte-logo.png"
@@ -53,23 +53,23 @@ export default function Home() {
               className="object-contain p-1.5"
             />
           </div>
-          <div className="leading-tight">
-            <p className="font-forum text-xl tracking-wide text-amber-600 dark:text-amber-400">
+          <div className="min-w-0 leading-tight">
+            <p className="truncate font-forum text-lg tracking-wide text-amber-600 dark:text-amber-400 sm:text-xl">
               DigiKarte
             </p>
-            <p className="text-[11px] uppercase tracking-[0.25em] text-neutral-600 dark:text-neutral-400">
+            <p className="truncate text-[10px] uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400 sm:text-[11px] sm:tracking-[0.25em]">
               {t("landingBrandTagline", locale)}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
+        <div className="ml-auto flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <div className="relative" ref={langRef}>
               <button
                 type="button"
                 onClick={() => setLangOpen((o) => !o)}
-                className="flex items-center gap-1.5 rounded-full border border-neutral-300 dark:border-neutral-800 bg-neutral-100 dark:bg-black/75 px-3 py-1.5 text-[11px] text-neutral-800 dark:text-neutral-200 shadow-lg backdrop-blur transition hover:border-emerald-500 dark:hover:border-emerald-400/70 hover:text-neutral-900 dark:hover:text-neutral-50"
+                className="flex items-center gap-1 rounded-full border border-neutral-300 dark:border-neutral-800 bg-neutral-100 dark:bg-black/75 px-2.5 py-1.5 text-[10px] text-neutral-800 dark:text-neutral-200 shadow-lg backdrop-blur transition hover:border-emerald-500 dark:hover:border-emerald-400/70 hover:text-neutral-900 dark:hover:text-neutral-50 sm:gap-1.5 sm:px-3 sm:text-[11px]"
                 aria-haspopup="true"
                 aria-expanded={langOpen}
               >
@@ -109,7 +109,7 @@ export default function Home() {
           {user && (
             <Link
               href="/dashboard"
-              className="rounded-full border border-emerald-500/50 bg-emerald-500/10 px-3.5 py-1.5 text-[11px] font-medium text-emerald-800 dark:text-emerald-100 hover:bg-emerald-500/20"
+              className="rounded-full border border-emerald-500/50 bg-emerald-500/10 px-3 py-1.5 text-[10px] font-medium text-emerald-800 dark:text-emerald-100 hover:bg-emerald-500/20 sm:px-3.5 sm:text-[11px]"
             >
               {t("headerDashboardButton", locale)}
             </Link>
@@ -117,13 +117,13 @@ export default function Home() {
 
           <Link
             href="/login"
-            className="rounded-full border border-neutral-400 dark:border-neutral-700 px-3.5 py-1.5 text-[11px] font-medium text-neutral-700 dark:text-neutral-200 hover:border-amber-500/70 hover:bg-amber-500/10"
+            className="rounded-full border border-neutral-400 dark:border-neutral-700 px-3 py-1.5 text-[10px] font-medium text-neutral-700 dark:text-neutral-200 hover:border-amber-500/70 hover:bg-amber-500/10 sm:px-3.5 sm:text-[11px]"
           >
             {t("ctaLogin", locale)}
           </Link>
           <Link
             href="/register"
-            className="rounded-full bg-amber-400 px-4 py-1.5 text-xs font-semibold text-neutral-900 shadow-[0_18px_45px_rgba(251,191,36,0.45)] hover:bg-amber-300"
+            className="rounded-full bg-amber-400 px-3.5 py-1.5 text-[11px] font-semibold text-neutral-900 shadow-[0_18px_45px_rgba(251,191,36,0.45)] hover:bg-amber-300 sm:px-4 sm:text-xs"
           >
             {t("ctaGetStarted", locale)}
           </Link>
