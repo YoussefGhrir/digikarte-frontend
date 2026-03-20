@@ -2114,6 +2114,21 @@ export const translations = {
     fr: "Chargement de l'abonnement…",
     en: "Loading subscription…",
   },
+  subscriptionPaywallTitle: {
+    de: "Abonnement erforderlich",
+    fr: "Abonnement requis",
+    en: "Subscription required",
+  },
+  subscriptionPaywallBody: {
+    de: "Um die Startseite, QR-Codes und Menüs zu nutzen, benötigen Sie ein aktives Abonnement. Schließen Sie zuerst ein Abo ab, um alle Funktionen freizuschalten.",
+    fr: "Pour utiliser l’accueil, les QR codes et les menus, un abonnement actif est nécessaire. Souscrivez d’abord pour débloquer toutes les fonctionnalités.",
+    en: "To use home, QR codes and menus, you need an active subscription. Subscribe first to unlock all features.",
+  },
+  subscriptionPaywallCta: {
+    de: "Zum Abonnement",
+    fr: "Voir l’abonnement",
+    en: "Go to subscription",
+  },
   subscriptionPlanMonthly: {
     de: "Monatlich",
     fr: "Mensuel",

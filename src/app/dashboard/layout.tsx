@@ -208,6 +208,32 @@ export default function DashboardLayout({
     };
   }, [token, pathname, path, router, logout, profileChecked, subscriptionBypass, isAdmin, onAdminArea, subscriptionChecked, localizePath]);
 
+  // Sans abonnement actif, chaque navigation hors page abonnement doit renvoyer vers celle-ci
+  // (sinon subscriptionChecked bloque le premier effet et l’utilisateur reste sur une route avec contenu vide).
+  useEffect(() => {
+    if (!token || !profileChecked || !subscriptionChecked) return;
+    if (onAdminArea || isAdmin || subscriptionBypass) return;
+    const subStatus = subscription?.status;
+    const needsPaywall =
+      !subscription ||
+      subStatus === "EXPIRED" ||
+      subStatus === "CANCELLED";
+    if (needsPaywall && !path.startsWith("/dashboard/subscription")) {
+      router.replace(localizePath("/dashboard/subscription"));
+    }
+  }, [
+    token,
+    profileChecked,
+    subscriptionChecked,
+    subscription,
+    path,
+    isAdmin,
+    subscriptionBypass,
+    onAdminArea,
+    router,
+    localizePath,
+  ]);
+
   useEffect(() => {
     if (!path.startsWith("/dashboard/admin")) return;
     if (!isSuperAdmin && !loading) {
@@ -329,23 +355,77 @@ export default function DashboardLayout({
     );
   }
 
-  // Si l'abonnement est inexistant / expiré / annulé et que l'on n'est pas
-  // déjà sur la page d'abonnement, on laisse la redirection de l'effet se
-  // faire et on n'affiche rien ici pour éviter de voir le dashboard.
   const subStatus = subscription?.status;
   const needsPaywall =
     !subscription ||
     subStatus === "EXPIRED" ||
     subStatus === "CANCELLED";
-  if (
+  const showSubscriptionPaywall =
     subscriptionChecked &&
     needsPaywall &&
     !isAdmin &&
     !subscriptionBypass &&
     !onAdminArea &&
-    !path.startsWith("/dashboard/subscription")
-  ) {
-    return null;
+    !path.startsWith("/dashboard/subscription");
+
+  if (showSubscriptionPaywall) {
+    return (
+      <div className="flex min-h-screen flex-col bg-neutral-950 text-neutral-100">
+        <header className="flex shrink-0 items-center justify-between border-b border-neutral-800 bg-neutral-950/90 px-4 py-3 backdrop-blur">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-xl border-2 border-amber-400/80 bg-white shadow">
+              <Image
+                src="/digikarte-logo.png"
+                alt="DigiKarte"
+                fill
+                sizes="36px"
+                className="object-contain p-1.5"
+              />
+            </div>
+            <span className="font-forum text-lg tracking-wide text-amber-400">DigiKarte</span>
+          </div>
+          <div className="flex shrink-0 items-center gap-0.5">
+            {languages.map((lang) => (
+              <button
+                key={lang}
+                type="button"
+                onClick={() => {
+                  setLocale(lang);
+                  router.push(swapLocaleInBrowserPath(pathname || "/", lang));
+                }}
+                className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide transition ${
+                  locale === lang
+                    ? "bg-amber-500/20 text-amber-200"
+                    : "text-neutral-500 hover:bg-neutral-900 hover:text-neutral-200"
+                }`}
+              >
+                {lang}
+              </button>
+            ))}
+          </div>
+        </header>
+        <main className="flex flex-1 flex-col items-center justify-center px-5 pb-12 pt-8 sm:px-8">
+          <div className="w-full max-w-md rounded-2xl border border-neutral-800 bg-neutral-900/70 p-7 shadow-xl shadow-black/40 sm:p-9">
+            <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-amber-400/90">
+              {t("subscriptionKicker", locale)}
+            </p>
+            <h1 className="mt-2 font-forum text-xl font-semibold leading-snug text-neutral-50 sm:text-2xl">
+              {t("subscriptionPaywallTitle", locale)}
+            </h1>
+            <p className="mt-4 text-sm leading-relaxed text-neutral-400">
+              {t("subscriptionPaywallBody", locale)}
+            </p>
+            <Link
+              href={localizePath("/dashboard/subscription")}
+              className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-3.5 text-sm font-semibold text-neutral-950 shadow-lg shadow-amber-900/20 transition hover:bg-amber-400"
+            >
+              <IconQr className="h-5 w-5 shrink-0" aria-hidden />
+              {t("subscriptionPaywallCta", locale)}
+            </Link>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   const currentOrg =
