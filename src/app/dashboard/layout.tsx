@@ -434,10 +434,12 @@ export default function DashboardLayout({
       : null;
 
   const currentOrgIdSafe = currentOrg?.id ?? null;
+  /** Évite liens vagues vers /dashboard quand l’org courante n’est pas encore hydratée mais la liste existe. */
+  const navOrgId = currentOrgIdSafe ?? orgs[0]?.id ?? null;
 
-  const menusHref = currentOrgIdSafe ? `/dashboard/organisations/${currentOrgIdSafe}` : "/dashboard";
+  const menusHref = navOrgId ? `/dashboard/organisations/${navOrgId}` : "/dashboard";
   const organisationsHref = "/dashboard?view=organisations";
-  const qrHref = currentOrgIdSafe ? `/dashboard/organisations/${currentOrgIdSafe}/qr` : organisationsHref;
+  const qrHref = navOrgId ? `/dashboard/organisations/${navOrgId}/qr` : organisationsHref;
   const subscriptionHref = "/dashboard/subscription";
 
   return (
@@ -931,7 +933,7 @@ export default function DashboardLayout({
           </div>
         )}
 
-        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-neutral-950/95 px-4 py-6 pb-24 sm:px-6 sm:pb-28 lg:px-10 lg:py-8 lg:pb-0">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-neutral-950/95 px-4 py-6 pb-[calc(6.25rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pb-32 lg:px-10 lg:py-8 lg:pb-0">
           {path.match(/^\/dashboard\/organisations\/[^/]+\/menus\/[^/]+/) ? (
             <div className="w-full min-w-0 max-w-full">{children}</div>
           ) : (
@@ -940,10 +942,8 @@ export default function DashboardLayout({
         </main>
 
         {/* Navbar mobile fixe (navigation toujours visible) */}
-        <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-neutral-800 bg-neutral-950/90 backdrop-blur lg:hidden">
-          <div
-            className="flex items-stretch justify-between gap-x-0.5 px-1.5 py-2"
-          >
+        <nav className="fixed bottom-0 left-0 right-0 z-[100] border-t border-neutral-800 bg-neutral-950/95 backdrop-blur pb-[max(0.5rem,env(safe-area-inset-bottom,0px))] lg:hidden">
+          <div className="flex items-stretch justify-between gap-x-0.5 px-1 py-1.5 sm:px-1.5">
             {isSuperAdmin ? (
               <>
                 <Link
@@ -985,7 +985,7 @@ export default function DashboardLayout({
               <>
                 <Link
                   href={localizePath("/dashboard")}
-                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
+                  className={`flex min-h-[48px] min-w-0 flex-1 touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-2 text-[10px] font-semibold active:opacity-90 ${
                     path === "/dashboard" && dashboardView !== "organisations"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
@@ -1003,7 +1003,7 @@ export default function DashboardLayout({
                   ) : (
                     <Link
                       href={localizePath(subscriptionHref)}
-                      className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
+                      className={`flex min-h-[48px] min-w-0 flex-1 touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-2 text-[10px] font-semibold active:opacity-90 ${
                         path.startsWith("/dashboard/subscription")
                           ? "text-amber-200"
                           : "text-neutral-400 hover:text-neutral-100"
@@ -1015,7 +1015,7 @@ export default function DashboardLayout({
                   ))}
                 <Link
                   href={localizePath(organisationsHref)}
-                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
+                  className={`flex min-h-[48px] min-w-0 flex-1 touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-2 text-[10px] font-semibold active:opacity-90 ${
                     path === "/dashboard" && dashboardView === "organisations"
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
@@ -1026,9 +1026,8 @@ export default function DashboardLayout({
                 </Link>
                 <Link
                   href={localizePath(qrHref)}
-                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
-                    path.startsWith(`/dashboard/organisations/${currentOrgIdSafe ?? ""}/qr`) &&
-                    currentOrgIdSafe != null
+                  className={`relative z-10 flex min-h-[48px] min-w-0 flex-1 touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-2 text-[10px] font-semibold active:opacity-90 ${
+                    navOrgId != null && path.startsWith(`/dashboard/organisations/${navOrgId}/qr`)
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
                   }`}
@@ -1038,8 +1037,8 @@ export default function DashboardLayout({
                 </Link>
                 <Link
                   href={localizePath(menusHref)}
-                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
-                    currentOrgIdSafe != null && path.startsWith(`/dashboard/organisations/${currentOrgIdSafe}`) && !path.includes("/qr")
+                  className={`flex min-h-[48px] min-w-0 flex-1 touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-2 text-[10px] font-semibold active:opacity-90 ${
+                    navOrgId != null && path.startsWith(`/dashboard/organisations/${navOrgId}`) && !path.includes("/qr")
                       ? "text-amber-200"
                       : "text-neutral-400 hover:text-neutral-100"
                   }`}

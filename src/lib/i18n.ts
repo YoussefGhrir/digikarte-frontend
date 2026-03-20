@@ -1201,6 +1201,36 @@ export const translations = {
     fr: "Aucun menu. Créez un menu pour ajouter des plats et générer un QR.",
     en: "No menus. Create a menu to add dishes and generate a QR code.",
   },
+  dashboardFirstMenuEmptyTitle: {
+    de: "Noch kein Menü",
+    fr: "Pas encore de menu",
+    en: "No menu yet",
+  },
+  dashboardFirstMenuEmptyBody: {
+    de: "Erstellen Sie Ihr erstes Menü, um Speisen anzulegen und Ihren Kunden einen QR-Code zum Scannen anzubieten.",
+    fr: "Créez votre premier menu pour ajouter des plats et offrir un QR code à vos clients.",
+    en: "Create your first menu to add dishes and give clients a QR code to scan.",
+  },
+  dashboardFirstMenuEmptyCta: {
+    de: "Erstes Menü erstellen",
+    fr: "Créer mon premier menu",
+    en: "Create my first menu",
+  },
+  dashboardQrEmptyTitle: {
+    de: "Noch kein QR-Code",
+    fr: "Pas encore de QR code",
+    en: "No QR code yet",
+  },
+  dashboardQrEmptyBody: {
+    de: "Legen Sie zuerst ein Menü an. Danach können Sie hier QR-Codes für Ihre Gäste erzeugen und ausdrucken.",
+    fr: "Créez d’abord un menu. Vous pourrez ensuite générer et partager les QR codes pour vos clients.",
+    en: "Create a menu first. You can then generate QR codes here for your guests.",
+  },
+  dashboardQrEmptyCta: {
+    de: "Zum Menü & QR einrichten",
+    fr: "Créer un menu pour le QR",
+    en: "Set up menu & QR",
+  },
   orgMenuTitleLabel: {
     de: "Menütitel (optional)",
     fr: "Titre du menu (optionnel)",

@@ -283,8 +283,20 @@ export default function OrganisationPage() {
       )}
 
       {menus.length === 0 && !showForm ? (
-          <div className="rounded-2xl border border-dashed border-neutral-700 bg-neutral-950/40 p-10 text-center text-sm text-neutral-400">
-          {t("orgNoMenus", locale)}
+        <div className="mx-auto w-full max-w-lg rounded-2xl border border-dashed border-amber-500/35 bg-neutral-950/60 px-6 py-10 text-center shadow-inner shadow-black/20">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-400/90">
+            {t("dashboardFirstMenuEmptyTitle", locale)}
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-neutral-300">
+            {t("dashboardFirstMenuEmptyBody", locale)}
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowForm(true)}
+            className="mt-6 inline-flex cursor-pointer items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-neutral-950 shadow-lg shadow-amber-900/20 transition hover:bg-amber-400"
+          >
+            {t("dashboardFirstMenuEmptyCta", locale)}
+          </button>
         </div>
       ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -578,7 +578,7 @@ export default function MenuDetailPage() {
   }
 
   return (
-    <div className="flex h-auto min-h-[560px] w-full min-w-0 max-w-full flex-col overflow-hidden overflow-x-hidden rounded-2xl border border-neutral-800 bg-neutral-950 shadow-xl lg:h-[calc(100vh-5rem)] lg:flex-row">
+    <div className="flex h-auto min-h-[min(100dvh,720px)] w-full min-w-0 max-w-full flex-col overflow-hidden overflow-x-hidden rounded-2xl border border-neutral-800 bg-neutral-950 shadow-xl [touch-action:manipulation] lg:h-[calc(100vh-5rem)] lg:min-h-0 lg:flex-row">
       <aside
         className="order-2 flex shrink-0 flex-col border-t border-neutral-800 bg-neutral-900/80 lg:order-none lg:border-t-0 lg:border-r"
         style={{ width: isDesktop ? asideWidth : "100%" }}
@@ -1023,17 +1023,17 @@ export default function MenuDetailPage() {
             )}
           </div>
         </div>
-        <div className="min-h-0 flex-1 overflow-hidden overflow-x-hidden bg-neutral-900">
+        <div className="min-h-0 flex-1 overflow-hidden overflow-x-hidden overscroll-x-none bg-neutral-900">
           {menu?.slug ? (
-            <div className="flex h-full w-full touch-manipulation items-start justify-center py-4">
-              <div className="relative h-full w-[430px] max-w-full rounded-[32px] border border-neutral-800 bg-black/90 shadow-[0_25px_70px_rgba(0,0,0,0.9)] overflow-hidden">
+            <div className="box-border flex h-full w-full items-center justify-center px-3 py-4 sm:px-4">
+              <div className="relative mx-auto w-full max-w-[430px] rounded-[32px] border border-neutral-800 bg-black/90 shadow-[0_25px_70px_rgba(0,0,0,0.9)] [contain:inline-size] overflow-hidden">
                 {/* Barre type téléphone */}
                 <div className="pointer-events-none absolute inset-x-16 top-2 h-1.5 rounded-full bg-neutral-700/80" />
                 <iframe
                   key={`${menu.slug}-${menu.displayTemplate ?? "classic"}-${menu.colorTheme ?? "default"}`}
                   src={`/menu/${menu.slug}`}
                   title={previewMenu?.title || t("menu", locale)}
-                  className="mt-4 h-[min(520px,calc(100dvh-11rem))] w-full border-0 rounded-b-[32px] bg-black lg:h-[calc(100vh-9rem)]"
+                  className="mt-4 block h-[min(520px,calc(100dvh-12rem))] w-full max-w-full border-0 rounded-b-[32px] bg-black lg:h-[calc(100vh-9rem)]"
                 />
               </div>
             </div>
