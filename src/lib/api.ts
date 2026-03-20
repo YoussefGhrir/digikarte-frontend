@@ -117,6 +117,15 @@ export async function api<T>(
     throw new ApiError(message, res.status, code);
   }
 
+  // Utilisation réelle du compte (API authentifiée) = réinitialise le timer d'inactivité côté client.
+  if (typeof window !== "undefined" && token) {
+    try {
+      window.dispatchEvent(new CustomEvent("digikarte-activity"));
+    } catch {
+      // ignore
+    }
+  }
+
   if (res.status === 204) return undefined as T;
   // Certains endpoints (ex: DELETE "void") renvoient un body vide mais pas forcément en 204.
   // Dans ce cas, `res.json()` déclenche "Unexpected end of JSON input".
@@ -511,6 +520,11 @@ export interface InvoiceDto {
   createdAt: string;
   paidAt?: string | null;
   invoiceUrl?: string | null;
+}
+
+/** Vide le cache abonnement (logout / session expirée). */
+export function clearSubscriptionMeCache() {
+  subscriptionMeCache = null;
 }
 
 /** Récupère l'abonnement courant de l'utilisateur connecté. */

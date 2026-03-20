@@ -68,6 +68,9 @@ export default function DashboardLayout({
   );
   const swapLocaleInPath = (lang: Locale) => swapLocaleInBrowserPath(pathname || "/", lang);
   const onAdminArea = Boolean(path.startsWith("/dashboard/admin"));
+  /** Abonnement requis sauf page abo + profil (photo, coordonnées sans payer). */
+  const paywallExempt =
+    path.startsWith("/dashboard/subscription") || path.startsWith("/dashboard/profile");
 
   const languages: Locale[] = ["de", "fr", "en"];
   const [langOpen, setLangOpen] = useState(false);
@@ -174,7 +177,7 @@ export default function DashboardLayout({
           !sub ||
           status === "EXPIRED" ||
           status === "CANCELLED";
-        if (needsPaywall && !path.startsWith("/dashboard/subscription")) {
+        if (needsPaywall && !paywallExempt) {
           router.replace(localizePath("/dashboard/subscription"));
         }
       } catch (e) {
@@ -186,13 +189,13 @@ export default function DashboardLayout({
           }
           // Toute autre erreur API (404, 500, etc.) = pas d'abonnement actif
           setSubscription(null);
-          if (!path.startsWith("/dashboard/subscription")) {
+          if (!paywallExempt) {
             router.replace(localizePath("/dashboard/subscription"));
           }
         } else {
           // Erreur inconnue: se comporter comme aucun abonnement
           setSubscription(null);
-          if (!path.startsWith("/dashboard/subscription")) {
+          if (!paywallExempt) {
             router.replace(localizePath("/dashboard/subscription"));
           }
         }
@@ -207,7 +210,7 @@ export default function DashboardLayout({
     return () => {
       cancelled = true;
     };
-  }, [token, pathname, path, router, logout, profileChecked, subscriptionBypass, isAdmin, onAdminArea, subscriptionChecked, localizePath]);
+  }, [token, pathname, path, router, logout, profileChecked, subscriptionBypass, isAdmin, onAdminArea, subscriptionChecked, localizePath, paywallExempt]);
 
   // Sans abonnement actif, chaque navigation hors page abonnement doit renvoyer vers celle-ci
   // (sinon subscriptionChecked bloque le premier effet et l’utilisateur reste sur une route avec contenu vide).
@@ -219,7 +222,7 @@ export default function DashboardLayout({
       !subscription ||
       subStatus === "EXPIRED" ||
       subStatus === "CANCELLED";
-    if (needsPaywall && !path.startsWith("/dashboard/subscription")) {
+    if (needsPaywall && !paywallExempt) {
       router.replace(localizePath("/dashboard/subscription"));
     }
   }, [
@@ -233,6 +236,7 @@ export default function DashboardLayout({
     onAdminArea,
     router,
     localizePath,
+    paywallExempt,
   ]);
 
   useEffect(() => {
@@ -346,7 +350,7 @@ export default function DashboardLayout({
 
   // Tant que nous n'avons pas vérifié l'abonnement (et qu'on n'est pas déjà
   // sur la page d'abonnement), afficher un écran de chargement.
-  if (!subscriptionChecked && !path.startsWith("/dashboard/subscription") && !onAdminArea && !subscriptionBypass) {
+  if (!subscriptionChecked && !paywallExempt && !onAdminArea && !subscriptionBypass) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-950">
         <p className="text-sm tracking-[0.3em] text-neutral-400 uppercase">
@@ -367,7 +371,7 @@ export default function DashboardLayout({
     !isAdmin &&
     !subscriptionBypass &&
     !onAdminArea &&
-    !path.startsWith("/dashboard/subscription");
+    !paywallExempt;
 
   if (showSubscriptionPaywall) {
     return (

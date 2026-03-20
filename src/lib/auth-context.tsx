@@ -1,8 +1,9 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { authGetProfile, authLogin, authRegister, AuthResponse } from "./api";
+import { authGetProfile, authLogin, authRegister, AuthResponse, clearSubscriptionMeCache } from "./api";
+import { isJwtExpired } from "./jwt-exp";
 import { useLanguage } from "./language-context";
 import { prefixWithLocale } from "./locale-path";
 
@@ -39,35 +40,47 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 const STORAGE_KEY = "token";
 const USER_KEY = "user";
 
+/** Déconnexion si aucune activité (UI + appels API) pendant ce délai. */
+const IDLE_LOGOUT_MS = 30 * 60 * 1000;
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { locale } = useLanguage();
+  const lastActivityRef = useRef<number>(Date.now());
 
   useEffect(() => {
     const t = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
     const u = typeof window !== "undefined" ? localStorage.getItem(USER_KEY) : null;
     if (t && u) {
-      setToken(t);
-      try {
-        const parsed = JSON.parse(u) as Partial<User>;
-        setUser({
-          ...(parsed as User),
-          subscriptionBypass: typeof parsed?.subscriptionBypass === "boolean" ? parsed.subscriptionBypass : false,
-          admin: Boolean(parsed?.admin),
-          superAdmin: Boolean(parsed?.superAdmin),
-        });
-      } catch {
+      if (isJwtExpired(t)) {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(USER_KEY);
+        clearSubscriptionMeCache();
+      } else {
+        setToken(t);
+        try {
+          const parsed = JSON.parse(u) as Partial<User>;
+          setUser({
+            ...(parsed as User),
+            subscriptionBypass: typeof parsed?.subscriptionBypass === "boolean" ? parsed.subscriptionBypass : false,
+            admin: Boolean(parsed?.admin),
+            superAdmin: Boolean(parsed?.superAdmin),
+          });
+        } catch {
+          localStorage.removeItem(STORAGE_KEY);
+          localStorage.removeItem(USER_KEY);
+          clearSubscriptionMeCache();
+        }
       }
     }
     setLoading(false);
   }, []);
 
   const persist = useCallback((res: AuthResponse) => {
+    clearSubscriptionMeCache();
     localStorage.setItem(STORAGE_KEY, res.token);
     const u: User = {
       userId: res.userId,
@@ -139,6 +152,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(
     (options?: { redirectTo?: string }) => {
+      clearSubscriptionMeCache();
       setUser(null);
       setToken(null);
       localStorage.removeItem(STORAGE_KEY);
@@ -153,6 +167,71 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
     [router, locale]
   );
+
+  useEffect(() => {
+    lastActivityRef.current = Date.now();
+  }, [token]);
+
+  /**
+   * Sécurité : déconnexion après 30 min sans activité (clics, scroll, usage API).
+   * Le JWT reste long côté serveur ; l’utilisateur actif n’est pas expulsé par le seul âge du token.
+   */
+  useEffect(() => {
+    if (!token) return;
+
+    const bump = () => {
+      lastActivityRef.current = Date.now();
+    };
+    bump();
+
+    const onUi = () => bump();
+    const onApiActivity = () => bump();
+
+    const uiEvents = ["mousedown", "keydown", "touchstart", "click", "wheel"] as const;
+    uiEvents.forEach((ev) => window.addEventListener(ev, onUi, { passive: true }));
+    document.addEventListener("scroll", onUi, true);
+
+    let moveTimer: ReturnType<typeof setTimeout> | null = null;
+    const onMove = () => {
+      if (moveTimer != null) return;
+      moveTimer = setTimeout(() => {
+        bump();
+        moveTimer = null;
+      }, 2000);
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("digikarte-activity", onApiActivity);
+
+    const onVis = () => {
+      if (document.visibilityState === "visible") bump();
+    };
+    document.addEventListener("visibilitychange", onVis);
+
+    const tick = () => {
+      if (isJwtExpired(token)) {
+        clearSubscriptionMeCache();
+        logout({ redirectTo: prefixWithLocale("/", locale) });
+        return;
+      }
+      if (Date.now() - lastActivityRef.current > IDLE_LOGOUT_MS) {
+        clearSubscriptionMeCache();
+        logout({ redirectTo: prefixWithLocale("/", locale) });
+      }
+    };
+
+    tick();
+    const interval = window.setInterval(tick, 30_000);
+
+    return () => {
+      window.clearInterval(interval);
+      uiEvents.forEach((ev) => window.removeEventListener(ev, onUi));
+      document.removeEventListener("scroll", onUi, true);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("digikarte-activity", onApiActivity);
+      document.removeEventListener("visibilitychange", onVis);
+      if (moveTimer != null) clearTimeout(moveTimer);
+    };
+  }, [token, logout, locale]);
 
   return (
     <AuthContext.Provider
