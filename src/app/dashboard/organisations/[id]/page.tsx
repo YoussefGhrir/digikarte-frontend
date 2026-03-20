@@ -1,6 +1,6 @@
 "use client";
 
-import { IconTrash } from "@/components/icons";
+import { IconEdit, IconTrash } from "@/components/icons";
 import Link from "next/link";
 import {
   menuCreate,
@@ -303,22 +303,8 @@ export default function OrganisationPage() {
           {menus.map((menu) => (
             <div
               key={menu.id}
-              className="group relative overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950/40 shadow-sm shadow-black/30 transition hover:border-amber-400/70 hover:bg-neutral-900 flex flex-col"
+              className="relative overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950/40 shadow-sm shadow-black/30 transition hover:border-amber-400/70 hover:bg-neutral-900 flex flex-col"
             >
-              <div className="absolute right-3 top-3 z-10 flex gap-1.5 opacity-0 transition group-hover:opacity-100">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setDeletingMenu(menu);
-                  }}
-                  className="cursor-pointer rounded-lg bg-red-500 p-1.5 text-white shadow hover:bg-red-400"
-                  title={t("menuDeleteButton", locale)}
-                  aria-label={t("menuDeleteButton", locale)}
-                >
-                  <IconTrash className="h-4 w-4" />
-                </button>
-              </div>
               <div className="w-full h-[180px] rounded-t-2xl overflow-hidden border-b border-neutral-800 bg-neutral-200 relative shrink-0">
                 <div
                   className="absolute top-0 left-0 origin-top-left"
@@ -336,19 +322,36 @@ export default function OrganisationPage() {
                   />
                 </div>
               </div>
-              <div className="block p-4 pr-24 flex-1">
+              <div className="flex flex-1 flex-col p-4">
                 <h3 className="font-forum text-xl text-neutral-50">
                   {menu.title?.trim() || t("menu", locale)}
                 </h3>
                 <p className="mt-2 text-xs uppercase tracking-[0.18em] text-neutral-500">
                   {menu.items?.length ?? 0} {t("orgItemsCount", locale)}
                 </p>
-                <Link
-                  href={prefixWithLocale(`/dashboard/organisations/${id}/menus/${menu.id}`, locale)}
-                  className="mt-3 inline-block cursor-pointer rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white shadow hover:bg-blue-400"
-                >
-                  {t("menuViewButton", locale)}
-                </Link>
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <Link
+                    href={prefixWithLocale(`/dashboard/organisations/${id}/menus/${menu.id}`, locale)}
+                    className="inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-amber-500 text-neutral-950 shadow hover:bg-amber-400"
+                    aria-label={t("menuEditButton", locale)}
+                  >
+                    <IconEdit className="h-5 w-5" aria-hidden />
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setDeletingMenu(menu)}
+                    className="inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-red-600 text-white shadow hover:bg-red-500"
+                    aria-label={t("menuDeleteButton", locale)}
+                  >
+                    <IconTrash className="h-5 w-5" aria-hidden />
+                  </button>
+                  <Link
+                    href={prefixWithLocale(`/dashboard/organisations/${id}/menus/${menu.id}`, locale)}
+                    className="inline-flex min-h-10 flex-1 cursor-pointer items-center justify-center rounded-lg bg-blue-500 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white shadow hover:bg-blue-400 sm:min-w-0"
+                  >
+                    {t("menuViewButton", locale)}
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
@@ -370,6 +373,9 @@ export default function OrganisationPage() {
             </h2>
             <p className="mt-3 text-sm text-neutral-400">
               {t("menuDeleteConfirm", locale)}
+            </p>
+            <p className="mt-3 rounded-xl border border-amber-500/25 bg-amber-950/20 px-3 py-2.5 text-sm text-amber-100/90">
+              {t("menuDeleteQrNote", locale)}
             </p>
             <div className="mt-6 flex justify-end gap-2">
               <button

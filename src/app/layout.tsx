@@ -4,7 +4,7 @@ import { cookies, headers } from "next/headers";
 import { AuthProvider } from "@/lib/auth-context";
 import { LanguageProvider } from "@/lib/language-context";
 import type { Locale } from "@/lib/i18n";
-import Footer from "@/components/Footer";
+import ConditionalFooter from "@/components/ConditionalFooter";
 import "./globals.css";
 
 const inter = Inter({
@@ -116,7 +116,7 @@ export default function RootLayout({
             <AuthProvider>
               <div className="flex min-h-screen flex-col overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
                 <main className="flex-1">{children}</main>
-                <Footer />
+                <ConditionalFooter />
               </div>
             </AuthProvider>
           </LanguageProvider>
@@ -163,7 +163,7 @@ export default function RootLayout({
           <AuthProvider>
             <div className="flex min-h-screen flex-col overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
               <main className="flex-1">{children}</main>
-              <Footer />
+              <ConditionalFooter />
             </div>
           </AuthProvider>
         </LanguageProvider>

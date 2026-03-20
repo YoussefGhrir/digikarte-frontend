@@ -345,6 +345,7 @@ export default function MenuQrPage() {
         <div>
           <h1 className="font-forum text-2xl text-neutral-50">{t("menuQrTab", locale)}</h1>
           <p className="mt-1 text-sm text-neutral-500">{t("menuQrPreviewHint", locale)}</p>
+          <p className="mt-2 max-w-2xl text-sm leading-snug text-neutral-500">{t("menuQrLinkedNote", locale)}</p>
         </div>
         <Link
           href={prefixWithLocale(`/dashboard/organisations/${orgId}/qr`, locale)}

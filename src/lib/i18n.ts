@@ -1276,6 +1276,11 @@ export const translations = {
     fr: "Supprimer définitivement ce menu et tous ses articles ?",
     en: "Permanently delete this menu and all its items?",
   },
+  menuDeleteQrNote: {
+    de: "Der zugehörige QR-Code wird ungültig. QR-Codes können nicht getrennt vom Menü gelöscht oder bearbeitet werden – sie gehören immer zu genau einem Menü.",
+    fr: "Le QR code associé ne fonctionnera plus. On ne peut pas supprimer ou modifier un QR séparément : il est lié à ce menu.",
+    en: "The QR code for this menu will stop working. You can’t delete or edit a QR on its own — it always belongs to this menu.",
+  },
   menuItemDeleteConfirm: {
     de: "Diesen Artikel aus dem Menü entfernen?",
     fr: "Supprimer cet article du menu ?",
@@ -1867,6 +1872,11 @@ export const translations = {
     fr: "Consultez les deux modèles avant d'imprimer ou de télécharger.",
     en: "View both templates before printing or downloading.",
   },
+  menuQrLinkedNote: {
+    de: "Der QR-Code hängt an diesem Menü: er kann nicht separat bearbeitet oder gelöscht werden. Wird das Menü gelöscht, entfällt auch der QR.",
+    fr: "Le QR est lié à ce menu : pas d’édition ni de suppression à part. Si vous supprimez le menu, le QR n’est plus valide.",
+    en: "The QR belongs to this menu — it can’t be edited or deleted separately. Deleting the menu removes the QR.",
+  },
   menuQrGoToManagement: {
     de: "Sticker & Plakat drucken → QR-Verwaltung",
     fr: "Stickers et affiche à imprimer → Gestion des QR",
@@ -2093,20 +2103,80 @@ export const translations = {
     fr: "Description / composition",
     en: "Description / composition",
   },
+  menuExplainKicker: {
+    de: "Kurz erklärt",
+    fr: "En bref",
+    en: "Quick guide",
+  },
   menuExplainButton: {
-    de: "Wie wird ein Gericht angezeigt?",
-    fr: "Comment s’affiche un plat ?",
-    en: "How is a dish displayed?",
+    de: "So sieht’s aus: Blöcke & Gerichte",
+    fr: "Aperçu : blocs & plats",
+    en: "Preview: blocks & dishes",
   },
   menuExplainTitle: {
-    de: "Beispiel: Name, Preis und Beschreibung",
-    fr: "Exemple : nom, prix et description",
-    en: "Example: name, price and description",
+    de: "Blöcke und Gerichte – so liest der Gast",
+    fr: "Blocs et plats – ce que voit le client",
+    en: "Blocks and dishes – what guests see",
   },
   menuExplainIntro: {
-    de: "Jedes Gericht hat einen Namen, optional einen Preis und eine Beschreibung/Komposition. Der Name erscheint links, der Preis rechts, und die Beschreibung immer unter dem Namen – so bleibt alles klar für den Gast.",
-    fr: "Chaque plat a un nom, éventuellement un prix et une description/une composition. Le nom apparaît à gauche, le prix à droite, et la description toujours en dessous du nom – tout reste clair pour le client.",
-    en: "Each dish has a name, an optional price and a description/composition. The name appears on the left, the price on the right, and the description always under the name – everything stays clear for your guest.",
+    de: "Zuerst fasst du mehrere Gerichte in einem Block zusammen (z. B. „Café & Brunch“, „Getränke“). Die Blocküberschrift steht groß und klar darüber. Unter jedem Block erscheinen die einzelnen Gerichte: Name links, Preis rechts, Beschreibung darunter.",
+    fr: "D’abord vous regroupez les plats dans des blocs (ex. « Café & brunch », « Boissons »). Le titre du bloc est bien visible au-dessus. Sous chaque bloc, chaque plat affiche : le nom à gauche, le prix à droite, la description en dessous.",
+    en: "First you group dishes into blocks (e.g. “Café & brunch”, “Drinks”). The block title sits clearly above. Under each block, every dish shows: name on the left, price on the right, description below.",
+  },
+  menuExplainBlocksTitle: {
+    de: "Block = Kategorie",
+    fr: "Bloc = catégorie",
+    en: "Block = category",
+  },
+  menuExplainBlocksBody: {
+    de: "Mehrere Gerichte stehen unter derselben Überschrift. So bleibt die Karte übersichtlich.",
+    fr: "Plusieurs plats partagent le même titre de section. La carte reste structurée.",
+    en: "Several dishes share one section heading. The menu stays easy to scan.",
+  },
+  menuExplainProductTitle: {
+    de: "Einzelnes Gericht",
+    fr: "Chaque plat",
+    en: "Each dish",
+  },
+  menuExplainStepBlock: {
+    de: "Block­überschrift",
+    fr: "Titre du bloc",
+    en: "Block heading",
+  },
+  menuExplainStepName: {
+    de: "Gerichtsname → links",
+    fr: "Nom du plat → à gauche",
+    en: "Dish name → left",
+  },
+  menuExplainStepPrice: {
+    de: "Preis → rechts",
+    fr: "Prix → à droite",
+    en: "Price → right",
+  },
+  menuExplainStepDesc: {
+    de: "Beschreibung / Zutaten → unter dem Namen",
+    fr: "Description / composition → sous le nom",
+    en: "Description / ingredients → under the name",
+  },
+  menuExplainDemoBlockName: {
+    de: "CAFÉ & BRUNCH",
+    fr: "CAFÉ & BRUNCH",
+    en: "CAFÉ & BRUNCH",
+  },
+  menuExplainDemoDishName: {
+    de: "Brezel Deluxe",
+    fr: "Croissant au beurre",
+    en: "Margherita pizza",
+  },
+  menuExplainDemoPrice: {
+    de: "4,90 €",
+    fr: "2,90 €",
+    en: "9,90 €",
+  },
+  menuExplainDemoDesc: {
+    de: "Laugenbrezel, Butter, Schnittlauch, Meersalz…",
+    fr: "Pâte feuilletée pur beurre, croustillant, doré au four…",
+    en: "Tomato sauce, mozzarella, basil, olive oil…",
   },
   menuExplainExample: {
     de: "Beispiel: « Brezel Deluxe » mit Preis 4,90 € und Beschreibung « Laugenbrezel, Butter, Schnittlauch, Meersalz… ». Auf der Karte: der Name links, 4,90 € rechts und die Zutaten kleiner darunter.",

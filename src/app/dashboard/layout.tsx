@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { localeLabels, t, type Locale } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
 import { orgList, type OrganizationDto, isApiError, subscriptionGetMe, type SubscriptionDto } from "@/lib/api";
+import Footer from "@/components/Footer";
 import Image from "next/image";
 import Link from "next/link";
 import { prefixWithLocale, stripLocaleFromPathname, swapLocaleInBrowserPath } from "@/lib/locale-path";
@@ -933,12 +934,15 @@ export default function DashboardLayout({
           </div>
         )}
 
-        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-neutral-950/95 px-4 py-6 pb-[calc(6.25rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pb-32 lg:px-10 lg:py-8 lg:pb-0">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden scroll-pb-28 bg-neutral-950/95 px-4 py-6 pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pb-[calc(8rem+env(safe-area-inset-bottom,0px))] lg:px-10 lg:py-8 lg:pb-10">
           {path.match(/^\/dashboard\/organisations\/[^/]+\/menus\/[^/]+/) ? (
             <div className="w-full min-w-0 max-w-full">{children}</div>
           ) : (
             <div className="mx-auto w-full min-w-0 max-w-6xl">{children}</div>
           )}
+          <div className="mt-8 border-t border-neutral-800/80 pt-2 lg:mt-10 lg:max-w-6xl lg:mx-auto lg:w-full">
+            <Footer variant="dashboard" />
+          </div>
         </main>
 
         {/* Navbar mobile fixe (navigation toujours visible) */}

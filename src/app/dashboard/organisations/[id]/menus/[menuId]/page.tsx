@@ -1380,62 +1380,85 @@ export default function MenuDetailPage() {
 
       {showExplainModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-3 sm:p-4"
           onClick={() => setShowExplainModal(false)}
         >
           <div
-            className="w-full max-w-xl rounded-3xl border border-sky-500/40 bg-gradient-to-br from-neutral-950 via-neutral-950 to-slate-950 p-6 shadow-[0_20px_60px_rgba(8,47,73,0.9)]"
+            className="max-h-[min(92dvh,760px)] w-full max-w-2xl overflow-y-auto rounded-3xl border border-fuchsia-500/30 bg-gradient-to-br from-neutral-950 via-indigo-950/40 to-neutral-950 p-5 shadow-[0_24px_80px_rgba(88,28,135,0.35)] sm:p-7"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="font-forum text-xl text-sky-100">
+            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-fuchsia-300/90">
+              {t("menuExplainKicker", locale)}
+            </p>
+            <h2 className="mt-1 font-forum text-xl leading-snug text-white sm:text-2xl">
               {t("menuExplainTitle", locale)}
             </h2>
-            <p className="mt-2 text-sm text-neutral-100">
+            <p className="mt-3 text-sm leading-relaxed text-neutral-200/95">
               {t("menuExplainIntro", locale)}
             </p>
-            <div className="mt-4 grid gap-4 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1.2fr)]">
-              <div className="space-y-3 rounded-2xl bg-gradient-to-br from-sky-900/80 via-slate-900/80 to-indigo-900/80 p-4 text-xs text-sky-50">
-                <p>{t("menuExplainExample", locale)}</p>
+
+            {/* Blocs */}
+            <div className="mt-5 rounded-2xl border border-violet-500/40 bg-gradient-to-br from-violet-950/90 via-fuchsia-950/50 to-purple-950/80 p-4 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-200">
+                {t("menuExplainBlocksTitle", locale)}
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-violet-100/95">
+                {t("menuExplainBlocksBody", locale)}
+              </p>
+              <div className="mt-4 rounded-xl border border-fuchsia-400/50 bg-black/40 px-4 py-3 text-center shadow-inner shadow-fuchsia-900/40">
+                <span className="font-forum text-sm font-semibold tracking-[0.2em] text-fuchsia-200 sm:text-base">
+                  {t("menuExplainDemoBlockName", locale)}
+                </span>
               </div>
-              <div className="flex flex-col gap-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-sky-200">
-                  1 · Name → links
-                </p>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-200">
-                  2 · Prix / Preis → rechts
-                </p>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-200">
-                  3 · Description / composition → en dessous
-                </p>
-                <div className="mt-2 rounded-2xl border border-sky-400/80 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 p-4 text-xs text-neutral-100 shadow-[0_18px_40px_rgba(15,23,42,0.9)]">
-                  <div className="mb-2 flex items-baseline justify-between gap-2">
-                    <span className="font-forum text-base font-semibold text-white">
-                      {locale === "de"
-                        ? "Brezel Deluxe"
-                        : locale === "fr"
-                          ? "Croissant au beurre"
-                          : "Margherita pizza"}
-                    </span>
-                    <span className="text-sm font-semibold text-amber-300 tabular-nums">
-                      {locale === "en" ? "9.90 €" : "4.90 €"}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-100">
-                    {locale === "de" &&
-                      "Laugenbrezel, Butter, Schnittlauch, Meersalz…"}
-                    {locale === "fr" &&
-                      "Pâte feuilletée pur beurre, croustillant, doré au four…"}
-                    {locale === "en" &&
-                      "Tomato sauce, mozzarella, basil, extra virgin olive oil…"}
-                  </p>
-                </div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <span className="inline-flex items-center rounded-full bg-fuchsia-600/90 px-3 py-1 text-[11px] font-semibold text-white shadow">
+                  ① {t("menuExplainStepBlock", locale)}
+                </span>
               </div>
             </div>
-            <div className="mt-5 flex justify-end">
+
+            {/* Plats */}
+            <div className="mt-5 rounded-2xl border border-cyan-500/35 bg-gradient-to-br from-slate-950/90 via-cyan-950/30 to-slate-950/90 p-4 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-200">
+                {t("menuExplainProductTitle", locale)}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="inline-flex items-center rounded-full bg-sky-600/90 px-3 py-1.5 text-[11px] font-semibold text-white shadow-md shadow-sky-900/50">
+                  ② {t("menuExplainStepName", locale)}
+                </span>
+                <span className="inline-flex items-center rounded-full bg-amber-500 px-3 py-1.5 text-[11px] font-semibold text-neutral-950 shadow-md shadow-amber-900/40">
+                  ③ {t("menuExplainStepPrice", locale)}
+                </span>
+                <span className="inline-flex items-center rounded-full bg-emerald-700/90 px-3 py-1.5 text-[11px] font-semibold text-emerald-50 shadow-md shadow-emerald-900/40">
+                  ④ {t("menuExplainStepDesc", locale)}
+                </span>
+              </div>
+
+              <div className="mt-4 overflow-hidden rounded-2xl border-2 border-cyan-400/60 bg-gradient-to-b from-slate-900 to-slate-950 p-4 shadow-[0_20px_50px_rgba(8,145,178,0.25)]">
+                <div className="mb-3 rounded-lg border border-fuchsia-500/40 bg-gradient-to-r from-fuchsia-950/80 to-purple-950/60 px-3 py-2 text-center">
+                  <span className="font-forum text-[11px] font-semibold tracking-[0.18em] text-fuchsia-100 sm:text-xs">
+                    {t("menuExplainDemoBlockName", locale)}
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between gap-3 border-b border-white/10 pb-2">
+                  <span className="font-forum text-base font-semibold text-sky-100 sm:text-lg">
+                    {t("menuExplainDemoDishName", locale)}
+                  </span>
+                  <span className="shrink-0 text-base font-bold tabular-nums text-amber-300 sm:text-lg">
+                    {t("menuExplainDemoPrice", locale)}
+                  </span>
+                </div>
+                <p className="mt-2 text-[13px] leading-relaxed text-emerald-100/85">
+                  {t("menuExplainDemoDesc", locale)}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end border-t border-white/10 pt-4">
               <button
                 type="button"
                 onClick={() => setShowExplainModal(false)}
-                className="cursor-pointer rounded-xl bg-amber-400 px-4 py-2 text-sm font-semibold text-neutral-900 hover:bg-amber-300"
+                className="cursor-pointer rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 px-6 py-2.5 text-sm font-bold text-neutral-950 shadow-lg shadow-amber-900/30 transition hover:from-amber-300 hover:to-amber-400"
               >
                 {t("menuOk", locale)}
               </button>

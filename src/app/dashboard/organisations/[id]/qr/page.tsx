@@ -49,9 +49,9 @@ export default function OrganisationQrPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-forum text-2xl text-neutral-50">{t("menuQrTab", locale)}</h1>
-          <p className="mt-1 text-sm text-neutral-500">
-            {org ? t("menuQrPreviewHint", locale) : ""}
-          </p>
+          {org && menus.length > 0 && (
+            <p className="mt-1 max-w-2xl text-sm leading-snug text-neutral-500">{t("menuQrLinkedNote", locale)}</p>
+          )}
         </div>
         <Link
           href={orgPath}
