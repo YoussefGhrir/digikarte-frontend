@@ -145,7 +145,11 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // Skip Next assets + common non-page routes
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|api).*)"],
+  // « / » doit être explicite : le motif `/(?!…)*` ne matche pas toujours la racine selon la version Next,
+  // ce qui laissait `/` sans redirection locale (404 ou comportement bizarre après de gros bundles).
+  matcher: [
+    "/",
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|api).*)",
+  ],
 };
 

@@ -7,7 +7,9 @@ import { prefixWithLocale } from "@/lib/locale-path";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { MenuTemplateClassic } from "@/components/menu-templates/MenuTemplateClassic";
+import { getDemoMenuPublicDto } from "@/components/menu-templates/utils";
 
 export default function LandingPage({ syncLocale }: { syncLocale?: Locale }) {
   const { user, loading } = useAuth();
@@ -31,6 +33,11 @@ export default function LandingPage({ syncLocale }: { syncLocale?: Locale }) {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+
+  const heroDemoMenu = useMemo(
+    () => getDemoMenuPublicDto("classic", locale),
+    [locale],
+  );
 
   if (loading) {
     return (
@@ -187,50 +194,26 @@ export default function LandingPage({ syncLocale }: { syncLocale?: Locale }) {
             </div>
           </div>
 
-          {/* Colonne droite : carte menu + QR stylisé */}
-          <div className="relative flex items-center justify-center">
+          {/* Colonne droite : aperçu = même template que /menu/demo (classic) */}
+          <div className="relative flex items-center justify-center md:justify-end">
             <div className="absolute -inset-10 rounded-[2.5rem] bg-gradient-to-br from-amber-400/35 via-fuchsia-500/15 to-emerald-400/25 blur-2xl" />
-            <div className="relative flex h-[360px] w-full max-w-[380px] -rotate-6 flex-col gap-3 rounded-[2.5rem] border border-neutral-700/80 bg-neutral-950/90 p-4 shadow-[0_35px_90px_rgba(0,0,0,0.9)] backdrop-blur">
-              <div className="flex items-center justify-between">
-                <span className="rounded-full bg-neutral-800/80 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-neutral-200">
-                  {t("heroCardTag", locale)}
-                </span>
-                <span className="text-[11px] text-neutral-400">
-                  {t("heroCardTableChip", locale)}
-                </span>
-              </div>
-              <div className="space-y-3 rounded-2xl border border-neutral-800 bg-neutral-900/90 p-4">
-                <MenuItem
-                  title={t("heroCardItem1Title", locale)}
-                  text={t("heroCardItem1Text", locale)}
-                  price="4.90 €"
-                  accent="amber"
-                />
-                <MenuItem
-                  title={t("heroCardItem2Title", locale)}
-                  text={t("heroCardItem2Text", locale)}
-                  price="9.50 €"
-                  accent="emerald"
-                />
-              </div>
-              <div className="grid gap-3 sm:grid-cols-[1.3fr_minmax(0,1fr)]">
-                <StatCard
-                  title={t("heroCardStat1Title", locale)}
-                  value="3"
-                  text={t("heroCardStat1Text", locale)}
-                  accent="amber"
-                />
-                <div className="flex items-stretch gap-3">
-                  <StatCard
-                    title={t("heroCardStat2Title", locale)}
-                    value="12"
-                    text={t("heroCardStat2Text", locale)}
-                    accent="emerald"
-                  />
-                  <QrPreview />
+            <Link
+              href={prefixWithLocale("/menu/demo", locale)}
+              className="group relative z-10 block w-full max-w-[380px] -rotate-6 transition-transform duration-300 hover:-rotate-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+              aria-label={t("heroSecondaryCta", locale)}
+            >
+              <div className="relative overflow-hidden rounded-[2.5rem] border border-neutral-700/80 bg-neutral-950 shadow-[0_35px_90px_rgba(0,0,0,0.9)] ring-1 ring-white/5 transition group-hover:border-amber-500/35 group-hover:shadow-[0_40px_100px_rgba(0,0,0,0.95)]">
+                <div className="pointer-events-none relative h-[min(420px,72vh)] w-full overflow-hidden">
+                  <div className="absolute left-1/2 top-0 w-[min(92vw,900px)] origin-top -translate-x-1/2 scale-[0.405] sm:scale-[0.42]">
+                    <MenuTemplateClassic menu={heroDemoMenu} locale={locale} embedded />
+                  </div>
                 </div>
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent" />
+                <p className="pointer-events-none absolute bottom-3 left-0 right-0 text-center text-[10px] font-medium uppercase tracking-[0.28em] text-neutral-500 transition group-hover:text-amber-400/90">
+                  {t("heroCardTag", locale)}
+                </p>
               </div>
-            </div>
+            </Link>
           </div>
         </section>
 
@@ -696,86 +679,6 @@ function HeroBadge({
           {title}
         </p>
         <p className="text-sm font-medium text-neutral-800 dark:text-neutral-100">{text}</p>
-      </div>
-    </div>
-  );
-}
-
-function MenuItem({
-  title,
-  text,
-  price,
-  accent,
-}: {
-  title: string;
-  text: string;
-  price: string;
-  accent: "amber" | "emerald";
-}) {
-  const priceClass =
-    accent === "amber" ? "text-amber-600 dark:text-amber-300" : "text-emerald-600 dark:text-emerald-300";
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <div>
-        <p className="font-forum text-lg text-neutral-900 dark:text-neutral-50">{title}</p>
-        <p className="mt-1 text-[11px] text-neutral-600 dark:text-neutral-400">{text}</p>
-      </div>
-      <p className={`font-forum text-xl ${priceClass} whitespace-nowrap`}>
-        {price}
-      </p>
-    </div>
-  );
-}
-
-function StatCard({
-  title,
-  value,
-  text,
-  accent,
-}: {
-  title: string;
-  value: string;
-  text: string;
-  accent: "amber" | "emerald";
-}) {
-  const valueClass =
-    accent === "amber" ? "text-amber-300" : "text-emerald-300";
-  return (
-    <div className="rounded-2xl border border-neutral-300 dark:border-neutral-800 bg-neutral-100/80 dark:bg-neutral-900/80 p-3 text-xs text-neutral-600 dark:text-neutral-300">
-      <p className="font-semibold text-neutral-800 dark:text-neutral-100">{title}</p>
-      <p className={`mt-1 text-2xl font-forum ${valueClass}`}>{value}</p>
-      <p className="mt-1 text-[11px] text-neutral-500">{text}</p>
-    </div>
-  );
-}
-
-function QrPreview() {
-  const origin =
-    typeof window !== "undefined" && window.location.origin
-      ? window.location.origin
-      : "https://digi-karte.com";
-
-  const url = `${origin}/menu/demo`;
-  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
-    url,
-  )}`;
-
-  return (
-    <div className="hidden h-full w-20 items-center justify-center rounded-2xl border border-neutral-800 bg-neutral-950/90 p-1.5 text-[9px] text-neutral-400 sm:flex">
-      <div className="flex flex-col items-center gap-1.5">
-        {/* Vrai QR code (image générée) */}
-        <div className="relative h-12 w-12 rounded-[0.9rem] bg-neutral-900 p-1 shadow-[0_6px_14px_rgba(0,0,0,0.6)]">
-          <img
-            src={qrSrc}
-            alt="QR code menu démo"
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full rounded-[0.6rem] bg-white p-0.5"
-          />
-        </div>
-        <span className="text-[8px] uppercase tracking-[0.2em] text-neutral-400">
-          QR MENU
-        </span>
       </div>
     </div>
   );
