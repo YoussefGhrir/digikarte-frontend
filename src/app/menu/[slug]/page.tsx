@@ -286,12 +286,12 @@ function DemoScenarioPage({
                   {templateItems.find((x) => x.id === selectedTemplate)?.label ?? selectedTemplate}
                 </span>
               </div>
-              <div className="px-3 py-3">
-                <div className="mx-auto w-[300px] max-w-full rounded-[2rem] border border-neutral-700 bg-neutral-950 p-2 shadow-[0_20px_55px_rgba(0,0,0,0.75)]">
+                <div className="px-3 py-3">
+                <div className="mx-auto h-[560px] w-[300px] max-w-full flex flex-col rounded-[2rem] border border-neutral-700 bg-neutral-950 p-2 shadow-[0_20px_55px_rgba(0,0,0,0.75)]">
                   <div className="mb-2 flex justify-center">
                     <span className="h-1.5 w-20 rounded-full bg-neutral-700" />
                   </div>
-                  <div className="h-[560px] overflow-y-auto rounded-[1.5rem] border border-neutral-800 bg-black">
+                  <div className="menu-preview-root min-h-0 flex-1 overflow-y-auto rounded-[1.5rem] border border-neutral-800 bg-black">
                     <MenuTemplateRenderer menu={demoMenu} locale={locale} />
                   </div>
                 </div>
@@ -357,12 +357,12 @@ function DemoScenarioPage({
                   {templateItems.find((x) => x.id === selectedTemplate)?.label ?? selectedTemplate}
                 </span>
               </div>
-              <div className="px-3 py-3">
-                <div className="mx-auto w-[300px] max-w-full rounded-[2rem] border border-neutral-700 bg-neutral-950 p-2 shadow-[0_20px_55px_rgba(0,0,0,0.75)]">
+                <div className="px-3 py-3">
+                <div className="mx-auto h-[620px] w-[300px] max-w-full flex flex-col rounded-[2rem] border border-neutral-700 bg-neutral-950 p-2 shadow-[0_20px_55px_rgba(0,0,0,0.75)]">
                   <div className="mb-2 flex justify-center">
                     <span className="h-1.5 w-20 rounded-full bg-neutral-700" />
                   </div>
-                  <div className="h-[620px] overflow-y-auto rounded-[1.5rem] border border-neutral-800 bg-black">
+                  <div className="menu-preview-root min-h-0 flex-1 overflow-y-auto rounded-[1.5rem] border border-neutral-800 bg-black">
                     <MenuTemplateRenderer menu={demoMenu} locale={locale} />
                   </div>
                 </div>
