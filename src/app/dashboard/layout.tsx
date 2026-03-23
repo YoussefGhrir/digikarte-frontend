@@ -575,6 +575,17 @@ export default function DashboardLayout({
                 <span className="tracking-wide">{t("dashboardAdmin", locale)}</span>
               </Link>
               <Link
+                href={localizePath("/dashboard/admin/admins")}
+                className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
+                  path === "/dashboard/admin/admins"
+                    ? "bg-amber-500/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
+                    : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 hover:shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
+                }`}
+              >
+                <IconMenuList className="h-5 w-5 shrink-0" />
+                <span className="tracking-wide">{t("dashboardAdminAdmins", locale)}</span>
+              </Link>
+              <Link
                 href={localizePath("/dashboard/admin/users")}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2 transition ${
                   path === "/dashboard/admin/users"
@@ -964,6 +975,17 @@ export default function DashboardLayout({
                 >
                   <IconBuilding className="h-5 w-5 shrink-0" aria-hidden />
                   <span className="text-center leading-tight">{t("dashboardAdmin", locale)}</span>
+                </Link>
+                <Link
+                  href={localizePath("/dashboard/admin/admins")}
+                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-2 text-[10px] font-semibold ${
+                    path === "/dashboard/admin/admins"
+                      ? "text-amber-200"
+                      : "text-neutral-400 hover:text-neutral-100"
+                  }`}
+                >
+                  <IconMenuList className="h-5 w-5 shrink-0" aria-hidden />
+                  <span className="text-center leading-tight">{t("dashboardAdminAdminsShort", locale)}</span>
                 </Link>
                 <Link
                   href={localizePath("/dashboard/admin/users")}

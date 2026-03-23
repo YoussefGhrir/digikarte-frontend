@@ -65,7 +65,7 @@ export default function PublicMenuPage() {
 
   if (error || !menu) {
     if (isDemo) {
-      const demoMenu = getDemoMenuPublicDto(selectedTemplate);
+      const demoMenu = getDemoMenuPublicDto(selectedTemplate, locale);
       demoMenu.organizationName = "DigiKarte Demo Cafe";
       demoMenu.title =
         locale === "de"
@@ -287,7 +287,7 @@ function DemoScenarioPage({
                 </span>
               </div>
                 <div className="px-3 py-3">
-                <div className="mx-auto h-[560px] w-[300px] max-w-full flex flex-col rounded-[2rem] border border-neutral-700 bg-neutral-950 p-2 shadow-[0_20px_55px_rgba(0,0,0,0.75)]">
+                <div className="mx-auto h-[560px] w-full max-w-[300px] flex flex-col rounded-[2rem] border border-neutral-700 bg-neutral-950 p-2 shadow-[0_20px_55px_rgba(0,0,0,0.75)]">
                   <div className="mb-2 flex justify-center">
                     <span className="h-1.5 w-20 rounded-full bg-neutral-700" />
                   </div>
@@ -358,7 +358,7 @@ function DemoScenarioPage({
                 </span>
               </div>
                 <div className="px-3 py-3">
-                <div className="mx-auto h-[620px] w-[300px] max-w-full flex flex-col rounded-[2rem] border border-neutral-700 bg-neutral-950 p-2 shadow-[0_20px_55px_rgba(0,0,0,0.75)]">
+                <div className="mx-auto h-[620px] w-full max-w-[300px] flex flex-col rounded-[2rem] border border-neutral-700 bg-neutral-950 p-2 shadow-[0_20px_55px_rgba(0,0,0,0.75)]">
                   <div className="mb-2 flex justify-center">
                     <span className="h-1.5 w-20 rounded-full bg-neutral-700" />
                   </div>

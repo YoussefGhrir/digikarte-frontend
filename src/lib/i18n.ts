@@ -697,10 +697,25 @@ export const translations = {
     fr: "Actifs",
     en: "Active",
   },
+  adminStatusTrialingLabel: {
+    de: "Trialing",
+    fr: "En essai",
+    en: "Trialing",
+  },
   adminCancelledLabel: {
     de: "Gekündigt",
     fr: "Annulés",
     en: "Cancelled",
+  },
+  adminMenusLabel: {
+    de: "Menüs",
+    fr: "Menus",
+    en: "Menus",
+  },
+  adminActiveTrialHeader: {
+    de: "Aktiv/Trial",
+    fr: "Actifs/Essai",
+    en: "Active/Trial",
   },
   adminRevenueApprox: {
     de: "Umsatz (ca.)",
@@ -776,6 +791,386 @@ export const translations = {
     de: "Benutzer werden geladen…",
     fr: "Chargement des utilisateurs…",
     en: "Loading users…",
+  },
+  dashboardAdminAdmins: {
+    de: "Admin-Verwaltung",
+    fr: "Gestion des admins",
+    en: "Admin management",
+  },
+  dashboardAdminAdminsShort: {
+    de: "Admins",
+    fr: "Admins",
+    en: "Admins",
+  },
+  adminModalClose: {
+    de: "Schließen",
+    fr: "Fermer",
+    en: "Close",
+  },
+  adminAdminsKicker: {
+    de: "Admins",
+    fr: "Admins",
+    en: "Admins",
+  },
+  adminAdminsTitle: {
+    de: "Admin-Verwaltung",
+    fr: "Gestion des admins",
+    en: "Admin management",
+  },
+  adminAdminsSubtitle: {
+    de: "Gérer die Konten mit Admin-Zugriff (ohne Super-Admin).",
+    fr: "Gérer les comptes avec accès admin (sans super admin).",
+    en: "Manage accounts with admin access (excluding super admins).",
+  },
+  adminAdminsAddAdmin: {
+    de: "Admin hinzufügen",
+    fr: "Ajouter un admin",
+    en: "Add admin",
+  },
+  adminUsersSearchLabel: {
+    de: "Suche",
+    fr: "Recherche",
+    en: "Search",
+  },
+  adminUsersSearchPlaceholder: {
+    de: "E-Mail, Name, Land, Telefon…",
+    fr: "Email, nom, pays, téléphone…",
+    en: "Email, name, country, phone…",
+  },
+  adminUsersOrganizationsLabel: {
+    de: "Organisationen",
+    fr: "Org",
+    en: "Orgs",
+  },
+  adminUsersMenusLabel: {
+    de: "Menüs",
+    fr: "Menus",
+    en: "Menus",
+  },
+  adminUsersSubscriptionLabel: {
+    de: "Abo",
+    fr: "Abonnement",
+    en: "Subscription",
+  },
+  adminUsersAccessLabel: {
+    de: "Zugriff",
+    fr: "Accès",
+    en: "Access",
+  },
+  adminUsersActionsLabel: {
+    de: "Aktionen",
+    fr: "Actions",
+    en: "Actions",
+  },
+  adminUsersKicker: {
+    de: "Admin",
+    fr: "Admin",
+    en: "Admin",
+  },
+  adminUsersStatusFilterLabel: {
+    de: "Status",
+    fr: "Statut",
+    en: "Status",
+  },
+  adminUsersSortLabel: {
+    de: "Sortierung",
+    fr: "Tri",
+    en: "Sort",
+  },
+  adminUsersStatusAllOption: {
+    de: "Alle",
+    fr: "Tous",
+    en: "All",
+  },
+  adminUsersStatusActiveOption: {
+    de: "Aktiv",
+    fr: "Actif",
+    en: "Active",
+  },
+  adminUsersStatusInactiveOption: {
+    de: "Inaktiv",
+    fr: "Inactif",
+    en: "Inactive",
+  },
+  adminUsersNoUsersFound: {
+    de: "Keine Benutzer gefunden.",
+    fr: "Aucun utilisateur trouvé.",
+    en: "No users found.",
+  },
+  adminUsersAddUserModalTitle: {
+    de: "Benutzer hinzufügen",
+    fr: "Ajouter un utilisateur",
+    en: "Add user",
+  },
+  adminUsersEditUserModalTitle: {
+    de: "Benutzer bearbeiten",
+    fr: "Modifier l'utilisateur",
+    en: "Edit user",
+  },
+  adminUsersViewUserModalTitle: {
+    de: "Benutzer ansehen",
+    fr: "Voir utilisateur",
+    en: "View user",
+  },
+  adminUsersRequireSubscriptionModalTitle: {
+    de: "Abo erzwingen",
+    fr: "Exiger abonnement",
+    en: "Require subscription",
+  },
+  adminUsersRequireSubscriptionForText: {
+    de: "Abo erzwingen für {email}.",
+    fr: "Exiger abonnement pour {email}.",
+    en: "Require subscription for {email}.",
+  },
+  adminUsersRequireSubscriptionNote: {
+    de: "Diese Aktion aktualisiert den Parameter subscriptionBypass.",
+    fr: "Cette action met à jour le paramètre subscriptionBypass.",
+    en: "This action updates the subscriptionBypass parameter.",
+  },
+  adminUsersRequireSubscriptionAction: {
+    de: "Abo erzwingen",
+    fr: "Exiger abonnement",
+    en: "Require subscription",
+  },
+  adminUsersRequireSubscriptionVipOnlyError: {
+    de: "Diese Aktion ist nur für VIP-Benutzer verfügbar (Direktzugriff).",
+    fr: "Cette action n'est disponible que pour les users VIP (accès direct).",
+    en: "This action is only available for VIP users (direct access).",
+  },
+  adminUsersLoadErrorFallback: {
+    de: "Fehler beim Laden der Benutzer.",
+    fr: "Erreur lors du chargement des utilisateurs.",
+    en: "Error while loading users.",
+  },
+  adminUsersActionErrorFallback: {
+    de: "Fehler bei der Aktion.",
+    fr: "Erreur pendant l'action.",
+    en: "Error during the action.",
+  },
+  adminUsersCreateErrorFallback: {
+    de: "Fehler beim Erstellen des Benutzers.",
+    fr: "Erreur lors de la création de l'utilisateur.",
+    en: "Error while creating the user.",
+  },
+  adminUsersEditErrorFallback: {
+    de: "Fehler beim Aktualisieren des Benutzers.",
+    fr: "Erreur lors de la mise à jour de l'utilisateur.",
+    en: "Error while updating the user.",
+  },
+  adminUsersRequireSubscriptionErrorFallback: {
+    de: "Fehler beim Aktualisieren des Abo-Status.",
+    fr: "Erreur lors de l'exigence d'abonnement.",
+    en: "Error while requiring subscription.",
+  },
+  adminUsersResetErrorFallback: {
+    de: "Fehler beim Zurücksetzen des Passworts.",
+    fr: "Erreur lors du reset du mot de passe.",
+    en: "Error while resetting the password.",
+  },
+  adminUsersDeleteErrorFallback: {
+    de: "Fehler beim Löschen des Benutzers.",
+    fr: "Erreur lors de la suppression de l'utilisateur.",
+    en: "Error while deleting the user.",
+  },
+  adminUsersDeleteUserModalTitle: {
+    de: "Benutzer löschen",
+    fr: "Supprimer l'utilisateur",
+    en: "Delete user",
+  },
+  adminUsersCloseButton: {
+    de: "Schließen",
+    fr: "Fermer",
+    en: "Close",
+  },
+  adminUsersDirectAccessToggleHint: {
+    de: "Schaltet die Paywall im Dashboard um.",
+    fr: "Bascule le paywall côté dashboard.",
+    en: "Toggles the paywall in the dashboard.",
+  },
+  adminUsersPlanLabel: {
+    de: "Plan",
+    fr: "Plan",
+    en: "Plan",
+  },
+  adminSubscriptionActive: {
+    de: "Aktives Abo",
+    fr: "Abonnement actif",
+    en: "Active subscription",
+  },
+  adminSubscriptionInactive: {
+    de: "Inaktives Abo",
+    fr: "Abonnement inactif",
+    en: "Inactive subscription",
+  },
+  adminUsersViewAction: {
+    de: "Ansehen",
+    fr: "Voir",
+    en: "View",
+  },
+  adminUsersEditAction: {
+    de: "Bearbeiten",
+    fr: "Modifier",
+    en: "Edit",
+  },
+  adminAdminsRemoveAdminAction: {
+    de: "Admin entfernen",
+    fr: "Retirer l'accès admin",
+    en: "Remove admin access",
+  },
+  adminUsersResetPasswordAction: {
+    de: "Reset",
+    fr: "Reset",
+    en: "Reset",
+  },
+  adminUsersDeleteAction: {
+    de: "Löschen",
+    fr: "Supprimer",
+    en: "Delete",
+  },
+  adminUsersNoResult: {
+    de: "Kein Admin gefunden.",
+    fr: "Aucun admin trouvé.",
+    en: "No admins found.",
+  },
+  adminAdminsAddAdminModalTitle: {
+    de: "Admin hinzufügen",
+    fr: "Ajouter un admin",
+    en: "Add admin",
+  },
+  adminUsersPasswordLabel: {
+    de: "Passwort",
+    fr: "Mot de passe",
+    en: "Password",
+  },
+  adminUsersDirectAccessLabel: {
+    de: "Direkter Zugriff ohne Abo",
+    fr: "Accès direct sans abonnement",
+    en: "Direct access without subscription",
+  },
+  adminUsersDirectAccessHint: {
+    de: "Wenn aktiviert: kein Paywall, sonst Weiterleitung zur Abo-Seite.",
+    fr: "Si activé : pas de paywall, sinon redirection vers la page abonnement.",
+    en: "If enabled: no paywall, otherwise redirect to the subscription page.",
+  },
+  yes: {
+    de: "Ja",
+    fr: "Oui",
+    en: "Yes",
+  },
+  adminCreating: {
+    de: "Erstellen…",
+    fr: "Création…",
+    en: "Creating…",
+  },
+  adminCreate: {
+    de: "Erstellen",
+    fr: "Créer",
+    en: "Create",
+  },
+  adminAdminsEditModalTitle: {
+    de: "Admin bearbeiten",
+    fr: "Modifier l'admin",
+    en: "Edit admin",
+  },
+  adminAdminsDirectAccessHint: {
+    de: "Schaltet die Paywall im Dashboard um.",
+    fr: "Bascule le paywall côté dashboard.",
+    en: "Toggles the paywall in the dashboard.",
+  },
+  adminSaving: {
+    de: "Wird gespeichert…",
+    fr: "Sauvegarde…",
+    en: "Saving…",
+  },
+  adminAdminsViewModalTitle: {
+    de: "Admin ansehen",
+    fr: "Voir l'admin",
+    en: "View admin",
+  },
+  adminUsersPasswordEncryptedHint: {
+    de: "Passwörter sind verschlüsselt gespeichert. Du kannst sie daher nicht im Klartext anzeigen.",
+    fr: "Le mot de passe est stocké chiffré côté backend. Tu ne peux donc pas l’afficher en clair.",
+    en: "Passwords are stored encrypted on the backend, so you cannot display them in plain text.",
+  },
+  adminUsersResetPasswordTitle: {
+    de: "Passwort zurücksetzen",
+    fr: "Reset mot de passe",
+    en: "Reset password",
+  },
+  adminUsersNewPasswordLabel: {
+    de: "Neues Passwort",
+    fr: "Nouveau mot de passe",
+    en: "New password",
+  },
+  adminAdminsRevokeModalTitle: {
+    de: "Admin-Zugriff entfernen",
+    fr: "Retirer l'accès admin",
+    en: "Remove admin access",
+  },
+  adminAdminsRevokeConfirmText: {
+    de: "Bestätigen, dass du den Admin-Zugriff für {email} entziehst ?",
+    fr: "Confirmer le retrait de l'accès admin pour {email}.",
+    en: "Confirm removing admin access for {email}.",
+  },
+  adminAdminsRevokeNote: {
+    de: "Der Benutzer kann danach nicht mehr auf den Admin-Bereich zugreifen.",
+    fr: "L'utilisateur ne pourra plus accéder à l'espace admin.",
+    en: "The user will no longer be able to access the admin area.",
+  },
+  adminProcessing: {
+    de: "Weiter…",
+    fr: "En cours…",
+    en: "Processing…",
+  },
+  adminAdminsRevokeAction: {
+    de: "Entziehen",
+    fr: "Retirer",
+    en: "Remove",
+  },
+  adminAdminsLoadErrorFallback: {
+    de: "Fehler beim Laden der Admins.",
+    fr: "Erreur lors du chargement des admins.",
+    en: "Error while loading admins.",
+  },
+  adminAdminsCreateErrorFallback: {
+    de: "Fehler beim Erstellen des Admins.",
+    fr: "Erreur lors de la création de l'admin.",
+    en: "Error while creating the admin.",
+  },
+  adminAdminsEditErrorFallback: {
+    de: "Fehler beim Aktualisieren des Admins.",
+    fr: "Erreur lors de la mise à jour de l'admin.",
+    en: "Error while updating the admin.",
+  },
+  adminAdminsResetErrorFallback: {
+    de: "Fehler beim Zurücksetzen des Passworts.",
+    fr: "Erreur lors du reset du mot de passe.",
+    en: "Error while resetting the password.",
+  },
+  adminAdminsRevokeErrorFallback: {
+    de: "Fehler beim Entziehen des Admin-Zugriffs.",
+    fr: "Erreur lors du retrait de l'accès admin.",
+    en: "Error while revoking admin access.",
+  },
+  adminAdminsDeleteErrorFallback: {
+    de: "Fehler beim Löschen des Admins.",
+    fr: "Erreur lors de la suppression de l'admin.",
+    en: "Error while deleting the admin.",
+  },
+  adminUsersDeleteModalTitle: {
+    de: "Admin löschen",
+    fr: "Supprimer l'admin",
+    en: "Delete admin",
+  },
+  adminUsersDeleteConfirmText: {
+    de: "Bestätigen, dass du {email} löschen willst.",
+    fr: "Confirmer la suppression de {email}.",
+    en: "Confirm deleting {email}.",
+  },
+  adminUsersDeleteIrreversibleNote: {
+    de: "Diese Aktion ist irreversibel.",
+    fr: "Cette action est irréversible.",
+    en: "This action is irreversible.",
   },
   // Profile page
   profileTitle: {

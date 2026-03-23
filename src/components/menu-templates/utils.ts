@@ -1,4 +1,5 @@
 import type { MenuItemDto, MenuPublicDto } from "@/lib/api";
+import type { Locale } from "@/lib/i18n";
 
 /**
  * Modèle commun : les données du menu (items, sections, titre…) viennent du même MenuPublicDto.
@@ -113,18 +114,179 @@ export const PRICE_CURRENCY_CODES = [
 export type PriceCurrencyCode = (typeof PRICE_CURRENCY_CODES)[number];
 
 /** Données de démo pour prévisualiser un modèle de menu (Rome, France, Allemagne). */
-export function getDemoMenuPublicDto(displayTemplate: MenuTemplateId): MenuPublicDto {
-  const demoItems: MenuItemDto[] = [
-    { id: 1, name: "Caffè Espresso", description: "Arabica, torréfaction maison", price: 2.8, section: "Boissons chaudes", sortOrder: 0 },
-    { id: 2, name: "Cappuccino", description: "Espresso, lait crémeux", price: 3.5, section: "Boissons chaudes", sortOrder: 1 },
-    { id: 3, name: "Thé vert", description: "Jasmin ou menthe", price: 3.2, section: "Boissons chaudes", sortOrder: 2 },
-    { id: 4, name: "Croissant", description: "Beurre, maison", price: 2.9, section: "Viennoiseries", sortOrder: 0 },
-    { id: 5, name: "Tarte au citron", description: "Meringue italienne", price: 4.5, section: "Pâtisseries", sortOrder: 0 },
-    { id: 6, name: "Salade César", description: "Poulet, parmesan, croûtons", price: 12.5, section: "Plats", sortOrder: 0 },
-  ];
+export function getDemoMenuPublicDto(
+  displayTemplate: MenuTemplateId,
+  locale: Locale = "en"
+): MenuPublicDto {
+  // Noms + descriptions + sections doivent être traduits selon la langue.
+  const demoItemsByLocale: Record<Locale, MenuItemDto[]> = {
+    de: [
+      {
+        id: 1,
+        name: "Espresso",
+        description: "Arabica, hausgeröstet",
+        price: 2.8,
+        section: "Heiße Getränke",
+        sortOrder: 0,
+      },
+      {
+        id: 2,
+        name: "Cappuccino",
+        description: "Espresso, cremiger Milchschaum",
+        price: 3.5,
+        section: "Heiße Getränke",
+        sortOrder: 1,
+      },
+      {
+        id: 3,
+        name: "Grüner Tee",
+        description: "Jasmin oder Minze",
+        price: 3.2,
+        section: "Heiße Getränke",
+        sortOrder: 2,
+      },
+      {
+        id: 4,
+        name: "Croissant",
+        description: "Butter, hausgemacht",
+        price: 2.9,
+        section: "Gebäck",
+        sortOrder: 0,
+      },
+      {
+        id: 5,
+        name: "Zitronentarte",
+        description: "Italienische Meringue",
+        price: 4.5,
+        section: "Desserts",
+        sortOrder: 0,
+      },
+      {
+        id: 6,
+        name: "Caesar-Salat",
+        description: "Hähnchen, Parmesan, Croutons",
+        price: 12.5,
+        section: "Gerichte",
+        sortOrder: 0,
+      },
+    ],
+    fr: [
+      {
+        id: 1,
+        name: "Caffè Espresso",
+        description: "Arabica, torréfaction maison",
+        price: 2.8,
+        section: "Boissons chaudes",
+        sortOrder: 0,
+      },
+      {
+        id: 2,
+        name: "Cappuccino",
+        description: "Espresso, lait crémeux",
+        price: 3.5,
+        section: "Boissons chaudes",
+        sortOrder: 1,
+      },
+      {
+        id: 3,
+        name: "Thé vert",
+        description: "Jasmin ou menthe",
+        price: 3.2,
+        section: "Boissons chaudes",
+        sortOrder: 2,
+      },
+      {
+        id: 4,
+        name: "Croissant",
+        description: "Beurre, maison",
+        price: 2.9,
+        section: "Viennoiseries",
+        sortOrder: 0,
+      },
+      {
+        id: 5,
+        name: "Tarte au citron",
+        description: "Meringue italienne",
+        price: 4.5,
+        section: "Pâtisseries",
+        sortOrder: 0,
+      },
+      {
+        id: 6,
+        name: "Salade César",
+        description: "Poulet, parmesan, croûtons",
+        price: 12.5,
+        section: "Plats",
+        sortOrder: 0,
+      },
+    ],
+    en: [
+      {
+        id: 1,
+        name: "Espresso",
+        description: "Arabica, house roast",
+        price: 2.8,
+        section: "Hot Drinks",
+        sortOrder: 0,
+      },
+      {
+        id: 2,
+        name: "Cappuccino",
+        description: "Espresso, creamy milk",
+        price: 3.5,
+        section: "Hot Drinks",
+        sortOrder: 1,
+      },
+      {
+        id: 3,
+        name: "Green Tea",
+        description: "Jasmine or mint",
+        price: 3.2,
+        section: "Hot Drinks",
+        sortOrder: 2,
+      },
+      {
+        id: 4,
+        name: "Croissant",
+        description: "Butter, homemade",
+        price: 2.9,
+        section: "Viennoiseries",
+        sortOrder: 0,
+      },
+      {
+        id: 5,
+        name: "Lemon Tart",
+        description: "Italian meringue",
+        price: 4.5,
+        section: "Pastries",
+        sortOrder: 0,
+      },
+      {
+        id: 6,
+        name: "Caesar Salad",
+        description: "Chicken, parmesan, croutons",
+        price: 12.5,
+        section: "Dishes",
+        sortOrder: 0,
+      },
+    ],
+  };
+
+  const demoItems = demoItemsByLocale[locale] ?? demoItemsByLocale.en;
+
   return {
-    title: "Carte du jour",
-    description: "Nos suggestions et spécialités",
+    title:
+      locale === "de"
+        ? "Tageskarte"
+        : locale === "fr"
+          ? "Carte du jour"
+          : "Today's menu",
+    description:
+      locale === "de"
+        ? "Unsere Empfehlungen und Spezialitäten"
+        : locale === "fr"
+          ? "Nos suggestions et spécialités"
+          : "Our recommendations and specialties",
     organizationName: "Demo Café",
     displayTemplate,
     priceCurrency: "EUR",

@@ -127,19 +127,20 @@ body {
   box-sizing: border-box;
 }
 
-/* Mode aperçu (démo/landing): on évite que les templates imposent min-h-screen (100vh),
-   sinon le background/cover et la hauteur visible deviennent “bizarres”. */
+/* Mode aperçu (démo/landing): éviter le rendu bizarre des templates en “full screen”
+   quand ils sont embed dans une box avec scroll. */
+.menu-preview-root {
+  overflow-x: hidden;
+  touch-action: pan-y;
+}
 .menu-preview-root .min-h-screen {
-  min-height: auto !important;
+  min-height: 100% !important;
 }
 .menu-preview-root .menu-page-outer {
-  min-height: auto !important;
-  /* En preview, on veut maximiser la zone utile et éviter le rendu “trop serré”. */
-  margin: 0 !important;
-  padding: 0 !important;
+  min-height: 100% !important;
 }
 .menu-preview-root .menu-page-inner {
-  min-height: auto !important;
+  min-height: 100% !important;
 }
 
 /* Dans une preview (landing / démo), `background-attachment: fixed` donne souvent

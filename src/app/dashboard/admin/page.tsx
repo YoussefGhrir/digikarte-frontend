@@ -104,7 +104,9 @@ export default function AdminDashboardPage() {
           <p className="mt-2 font-forum text-3xl text-emerald-300 tabular-nums">
             {(metrics.activeSubscriptions + metrics.trialingSubscriptions).toString().padStart(2, "0")}
           </p>
-          <p className="mt-1 text-xs text-neutral-500">ACTIVE + TRIALING</p>
+          <p className="mt-1 text-xs text-neutral-500">
+            {t("adminActiveLabel", locale)} + {t("adminStatusTrialingLabel", locale)}
+          </p>
         </div>
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">{t("adminCancelledLabel", locale)}</p>
@@ -124,20 +126,23 @@ export default function AdminDashboardPage() {
             <p className="mt-2 font-forum text-3xl text-emerald-300 tabular-nums">
               {(metrics.subscriptionActiveRate * 100).toFixed(1)}%
             </p>
-            <p className="mt-1 text-xs text-neutral-500">({metrics.activeSubscriptions} ACTIVE + {metrics.trialingSubscriptions} TRIALING) / total</p>
+            <p className="mt-1 text-xs text-neutral-500">
+              ({metrics.activeSubscriptions} {t("adminActiveLabel", locale)} + {metrics.trialingSubscriptions}{" "}
+              {t("adminStatusTrialingLabel", locale)}) / total
+            </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <span className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${badgeForStatus("ACTIVE")}`}>
-              ACTIVE
+              {t("adminActiveLabel", locale).toUpperCase()}
             </span>
             <span className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${badgeForStatus("TRIALING")}`}>
-              TRIALING
+              {t("adminStatusTrialingLabel", locale).toUpperCase()}
             </span>
             <span className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${badgeForStatus("EXPIRED")}`}>
-              EXPIRED
+              {t("subscriptionStatusExpired", locale).toUpperCase()}
             </span>
             <span className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${badgeForStatus("CANCELLED")}`}>
-              CANCELLED
+              {t("adminCancelledLabel", locale).toUpperCase()}
             </span>
           </div>
         </div>
@@ -154,10 +159,10 @@ export default function AdminDashboardPage() {
               <tr className="border-b border-neutral-800">
                 <th className="py-3 text-left font-medium">{t("adminCountryLabel", locale)}</th>
                 <th className="py-3 text-left font-medium">{t("adminUsersLabel", locale)}</th>
-                <th className="py-3 text-left font-medium">Menus</th>
-                <th className="py-3 text-left font-medium">ACTIVE/TRIAL</th>
-                <th className="py-3 text-left font-medium">EXPIRED</th>
-                <th className="py-3 text-left font-medium">CANCELLED</th>
+                <th className="py-3 text-left font-medium">{t("adminMenusLabel", locale)}</th>
+                <th className="py-3 text-left font-medium">{t("adminActiveTrialHeader", locale)}</th>
+                <th className="py-3 text-left font-medium">{t("subscriptionStatusExpired", locale)}</th>
+                <th className="py-3 text-left font-medium">{t("adminCancelledLabel", locale)}</th>
                 <th className="py-3 text-left font-medium">{t("adminRateLabel", locale)}</th>
               </tr>
             </thead>
