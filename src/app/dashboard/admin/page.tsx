@@ -52,7 +52,7 @@ export default function AdminDashboardPage() {
           router.replace(prefixWithLocale("/login", locale));
           return;
         }
-        setError(e instanceof Error ? e.message : "Erreur metrics");
+        setError(e instanceof Error ? e.message : t("adminMetricsLoadErrorFallback", locale));
       } finally {
         if (!cancelled) setLoading(false);
       }

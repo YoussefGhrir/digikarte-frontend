@@ -672,6 +672,11 @@ export const translations = {
     fr: "Chargement des métriques admin…",
     en: "Loading admin metrics…",
   },
+  adminMetricsLoadErrorFallback: {
+    de: "Fehler beim Laden der Admin-Metriken.",
+    fr: "Erreur lors du chargement des métriques admin.",
+    en: "Error while loading admin metrics.",
+  },
   adminDashboardTitle: {
     de: "Admin-Dashboard",
     fr: "Dashboard admin",
