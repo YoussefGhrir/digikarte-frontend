@@ -27,11 +27,17 @@ export default function PublicMenuPage() {
   const slug = params.slug as string;
   const { locale } = useLanguage();
   const isDemo = (slug ?? "").toLowerCase() === "demo";
-  const selectedTemplate = useMemo<MenuTemplateId>(() => {
+  const selectedTemplateFromQuery = useMemo<MenuTemplateId>(() => {
     const value = searchParams.get("template");
     if (!value) return "classic";
     return normalizeTemplateId(value);
   }, [searchParams]);
+  const [selectedTemplate, setSelectedTemplate] = useState<MenuTemplateId>(selectedTemplateFromQuery);
+
+  // Synchronise uniquement si l'utilisateur change l'URL (back/forward).
+  useEffect(() => {
+    setSelectedTemplate(selectedTemplateFromQuery);
+  }, [selectedTemplateFromQuery]);
   const [menu, setMenu] = useState<MenuPublicDto | null>(null);
   const [loading, setLoading] = useState(!isDemo);
   const [error, setError] = useState("");
@@ -84,6 +90,7 @@ export default function PublicMenuPage() {
           locale={locale}
           selectedTemplate={selectedTemplate}
           demoMenu={demoMenu}
+          onSelectTemplate={(templateId) => setSelectedTemplate(templateId)}
         />
       );
     }
@@ -171,10 +178,12 @@ function DemoScenarioPage({
   locale,
   selectedTemplate,
   demoMenu,
+  onSelectTemplate,
 }: {
   locale: Locale;
   selectedTemplate: MenuTemplateId;
   demoMenu: MenuPublicDto;
+  onSelectTemplate: (templateId: MenuTemplateId) => void;
 }) {
   const text = getDemoTexts(locale);
   const demoUrl = "https://www.digi-karte.com/menu/demo";
@@ -262,9 +271,10 @@ function DemoScenarioPage({
                 {templateItems.map((template) => {
                   const active = template.id === selectedTemplate;
                   return (
-                    <a
+                    <button
                       key={template.id}
-                      href={prefixWithLocale(`/menu/demo?template=${template.id}`, locale)}
+                      type="button"
+                      onClick={() => onSelectTemplate(template.id)}
                       className={`rounded-xl border px-3 py-1.5 text-[11px] transition ${
                         active
                           ? "border-amber-300 bg-amber-400/20 text-amber-100 shadow-[0_0_0_1px_rgba(251,191,36,0.35)]"
@@ -272,7 +282,7 @@ function DemoScenarioPage({
                       }`}
                     >
                       {template.label}
-                    </a>
+                    </button>
                   );
                 })}
               </div>
