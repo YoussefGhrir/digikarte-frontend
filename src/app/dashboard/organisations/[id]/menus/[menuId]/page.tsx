@@ -1024,22 +1024,22 @@ export default function MenuDetailPage() {
           </div>
         </div>
         <div className="min-h-0 flex-1 overflow-hidden overflow-x-hidden overscroll-x-none bg-neutral-900">
-          {menu?.slug ? (
+          {previewMenu ? (
             <div className="box-border flex h-full w-full items-center justify-center px-3 py-4 sm:px-4">
-              <div className="relative mx-auto w-full max-w-[430px] rounded-[32px] border border-neutral-800 bg-black/90 shadow-[0_25px_70px_rgba(0,0,0,0.9)] [contain:inline-size] overflow-hidden">
-                {/* Barre type téléphone */}
-                <div className="pointer-events-none absolute inset-x-16 top-2 h-1.5 rounded-full bg-neutral-700/80" />
-                <iframe
-                  key={`${menu.slug}-${menu.displayTemplate ?? "classic"}-${menu.colorTheme ?? "default"}`}
-                  src={`/menu/${menu.slug}`}
-                  title={previewMenu?.title || t("menu", locale)}
-                  className="mt-4 block h-[min(520px,calc(100dvh-12rem))] w-full max-w-full border-0 rounded-b-[32px] bg-black lg:h-[calc(100vh-9rem)]"
-                />
+              <div className="relative mx-auto flex h-[min(520px,calc(100dvh-12rem))] w-full max-w-[430px] flex-col rounded-[32px] border border-neutral-800 bg-black/90 shadow-[0_25px_70px_rgba(0,0,0,0.9)] [contain:inline-size] overflow-hidden lg:h-[calc(100vh-9rem)]">
+                <div className="pointer-events-none absolute inset-x-16 top-2 z-10 h-1.5 shrink-0 rounded-full bg-neutral-700/80" />
+                <div
+                  className="mt-4 min-h-0 flex-1 overflow-y-auto overflow-x-hidden rounded-b-[32px] bg-black"
+                  aria-label={previewMenu.title || t("menu", locale)}
+                >
+                  {/* Même rendu que la page publique, mais piloté par l’état local (pas d’iframe) → mise à jour instantanée après édition. */}
+                  <MenuTemplateRenderer
+                    key={`${normalizeTemplateId(menu.displayTemplate)}-${menu.colorTheme ?? "default"}`}
+                    menu={previewMenu}
+                    locale={locale}
+                  />
+                </div>
               </div>
-            </div>
-          ) : previewMenu ? (
-            <div className="min-h-full w-full">
-              <MenuTemplateRenderer menu={previewMenu} locale={locale} />
             </div>
           ) : (
             <div className="flex h-full min-h-[300px] items-center justify-center text-neutral-500 text-sm">
