@@ -520,7 +520,8 @@ export default function MenuQrPage() {
                 {/* Aperçu sticker */}
                 <div className="p-4 flex items-center justify-center bg-neutral-950/90 overflow-hidden" style={{ height: 260, minHeight: 260 }}>
                   <div className="flex items-center justify-center w-[220px] h-[240px] shrink-0" aria-hidden>
-                    <div ref={stickerPreviewRef} className="flex items-center justify-center origin-center" style={{ transform: "scale(0.62)" }}>
+                    {/* QrTableSticker: width 280, minHeight 340. Box preview: 220x240 => scale ~ min(220/280, 240/340) = 0.706 */}
+                    <div ref={stickerPreviewRef} className="flex items-center justify-center origin-center" style={{ transform: "scale(0.706)" }}>
                       <QrTableSticker
                         qrValue={effectiveMenuUrl}
                         restaurantName={org.name}

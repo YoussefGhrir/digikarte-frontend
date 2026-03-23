@@ -19,6 +19,13 @@ export default function LandingPage({ syncLocale }: { syncLocale?: Locale }) {
   const languages: Locale[] = ["de", "fr", "en"];
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef<HTMLDivElement | null>(null);
+  // Ajuste l'aperçu du menu pour qu'il "remplisse" la hauteur de la carte (min(420px,72vh)).
+  // Le template utilise `min-h-screen` => sa hauteur "non-scalée" ~= hauteur d'écran.
+  const [heroDemoMenuScale, setHeroDemoMenuScale] = useState(() => {
+    const h = typeof window !== "undefined" ? window.innerHeight : 800;
+    const scale = Math.min(0.72, 420 / (h || 1));
+    return Math.max(0.35, Math.min(0.72, scale));
+  });
 
   useEffect(() => {
     if (syncLocale) setLocale(syncLocale);
@@ -32,6 +39,20 @@ export default function LandingPage({ syncLocale }: { syncLocale?: Locale }) {
     }
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const updateScale = () => {
+      const h = window.innerHeight || 1;
+      // Equivalent de: heightCard = min(420px, 72vh) puis scale = heightCard / 100vh.
+      const scale = Math.min(0.72, 420 / h);
+      // Sécurité visuelle (évite les extrêmes sur des écrans très hauts/bas).
+      setHeroDemoMenuScale(Math.max(0.35, Math.min(0.72, scale)));
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
   }, []);
 
   const heroDemoMenu = useMemo(
@@ -203,11 +224,16 @@ export default function LandingPage({ syncLocale }: { syncLocale?: Locale }) {
               aria-label={t("heroSecondaryCta", locale)}
             >
               <div className="relative overflow-hidden rounded-[2.5rem] border border-neutral-700/80 bg-neutral-950 shadow-[0_35px_90px_rgba(0,0,0,0.9)] ring-1 ring-white/5 transition group-hover:border-amber-500/35 group-hover:shadow-[0_40px_100px_rgba(0,0,0,0.95)]">
-                <div className="pointer-events-none relative h-[min(420px,72vh)] w-full overflow-hidden">
-              <div className="menu-preview-root absolute left-1/2 top-0 w-[min(110vw,900px)] origin-top -translate-x-1/2 scale-[0.405] sm:scale-[0.42]">
-                    <MenuTemplateClassic menu={heroDemoMenu} locale={locale} />
-                  </div>
+              <div className="pointer-events-none relative h-[min(420px,72vh)] w-full overflow-hidden">
+                <div
+                  className="menu-preview-root absolute left-1/2 top-0 w-[min(110vw,900px)] origin-top"
+                  style={{
+                    transform: `translateX(-50%) scale(${heroDemoMenuScale})`,
+                  }}
+                >
+                  <MenuTemplateClassic menu={heroDemoMenu} locale={locale} />
                 </div>
+              </div>
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent" />
                 <p className="pointer-events-none absolute bottom-3 left-0 right-0 text-center text-[10px] font-medium uppercase tracking-[0.28em] text-neutral-500 transition group-hover:text-amber-400/90">
                   {t("heroCardTag", locale)}
