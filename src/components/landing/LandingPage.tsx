@@ -34,10 +34,7 @@ export default function LandingPage({ syncLocale }: { syncLocale?: Locale }) {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  const heroDemoMenu = useMemo(
-    () => getDemoMenuPublicDto("classic", locale),
-    [locale],
-  );
+  const heroDemoMenu = useMemo(() => getDemoMenuPublicDto("classic"), []);
 
   if (loading) {
     return (
@@ -205,7 +202,7 @@ export default function LandingPage({ syncLocale }: { syncLocale?: Locale }) {
               <div className="relative overflow-hidden rounded-[2.5rem] border border-neutral-700/80 bg-neutral-950 shadow-[0_35px_90px_rgba(0,0,0,0.9)] ring-1 ring-white/5 transition group-hover:border-amber-500/35 group-hover:shadow-[0_40px_100px_rgba(0,0,0,0.95)]">
                 <div className="pointer-events-none relative h-[min(420px,72vh)] w-full overflow-hidden">
                   <div className="absolute left-1/2 top-0 w-[min(92vw,900px)] origin-top -translate-x-1/2 scale-[0.405] sm:scale-[0.42]">
-                    <MenuTemplateClassic menu={heroDemoMenu} locale={locale} embedded />
+                    <MenuTemplateClassic menu={heroDemoMenu} locale={locale} />
                   </div>
                 </div>
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent" />
