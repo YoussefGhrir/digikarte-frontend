@@ -7,7 +7,7 @@ import { prefixWithLocale } from "@/lib/locale-path";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { MenuTemplateClassic } from "@/components/menu-templates/MenuTemplateClassic";
 import { getDemoMenuPublicDto } from "@/components/menu-templates/utils";
 
@@ -26,6 +26,14 @@ export default function LandingPage({ syncLocale }: { syncLocale?: Locale }) {
     const scale = Math.min(0.72, 420 / (h || 1));
     return Math.max(0.35, Math.min(0.72, scale));
   });
+  const heroPreviewOuterRef = useRef<HTMLDivElement | null>(null);
+  const heroPreviewInnerRef = useRef<HTMLDivElement | null>(null);
+  const heroDemoMenuScaleRef = useRef(heroDemoMenuScale);
+  const heroUpdateScaleFnRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    heroDemoMenuScaleRef.current = heroDemoMenuScale;
+  }, [heroDemoMenuScale]);
 
   useEffect(() => {
     if (syncLocale) setLocale(syncLocale);
@@ -41,24 +49,67 @@ export default function LandingPage({ syncLocale }: { syncLocale?: Locale }) {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    const updateScale = () => {
-      const h = window.innerHeight || 1;
-      // Equivalent de: heightCard = min(420px, 72vh) puis scale = heightCard / 100vh.
-      const scale = Math.min(0.72, 420 / h);
-      // Sécurité visuelle (évite les extrêmes sur des écrans très hauts/bas).
-      setHeroDemoMenuScale(Math.max(0.35, Math.min(0.72, scale)));
+  useLayoutEffect(() => {
+    const outerEl = heroPreviewOuterRef.current;
+    const innerEl = heroPreviewInnerRef.current;
+    if (!outerEl || !innerEl) return;
+
+    // On limite le scale pour éviter des extrêmes, mais on laisse passer > 1 si besoin.
+    const clamp = (v: number) => Math.max(0.35, Math.min(1.2, v));
+
+    const updateScaleFromMeasurement = () => {
+      const outerRect = outerEl.getBoundingClientRect();
+      const outerH = outerRect.height;
+      const outerW = outerRect.width;
+      if (!outerH) return;
+
+      // Mesure robuste :
+      // - on force temporairement `scale(1)` sur l'élément preview
+      // - on mesure sa hauteur "base"
+      // - on calcule ensuite le scale pour remplir `outerH`
+      const prevTransform = innerEl.style.transform;
+
+      innerEl.style.transform = "translateX(-50%) scale(1)";
+      const baseH = innerEl.getBoundingClientRect().height;
+      innerEl.style.transform = prevTransform;
+
+      if (!baseH) return;
+
+      const desired = outerH / baseH;
+      const next = clamp(desired);
+
+      if (Math.abs(next - heroDemoMenuScaleRef.current) > 0.01) {
+        setHeroDemoMenuScale(next);
+      }
     };
 
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
-  }, []);
+    heroUpdateScaleFnRef.current = updateScaleFromMeasurement;
 
-  const heroDemoMenu = useMemo(
-    () => getDemoMenuPublicDto("classic", locale),
-    [locale]
-  );
+    updateScaleFromMeasurement();
+    window.addEventListener("resize", updateScaleFromMeasurement);
+
+    // Certaines variations de "zoom" navigateur ne déclenchent pas toujours `resize` de façon fiable.
+    // On surveille donc aussi `innerHeight` et `devicePixelRatio` via un petit polling léger.
+    let lastH = Math.round(window.innerHeight);
+    let lastDpr = Math.round(window.devicePixelRatio * 100) / 100;
+    const timer = window.setInterval(() => {
+      const hNow = Math.round(window.innerHeight);
+      const dprNow = Math.round(window.devicePixelRatio * 100) / 100;
+      if (hNow !== lastH || dprNow !== lastDpr) {
+        lastH = hNow;
+        lastDpr = dprNow;
+        heroUpdateScaleFnRef.current?.();
+      }
+    }, 450);
+
+    return () => {
+      window.removeEventListener("resize", updateScaleFromMeasurement);
+      window.clearInterval(timer);
+      heroUpdateScaleFnRef.current = null;
+    };
+  }, [locale]);
+
+  const heroDemoMenu = useMemo(() => getDemoMenuPublicDto("classic", locale), [locale]);
 
   if (loading) {
     return (
@@ -215,31 +266,43 @@ export default function LandingPage({ syncLocale }: { syncLocale?: Locale }) {
             </div>
           </div>
 
-          {/* Colonne droite : aperçu = même template que /menu/demo (classic) */}
-          <div className="relative flex items-center justify-center md:justify-end">
+          {/* Colonne droite : aperçu plus clair + gros QR (responsive) */}
+          <div className="relative flex flex-col items-center justify-center gap-6 md:flex-row md:items-start md:justify-end">
             <div className="absolute -inset-10 rounded-[2.5rem] bg-gradient-to-br from-amber-400/35 via-fuchsia-500/15 to-emerald-400/25 blur-2xl" />
-            <Link
-              href={prefixWithLocale("/menu/demo", locale)}
-              className="group relative z-10 block w-full max-w-[380px] -rotate-6 transition-transform duration-300 hover:-rotate-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-              aria-label={t("heroSecondaryCta", locale)}
-            >
-              <div className="relative overflow-hidden rounded-[2.5rem] border border-neutral-700/80 bg-neutral-950 shadow-[0_35px_90px_rgba(0,0,0,0.9)] ring-1 ring-white/5 transition group-hover:border-amber-500/35 group-hover:shadow-[0_40px_100px_rgba(0,0,0,0.95)]">
-              <div className="pointer-events-none relative h-[min(420px,72vh)] w-full overflow-hidden">
-                <div
-                  className="menu-preview-root absolute left-1/2 top-0 w-[min(110vw,900px)] origin-top"
-                  style={{
-                    transform: `translateX(-50%) scale(${heroDemoMenuScale})`,
-                  }}
-                >
-                  <MenuTemplateClassic menu={heroDemoMenu} locale={locale} />
+
+            <div className="w-full md:max-w-[420px]">
+              <Link
+                href={prefixWithLocale("/menu/demo", locale)}
+                className="group relative z-10 block w-full max-w-[420px] -rotate-6 transition-transform duration-300 hover:-rotate-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                aria-label={t("heroSecondaryCta", locale)}
+              >
+                <div className="relative overflow-hidden rounded-[2.5rem] border border-neutral-700/80 bg-neutral-950 shadow-[0_35px_90px_rgba(0,0,0,0.9)] ring-1 ring-white/5 transition group-hover:border-amber-500/35 group-hover:shadow-[0_40px_100px_rgba(0,0,0,0.95)]">
+                  <div
+                    ref={heroPreviewOuterRef}
+                    className="pointer-events-none relative h-[min(420px,72vh)] w-full overflow-hidden"
+                  >
+                    <div
+                      ref={heroPreviewInnerRef}
+                      className="menu-preview-root absolute left-1/2 top-0 w-[min(110vw,900px)] origin-top"
+                      style={{
+                        transform: `translateX(-50%) scale(${heroDemoMenuScale})`,
+                      }}
+                    >
+                      <MenuTemplateClassic menu={heroDemoMenu} locale={locale} />
+                    </div>
+                  </div>
+
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent" />
+                  <p className="pointer-events-none absolute bottom-3 left-0 right-0 text-center text-[10px] font-medium uppercase tracking-[0.28em] text-neutral-500 transition group-hover:text-amber-400/90">
+                    {t("heroCardTag", locale)}
+                  </p>
                 </div>
-              </div>
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent" />
-                <p className="pointer-events-none absolute bottom-3 left-0 right-0 text-center text-[10px] font-medium uppercase tracking-[0.28em] text-neutral-500 transition group-hover:text-amber-400/90">
-                  {t("heroCardTag", locale)}
-                </p>
-              </div>
-            </Link>
+              </Link>
+            </div>
+
+            <div className="w-full md:w-auto">
+              <HeroQrCard locale={locale} />
+            </div>
           </div>
         </section>
 
@@ -627,7 +690,7 @@ function ExplainCard({
       <div className="mt-4 flex min-h-[100px] items-center justify-center rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/80 p-3">
         {variant === "org" && <ExplainVisualOrg />}
         {variant === "menu" && <ExplainVisualMenu locale={locale} />}
-        {variant === "qr" && <ExplainVisualQr />}
+        {variant === "qr" && <ExplainVisualQr locale={locale} />}
       </div>
       <h3 className="mt-4 font-forum text-lg text-neutral-900 dark:text-neutral-50">{title}</h3>
       <p className="mt-2 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">{text}</p>
@@ -670,12 +733,12 @@ function ExplainVisualMenu({ locale }: { locale: Locale }) {
   );
 }
 
-function ExplainVisualQr() {
+function ExplainVisualQr({ locale }: { locale: Locale }) {
   const origin =
     typeof window !== "undefined" && window.location?.origin
       ? window.location.origin
       : "https://digi-karte.com";
-  const url = `${origin}/menu/demo`;
+  const url = `${origin}${prefixWithLocale("/menu/demo", locale)}`;
   const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(url)}`;
 
   return (
@@ -685,6 +748,59 @@ function ExplainVisualQr() {
       </div>
       <span className="text-[9px] uppercase tracking-wider text-neutral-500 dark:text-neutral-400">QR</span>
     </div>
+  );
+}
+
+function HeroQrCard({ locale }: { locale: Locale }) {
+  const origin =
+    typeof window !== "undefined" && window.location?.origin
+      ? window.location.origin
+      : "https://digi-karte.com";
+
+  const demoUrl = `${origin}${prefixWithLocale("/menu/demo", locale)}`;
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(demoUrl)}`;
+
+  const scanText =
+    locale === "de"
+      ? "Scannen für das Demo-Menü"
+      : locale === "fr"
+        ? "Scannez pour le menu démo"
+        : "Scan to view the demo menu";
+
+  return (
+    <Link
+      href={prefixWithLocale("/menu/demo", locale)}
+      className="group relative block rounded-[2rem] border border-neutral-300/30 bg-white/85 p-4 shadow-lg backdrop-blur transition hover:-translate-y-1 hover:border-amber-500/40 dark:bg-neutral-950/60 dark:border-neutral-800/70 md:p-5"
+      aria-label={scanText}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-neutral-700 dark:text-neutral-200">
+          QR MENU
+        </p>
+        <span className="inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-[10px] font-semibold text-amber-800 dark:text-amber-300">
+          {t("heroBadge1Title", locale)}
+        </span>
+      </div>
+
+      <div className="mt-3 flex items-center justify-center">
+        <div className="h-28 w-28 rounded-2xl border border-neutral-200/70 bg-white p-2 shadow-sm dark:border-neutral-800/70 dark:bg-neutral-950/70 sm:h-32 sm:w-32">
+          <img
+            src={qrSrc}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full rounded-xl object-contain"
+          />
+        </div>
+      </div>
+
+      <p className="mt-3 text-center text-xs font-medium text-neutral-900 dark:text-neutral-100">
+        {scanText}
+      </p>
+      <p className="mt-1 text-center text-[10px] text-neutral-500 dark:text-neutral-400">
+        {t("heroSecondaryCta", locale)}
+      </p>
+    </Link>
   );
 }
 
