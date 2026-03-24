@@ -551,12 +551,12 @@ export default function AdminUsersPage() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-3 py-3 last:pr-4">
-                      <div className="flex flex-wrap gap-2">
+                    <td className="px-3 py-3 min-w-[420px] last:pr-4">
+                      <div className="flex flex-nowrap items-center gap-1.5">
                         <button
                           type="button"
                           onClick={() => setViewUser(u)}
-                          className="rounded-xl bg-neutral-900/40 px-3 py-2 text-xs font-semibold text-neutral-200 hover:bg-neutral-900"
+                          className="rounded-lg bg-neutral-900/40 px-2.5 py-1.5 text-[11px] font-semibold text-neutral-200 hover:bg-neutral-900 whitespace-nowrap"
                           aria-label={t("adminUsersViewAction", locale)}
                         >
                           <span className="inline-flex items-center gap-2">
@@ -589,7 +589,7 @@ export default function AdminUsersPage() {
                         <button
                           type="button"
                           onClick={() => openEdit(u)}
-                          className="rounded-xl bg-orange-500/90 px-3 py-2 text-xs font-semibold text-white hover:bg-orange-400"
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-orange-500/90 text-white hover:bg-orange-400"
                           aria-label={t("adminUsersEditAction", locale)}
                         >
                           <IconEdit className="inline-block h-4 w-4" />
@@ -601,7 +601,7 @@ export default function AdminUsersPage() {
                             setResetPassword("");
                             setResetError("");
                           }}
-                          className="rounded-xl bg-sky-600/90 px-3 py-2 text-xs font-semibold text-white hover:bg-sky-500"
+                          className="rounded-lg bg-sky-600/90 px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-sky-500 whitespace-nowrap"
                           aria-label={t("adminUsersResetPasswordAction", locale)}
                         >
                           {t("adminUsersResetPasswordAction", locale)}
@@ -613,7 +613,7 @@ export default function AdminUsersPage() {
                               setDeleteUser(u);
                               setDeleteError("");
                             }}
-                            className="rounded-xl bg-red-500/90 px-3 py-2 text-xs font-semibold text-white hover:bg-red-400"
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/90 text-white hover:bg-red-400"
                             aria-label={t("adminUsersDeleteAction", locale)}
                           >
                             <IconTrash className="inline-block h-4 w-4" />

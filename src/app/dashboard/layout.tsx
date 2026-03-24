@@ -746,6 +746,9 @@ export default function DashboardLayout({
                 aria-expanded={langOpen}
               >
                 <FlagIcon code={locale} />
+                <span className="sm:hidden uppercase">
+                  {locale}
+                </span>
                 <span className="hidden sm:inline">
                   {localeLabels[locale]}
                 </span>
@@ -853,7 +856,7 @@ export default function DashboardLayout({
               onClick={() => setMobileProfileMenuOpen((v) => !v)}
               aria-expanded={mobileProfileMenuOpen}
               aria-label={t("dashboardNavProfile", locale)}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-800 bg-neutral-900 sm:hidden"
+              className="flex items-center gap-1.5 rounded-full border border-neutral-800 bg-neutral-900 px-2 py-1.5 sm:hidden"
             >
               {user?.profilePhotoBase64 ? (
                 <div className="relative h-8 w-8 overflow-hidden rounded-full border border-amber-500/40 bg-neutral-800">
@@ -868,6 +871,9 @@ export default function DashboardLayout({
                   {(user?.prenom?.[0] ?? user?.nom?.[0] ?? "?").toUpperCase()}
                 </div>
               )}
+              <span className="text-[11px] text-neutral-300">
+                {t("dashboardNavProfile", locale)}
+              </span>
             </button>
           </div>
         </header>
