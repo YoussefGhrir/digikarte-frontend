@@ -153,8 +153,8 @@ export default function AdminDashboardPage() {
           <h2 className="font-forum text-lg text-neutral-50">{t("adminCountryDistribution", locale)}</h2>
           <p className="text-xs text-neutral-500">{t("adminTopCountriesHint", locale)}</p>
         </div>
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full lg:min-w-[720px] text-sm">
+        <div className="mt-4 max-w-full overflow-x-auto [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
+          <table className="w-full min-w-[720px] text-sm">
             <thead className="text-xs uppercase tracking-[0.18em] text-neutral-500">
               <tr className="border-b border-neutral-800">
                 <th className="py-3 text-left font-medium">{t("adminCountryLabel", locale)}</th>

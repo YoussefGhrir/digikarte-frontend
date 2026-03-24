@@ -293,8 +293,8 @@ export default function AdminAdminsPage() {
           {t("adminUsersLoading", locale)}
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-neutral-800 bg-neutral-950/70">
-          <table className="w-full lg:min-w-[1040px] text-sm">
+        <div className="max-w-full overflow-x-auto rounded-2xl border border-neutral-800 bg-neutral-950/70 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
+          <table className="w-full min-w-[1040px] text-sm">
             <thead className="text-xs uppercase tracking-[0.18em] text-neutral-500">
               <tr className="border-b border-neutral-800">
                 <th className="py-3 text-left font-medium whitespace-nowrap">{t("profileFirstName", locale)}</th>
@@ -314,7 +314,7 @@ export default function AdminAdminsPage() {
                 const active = isActiveSubscription(u.subscriptionStatus);
                 return (
                   <tr key={u.userId} className="hover:bg-neutral-900/40">
-                    <td className="py-3">
+                    <td className="py-3 min-w-[320px]">
                       <span className="font-medium text-neutral-100 whitespace-nowrap">{u.prenom}</span>
                     </td>
                     <td className="py-3 text-neutral-200 whitespace-nowrap">{u.nom}</td>
