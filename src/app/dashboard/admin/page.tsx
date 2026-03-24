@@ -155,29 +155,29 @@ export default function AdminDashboardPage() {
         </div>
         <div className="mt-4 w-full max-w-full overflow-x-auto [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
           <table className="w-full min-w-[720px] text-sm">
-            <thead className="text-xs uppercase tracking-[0.18em] text-neutral-500">
+            <thead className="text-xs uppercase tracking-[0.14em] text-neutral-500">
               <tr className="border-b border-neutral-800">
-                <th className="py-3 text-left font-medium">{t("adminCountryLabel", locale)}</th>
-                <th className="py-3 text-left font-medium">{t("adminUsersLabel", locale)}</th>
-                <th className="py-3 text-left font-medium">{t("adminMenusLabel", locale)}</th>
-                <th className="py-3 text-left font-medium">{t("adminActiveTrialHeader", locale)}</th>
-                <th className="py-3 text-left font-medium">{t("subscriptionStatusExpired", locale)}</th>
-                <th className="py-3 text-left font-medium">{t("adminCancelledLabel", locale)}</th>
-                <th className="py-3 text-left font-medium">{t("adminRateLabel", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium first:pl-4">{t("adminCountryLabel", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium">{t("adminUsersLabel", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium">{t("adminMenusLabel", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium">{t("adminActiveTrialHeader", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium">{t("subscriptionStatusExpired", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium">{t("adminCancelledLabel", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium last:pr-4">{t("adminRateLabel", locale)}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-900/60">
               {metrics.byCountry.map((c) => (
                 <tr key={c.country} className="hover:bg-neutral-900/40">
-                  <td className="py-3 font-medium">{c.country}</td>
-                  <td className="py-3 text-neutral-300 tabular-nums">{c.usersCount}</td>
-                  <td className="py-3 text-neutral-300 tabular-nums">{c.menusCount}</td>
-                  <td className="py-3 text-neutral-200 tabular-nums">
+                  <td className="px-3 py-3 font-medium first:pl-4">{c.country}</td>
+                  <td className="px-3 py-3 text-neutral-300 tabular-nums">{c.usersCount}</td>
+                  <td className="px-3 py-3 text-neutral-300 tabular-nums">{c.menusCount}</td>
+                  <td className="px-3 py-3 text-neutral-200 tabular-nums">
                     {c.activeSubscriptions}/{c.trialingSubscriptions}
                   </td>
-                  <td className="py-3 tabular-nums">{c.expiredSubscriptions}</td>
-                  <td className="py-3 tabular-nums">{c.cancelledSubscriptions}</td>
-                  <td className="py-3 tabular-nums">{(c.subscriptionRate * 100).toFixed(1)}%</td>
+                  <td className="px-3 py-3 tabular-nums">{c.expiredSubscriptions}</td>
+                  <td className="px-3 py-3 tabular-nums">{c.cancelledSubscriptions}</td>
+                  <td className="px-3 py-3 tabular-nums last:pr-4">{(c.subscriptionRate * 100).toFixed(1)}%</td>
                 </tr>
               ))}
               {metrics.byCountry.length === 0 && (

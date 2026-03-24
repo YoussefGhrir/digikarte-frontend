@@ -295,18 +295,18 @@ export default function AdminAdminsPage() {
       ) : (
         <div className="w-full max-w-full overflow-x-auto rounded-2xl border border-neutral-800 bg-neutral-950/70 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
           <table className="w-full min-w-[1040px] text-sm">
-            <thead className="text-xs uppercase tracking-[0.18em] text-neutral-500">
+            <thead className="text-xs uppercase tracking-[0.14em] text-neutral-500">
               <tr className="border-b border-neutral-800">
-                <th className="py-3 text-left font-medium whitespace-nowrap">{t("profileFirstName", locale)}</th>
-                <th className="py-3 text-left font-medium whitespace-nowrap">{t("profileLastName", locale)}</th>
-                <th className="py-3 text-left font-medium whitespace-nowrap">{t("profileEmail", locale)}</th>
-                <th className="py-3 text-left font-medium whitespace-nowrap">{t("profilePhone", locale)}</th>
-                <th className="py-3 text-left font-medium whitespace-nowrap">{t("adminCountryLabel", locale)}</th>
-                <th className="py-3 text-left font-medium whitespace-nowrap">{t("adminUsersOrganizationsLabel", locale)}</th>
-                <th className="py-3 text-left font-medium whitespace-nowrap">{t("adminUsersMenusLabel", locale)}</th>
-                <th className="py-3 text-left font-medium whitespace-nowrap">{t("adminUsersSubscriptionLabel", locale)}</th>
-                <th className="py-3 text-left font-medium whitespace-nowrap">{t("adminUsersAccessLabel", locale)}</th>
-                <th className="py-3 text-left font-medium whitespace-nowrap">{t("adminUsersActionsLabel", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium whitespace-nowrap first:pl-4">{t("profileFirstName", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium whitespace-nowrap">{t("profileLastName", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium whitespace-nowrap">{t("profileEmail", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium whitespace-nowrap">{t("profilePhone", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium whitespace-nowrap">{t("adminCountryLabel", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium whitespace-nowrap">{t("adminUsersOrganizationsLabel", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium whitespace-nowrap">{t("adminUsersMenusLabel", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium whitespace-nowrap">{t("adminUsersSubscriptionLabel", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium whitespace-nowrap">{t("adminUsersAccessLabel", locale)}</th>
+                <th className="px-3 py-3 text-left font-medium whitespace-nowrap last:pr-4">{t("adminUsersActionsLabel", locale)}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-900/60">
@@ -314,16 +314,18 @@ export default function AdminAdminsPage() {
                 const active = isActiveSubscription(u.subscriptionStatus);
                 return (
                   <tr key={u.userId} className="hover:bg-neutral-900/40">
-                    <td className="py-3">
+                    <td className="px-3 py-3 first:pl-4">
                       <span className="font-medium text-neutral-100 whitespace-nowrap">{u.prenom}</span>
                     </td>
-                    <td className="py-3 text-neutral-200 whitespace-nowrap">{u.nom}</td>
-                    <td className="py-3 text-neutral-300 whitespace-nowrap">{u.email}</td>
-                    <td className="py-3 text-neutral-300 whitespace-nowrap">{u.telephone}</td>
-                    <td className="py-3 text-neutral-300 whitespace-nowrap">{u.country ?? "—"}</td>
-                    <td className="py-3 text-neutral-300 tabular-nums whitespace-nowrap">{u.organizationsCount}</td>
-                    <td className="py-3 text-neutral-300 tabular-nums whitespace-nowrap">{u.menusCount}</td>
-                    <td className="py-3 min-w-[320px]">
+                    <td className="px-3 py-3 text-neutral-200 whitespace-nowrap">{u.nom}</td>
+                    <td className="px-3 py-3 text-neutral-300">
+                      <span className="block max-w-[260px] truncate">{u.email}</span>
+                    </td>
+                    <td className="px-3 py-3 text-neutral-300 whitespace-nowrap">{u.telephone}</td>
+                    <td className="px-3 py-3 text-neutral-300 whitespace-nowrap">{u.country ?? "—"}</td>
+                    <td className="px-3 py-3 text-neutral-300 tabular-nums whitespace-nowrap">{u.organizationsCount}</td>
+                    <td className="px-3 py-3 text-neutral-300 tabular-nums whitespace-nowrap">{u.menusCount}</td>
+                    <td className="px-3 py-3 min-w-[320px]">
                       <div className="flex flex-col gap-1.5">
                         <span
                           className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${
@@ -336,7 +338,7 @@ export default function AdminAdminsPage() {
                         </span>
                       </div>
                     </td>
-                    <td className="py-3">
+                    <td className="px-3 py-3">
                       <span
                         className={`inline-flex w-fit items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${
                           u.subscriptionBypass
@@ -347,7 +349,7 @@ export default function AdminAdminsPage() {
                         {u.subscriptionBypass ? t("dashboardAdminVipShort", locale) : t("dashboardAdminNormalShort", locale)}
                       </span>
                     </td>
-                    <td className="py-3">
+                    <td className="px-3 py-3 last:pr-4">
                       <div className="flex flex-wrap gap-2">
                         <button
                           type="button"
