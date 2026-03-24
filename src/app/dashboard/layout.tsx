@@ -448,7 +448,7 @@ export default function DashboardLayout({
   const subscriptionHref = "/dashboard/subscription";
 
   return (
-    <div className="flex min-h-screen bg-neutral-950 text-neutral-100">
+    <div className="flex min-h-screen overflow-x-hidden bg-neutral-950 text-neutral-100">
       {/* Sidebar gauche */}
       <aside className="hidden w-72 flex flex-col border-r border-neutral-800 bg-neutral-950/95 px-5 py-6 shadow-xl/40 backdrop-blur lg:flex">
         <div className="mb-6 flex items-center gap-3">

@@ -238,7 +238,7 @@ export default function AdminAdminsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">{t("adminAdminsKicker", locale)}</p>
@@ -293,7 +293,7 @@ export default function AdminAdminsPage() {
           {t("adminUsersLoading", locale)}
         </div>
       ) : (
-        <div className="max-w-full overflow-x-auto rounded-2xl border border-neutral-800 bg-neutral-950/70 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
+        <div className="w-full max-w-full overflow-x-auto rounded-2xl border border-neutral-800 bg-neutral-950/70 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
           <table className="w-full min-w-[1040px] text-sm">
             <thead className="text-xs uppercase tracking-[0.18em] text-neutral-500">
               <tr className="border-b border-neutral-800">
@@ -314,7 +314,7 @@ export default function AdminAdminsPage() {
                 const active = isActiveSubscription(u.subscriptionStatus);
                 return (
                   <tr key={u.userId} className="hover:bg-neutral-900/40">
-                    <td className="py-3 min-w-[320px]">
+                    <td className="py-3">
                       <span className="font-medium text-neutral-100 whitespace-nowrap">{u.prenom}</span>
                     </td>
                     <td className="py-3 text-neutral-200 whitespace-nowrap">{u.nom}</td>
@@ -323,7 +323,7 @@ export default function AdminAdminsPage() {
                     <td className="py-3 text-neutral-300 whitespace-nowrap">{u.country ?? "—"}</td>
                     <td className="py-3 text-neutral-300 tabular-nums whitespace-nowrap">{u.organizationsCount}</td>
                     <td className="py-3 text-neutral-300 tabular-nums whitespace-nowrap">{u.menusCount}</td>
-                    <td className="py-3">
+                    <td className="py-3 min-w-[320px]">
                       <div className="flex flex-col gap-1.5">
                         <span
                           className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${

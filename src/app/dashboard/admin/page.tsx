@@ -87,7 +87,7 @@ export default function AdminDashboardPage() {
   if (!metrics) return null;
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">{t("adminDashboardTitle", locale)}</p>
         <h1 className="mt-2 font-forum text-3xl tracking-tight text-neutral-50 md:text-4xl">{t("adminDashboardOverview", locale)}</h1>
@@ -148,12 +148,12 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
-        <div className="flex items-center justify-between gap-3">
+      <div className="w-full min-w-0 rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="font-forum text-lg text-neutral-50">{t("adminCountryDistribution", locale)}</h2>
           <p className="text-xs text-neutral-500">{t("adminTopCountriesHint", locale)}</p>
         </div>
-        <div className="mt-4 max-w-full overflow-x-auto [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
+        <div className="mt-4 w-full max-w-full overflow-x-auto [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
           <table className="w-full min-w-[720px] text-sm">
             <thead className="text-xs uppercase tracking-[0.18em] text-neutral-500">
               <tr className="border-b border-neutral-800">

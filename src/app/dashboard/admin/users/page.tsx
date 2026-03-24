@@ -391,7 +391,7 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">{t("adminUsersKicker", locale)}</p>
@@ -485,7 +485,7 @@ export default function AdminUsersPage() {
       {loading ? (
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-6 text-sm text-neutral-400">{t("adminUsersLoading", locale)}</div>
       ) : (
-        <div className="max-w-full overflow-x-auto rounded-2xl border border-neutral-800 bg-neutral-950/70 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
+        <div className="w-full max-w-full overflow-x-auto rounded-2xl border border-neutral-800 bg-neutral-950/70 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
           <table className="w-full min-w-[1040px] text-sm">
             <thead className="text-xs uppercase tracking-[0.18em] text-neutral-500">
               <tr className="border-b border-neutral-800">
@@ -506,7 +506,7 @@ export default function AdminUsersPage() {
                 const active = isActiveSubscription(u.subscriptionStatus);
                 return (
                   <tr key={u.userId} className="hover:bg-neutral-900/40">
-                    <td className="py-3 min-w-[320px]">
+                    <td className="py-3">
                       <span className="font-medium text-neutral-100 whitespace-nowrap">{u.prenom}</span>
                     </td>
                     <td className="py-3 text-neutral-200 whitespace-nowrap">{u.nom}</td>
@@ -515,7 +515,7 @@ export default function AdminUsersPage() {
                     <td className="py-3 text-neutral-300 whitespace-nowrap">{u.country ?? "—"}</td>
                     <td className="py-3 text-neutral-300 tabular-nums whitespace-nowrap">{u.organizationsCount}</td>
                     <td className="py-3 text-neutral-300 tabular-nums whitespace-nowrap">{u.menusCount}</td>
-                    <td className="py-3">
+                    <td className="py-3 min-w-[320px]">
                       <div className="flex flex-col">
                         <span
                           className={`inline-flex w-fit items-center rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${statusBadge(
