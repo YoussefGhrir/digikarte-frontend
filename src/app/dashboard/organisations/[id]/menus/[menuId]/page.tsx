@@ -1217,13 +1217,17 @@ export default function MenuDetailPage() {
       {/* Modal choix de section */}
       {isSectionModalOpen && (
         <div
-          className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 p-4"
+          className="fixed inset-0 z-40 overflow-y-auto overscroll-contain bg-black/70"
           onClick={() => setIsSectionModalOpen(false)}
         >
           <div
-            className="w-full max-w-2xl rounded-3xl border border-neutral-800 bg-neutral-950 p-6 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
+            className="flex min-h-full items-center justify-center p-4"
+            onClick={() => setIsSectionModalOpen(false)}
           >
+            <div
+              className="my-4 w-full max-w-2xl max-h-[min(90dvh,calc(100dvh-2rem))] overflow-y-auto overscroll-contain rounded-3xl border border-neutral-800 bg-neutral-950 p-6 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
             <div className="mb-5">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">
                 {t("menuChooseSectionKicker", locale)}
@@ -1298,6 +1302,7 @@ export default function MenuDetailPage() {
                   {t("menuAddSectionConfirm", locale)}
                 </button>
               </div>
+            </div>
             </div>
           </div>
         </div>
