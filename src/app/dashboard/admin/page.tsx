@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { adminGetMetrics, type AdminMetricsDto, isApiError } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 import { useLanguage } from "@/lib/language-context";
-import { prefixWithLocale } from "@/lib/locale-path";
 import { t } from "@/lib/i18n";
 
 function formatCurrency(amount: number, currency: string, locale: string) {
@@ -32,7 +31,7 @@ function badgeForStatus(status: string) {
 
 export default function AdminDashboardPage() {
   const { locale } = useLanguage();
-  const router = useRouter();
+  const { logout } = useAuth();
 
   const [metrics, setMetrics] = useState<AdminMetricsDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,7 +48,7 @@ export default function AdminDashboardPage() {
       } catch (e) {
         if (cancelled) return;
         if (isApiError(e) && (e.status === 401 || e.status === 403)) {
-          router.replace(prefixWithLocale("/login", locale));
+          logout();
           return;
         }
         setError(e instanceof Error ? e.message : t("adminMetricsLoadErrorFallback", locale));
@@ -61,7 +60,7 @@ export default function AdminDashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, [router, locale]);
+  }, [logout, locale]);
 
   const revenue = useMemo(() => {
     if (!metrics) return null;
@@ -86,6 +85,13 @@ export default function AdminDashboardPage() {
 
   if (!metrics) return null;
 
+  const totalUsers = metrics.totalUsers ?? 0;
+  const activeSubscriptions = metrics.activeSubscriptions ?? 0;
+  const trialingSubscriptions = metrics.trialingSubscriptions ?? 0;
+  const cancelledSubscriptions = metrics.cancelledSubscriptions ?? 0;
+  const subscriptionActiveRate = metrics.subscriptionActiveRate ?? 0;
+  const byCountry = Array.isArray(metrics.byCountry) ? metrics.byCountry : [];
+
   return (
     <div className="min-w-0 space-y-6">
       <div>
@@ -97,12 +103,12 @@ export default function AdminDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">{t("adminUsersLabel", locale)}</p>
-          <p className="mt-2 font-forum text-3xl text-amber-300 tabular-nums">{metrics.totalUsers.toString().padStart(2, "0")}</p>
+          <p className="mt-2 font-forum text-3xl text-amber-300 tabular-nums">{totalUsers.toString().padStart(2, "0")}</p>
         </div>
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">{t("adminActiveLabel", locale)}</p>
           <p className="mt-2 font-forum text-3xl text-emerald-300 tabular-nums">
-            {(metrics.activeSubscriptions + metrics.trialingSubscriptions).toString().padStart(2, "0")}
+            {(activeSubscriptions + trialingSubscriptions).toString().padStart(2, "0")}
           </p>
           <p className="mt-1 text-xs text-neutral-500">
             {t("adminActiveLabel", locale)} + {t("adminStatusTrialingLabel", locale)}
@@ -110,7 +116,7 @@ export default function AdminDashboardPage() {
         </div>
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">{t("adminCancelledLabel", locale)}</p>
-          <p className="mt-2 font-forum text-3xl text-red-300 tabular-nums">{metrics.cancelledSubscriptions.toString().padStart(2, "0")}</p>
+          <p className="mt-2 font-forum text-3xl text-red-300 tabular-nums">{cancelledSubscriptions.toString().padStart(2, "0")}</p>
         </div>
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">{t("adminRevenueApprox", locale)}</p>
@@ -124,10 +130,10 @@ export default function AdminDashboardPage() {
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">{t("adminSubscriptionRate", locale)}</p>
             <p className="mt-2 font-forum text-3xl text-emerald-300 tabular-nums">
-              {(metrics.subscriptionActiveRate * 100).toFixed(1)}%
+              {(subscriptionActiveRate * 100).toFixed(1)}%
             </p>
             <p className="mt-1 text-xs text-neutral-500">
-              ({metrics.activeSubscriptions} {t("adminActiveLabel", locale)} + {metrics.trialingSubscriptions}{" "}
+              ({activeSubscriptions} {t("adminActiveLabel", locale)} + {trialingSubscriptions}{" "}
               {t("adminStatusTrialingLabel", locale)}) / total
             </p>
           </div>
@@ -168,20 +174,20 @@ export default function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-900/60">
-              {metrics.byCountry.map((c) => (
+              {byCountry.map((c) => (
                 <tr key={c.country} className="hover:bg-neutral-900/40">
                   <td className="px-3 py-3 font-medium first:pl-4">{c.country}</td>
-                  <td className="px-3 py-3 text-neutral-300 tabular-nums">{c.usersCount}</td>
-                  <td className="px-3 py-3 text-neutral-300 tabular-nums">{c.menusCount}</td>
+                  <td className="px-3 py-3 text-neutral-300 tabular-nums">{c.usersCount ?? 0}</td>
+                  <td className="px-3 py-3 text-neutral-300 tabular-nums">{c.menusCount ?? 0}</td>
                   <td className="px-3 py-3 text-neutral-200 tabular-nums">
-                    {c.activeSubscriptions}/{c.trialingSubscriptions}
+                    {c.activeSubscriptions ?? 0}/{c.trialingSubscriptions ?? 0}
                   </td>
-                  <td className="px-3 py-3 tabular-nums">{c.expiredSubscriptions}</td>
-                  <td className="px-3 py-3 tabular-nums">{c.cancelledSubscriptions}</td>
-                  <td className="px-3 py-3 tabular-nums last:pr-4">{(c.subscriptionRate * 100).toFixed(1)}%</td>
+                  <td className="px-3 py-3 tabular-nums">{c.expiredSubscriptions ?? 0}</td>
+                  <td className="px-3 py-3 tabular-nums">{c.cancelledSubscriptions ?? 0}</td>
+                  <td className="px-3 py-3 tabular-nums last:pr-4">{((c.subscriptionRate ?? 0) * 100).toFixed(1)}%</td>
                 </tr>
               ))}
-              {metrics.byCountry.length === 0 && (
+              {byCountry.length === 0 && (
                 <tr>
                   <td className="py-6 text-neutral-500" colSpan={7}>
                     {t("adminNoCountryYet", locale)}

@@ -10,7 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { prefixWithLocale, stripLocaleFromPathname, swapLocaleInBrowserPath } from "@/lib/locale-path";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 function navItems(_locale: Locale) {
   return [
@@ -103,9 +103,10 @@ export default function DashboardLayout({
   const isSuperAdmin = Boolean((user as any)?.superAdmin);
   const subscriptionBypass = Boolean((user as any)?.subscriptionBypass);
 
-  useEffect(() => {
-    if (!loading && !token) router.replace(localizePath("/"));
-  }, [loading, token, router]);
+  useLayoutEffect(() => {
+    if (loading || token || typeof window === "undefined") return;
+    window.location.replace("/");
+  }, [loading, token]);
 
   useEffect(() => {
     setMobileProfileMenuOpen(false);
@@ -192,7 +193,7 @@ export default function DashboardLayout({
         if (cancelled) return;
         if (isApiError(e)) {
           if (e.status === 401 || e.status === 403) {
-            logout({ redirectTo: localizePath("/") });
+            logout();
             return;
           }
           // Toute autre erreur API (404, 500, etc.) = pas d'abonnement actif
@@ -327,7 +328,7 @@ export default function DashboardLayout({
         }
       } catch (e) {
         if (isApiError(e) && (e.status === 401 || e.status === 403 || e.status === 404)) {
-          logout({ redirectTo: localizePath("/") });
+          logout();
           return;
         }
         setOrgsError(e instanceof Error ? e.message : "Erreur organisations");
@@ -362,7 +363,15 @@ export default function DashboardLayout({
     );
   }
 
-  if (!token) return null;
+  if (!token) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-neutral-950">
+        <p className="text-sm tracking-[0.2em] text-neutral-400">
+          {t("authRedirectingHome", locale)}
+        </p>
+      </div>
+    );
+  }
 
   // Tant que nous n'avons pas vérifié l'abonnement (et qu'on n'est pas déjà
   // sur la page d'abonnement), afficher un écran de chargement.

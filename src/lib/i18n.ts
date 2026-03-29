@@ -1298,10 +1298,10 @@ export const translations = {
     fr: "Déconnexion",
     en: "Log out",
   },
-  authRedirectingToLogin: {
-    de: "Weiterleitung zur Anmeldung…",
-    fr: "Redirection vers la connexion…",
-    en: "Redirecting to sign in…",
+  authRedirectingHome: {
+    de: "Weiterleitung zur Startseite…",
+    fr: "Redirection vers l’accueil…",
+    en: "Redirecting to the home page…",
   },
   profileDeleteAccount: {
     de: "Konto löschen",

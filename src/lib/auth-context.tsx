@@ -30,7 +30,7 @@ interface AuthContextValue {
     telephone: string;
     password: string;
   }) => Promise<void>;
-  /** @param options.redirectTo - si fourni, redirection silencieuse (replace) vers cette URL ; sinon /login */
+  /** @param options.redirectTo - si fourni ; sinon `/` (racine → middleware → locale / accueil). */
   logout: (options?: { redirectTo?: string }) => void;
   refreshUser: () => Promise<void>;
 }
@@ -154,19 +154,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(
     (options?: { redirectTo?: string }) => {
       clearSubscriptionMeCache();
-      setUser(null);
-      setToken(null);
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(USER_KEY);
-      const target = options?.redirectTo;
-      if (target) {
-        router.replace(target);
-      } else {
-        // Par défaut, renvoyer proprement vers la page d'accueil publique (locale dans l’URL)
-        router.push(prefixWithLocale("/", locale));
+      const target = options?.redirectTo ?? "/";
+      // Navigation pleine page en premier : évite un rendu dashboard avec token=null (écran noir / URL bloquée).
+      if (typeof window !== "undefined") {
+        window.location.replace(target);
+        return;
       }
+      setUser(null);
+      setToken(null);
+      router.replace(target);
     },
-    [router, locale]
+    [router]
   );
 
   useEffect(() => {
@@ -211,12 +211,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const tick = () => {
       if (isJwtExpired(token)) {
         clearSubscriptionMeCache();
-        logout({ redirectTo: prefixWithLocale("/", locale) });
+        logout();
         return;
       }
       if (Date.now() - lastActivityRef.current > IDLE_LOGOUT_MS) {
         clearSubscriptionMeCache();
-        logout({ redirectTo: prefixWithLocale("/", locale) });
+        logout();
       }
     };
 
@@ -232,7 +232,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       document.removeEventListener("visibilitychange", onVis);
       if (moveTimer != null) clearTimeout(moveTimer);
     };
-  }, [token, logout, locale]);
+  }, [token, logout]);
 
   return (
     <AuthContext.Provider
