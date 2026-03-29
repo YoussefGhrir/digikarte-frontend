@@ -293,7 +293,9 @@ export default function AdminAdminsPage() {
           {t("adminUsersLoading", locale)}
         </div>
       ) : (
-        <div className="w-full max-w-full overflow-x-auto rounded-2xl border border-neutral-800 bg-neutral-950/70 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
+        <>
+        <p className="text-xs text-neutral-500 md:hidden">{t("adminUsersOrgsMenusScrollHint", locale)}</p>
+        <div className="relative z-0 w-full min-w-0 max-w-full touch-pan-x overflow-x-auto overscroll-x-contain rounded-2xl border border-neutral-800 bg-neutral-950/70 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
           <table className="w-full min-w-[1040px] text-sm">
             <thead className="text-xs uppercase tracking-[0.14em] text-neutral-500">
               <tr className="border-b border-neutral-800">
@@ -422,6 +424,7 @@ export default function AdminAdminsPage() {
             </tbody>
           </table>
         </div>
+        </>
       )}
 
       {/* Create admin modal */}

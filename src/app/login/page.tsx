@@ -10,7 +10,7 @@ import { prefixWithLocale, swapLocaleInBrowserPath } from "@/lib/locale-path";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 export default function LoginPage() {
-  const { login, token } = useAuth();
+  const { login, token, user } = useAuth();
   const { locale, setLocale } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
@@ -26,7 +26,8 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (token) {
-      router.replace(prefixWithLocale("/dashboard", locale));
+      const dest = user?.superAdmin ? "/dashboard/admin" : "/dashboard";
+      router.replace(prefixWithLocale(dest, locale));
       return;
     }
 
@@ -63,7 +64,7 @@ export default function LoginPage() {
         prefixWithLocale(justRegistered ? "/dashboard/subscription" : "/dashboard", locale),
       );
     }
-  }, [token, router, searchParams, locale]);
+  }, [token, user, router, searchParams, locale]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

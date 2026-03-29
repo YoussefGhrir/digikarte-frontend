@@ -153,7 +153,8 @@ export default function AdminDashboardPage() {
           <h2 className="font-forum text-lg text-neutral-50">{t("adminCountryDistribution", locale)}</h2>
           <p className="text-xs text-neutral-500">{t("adminTopCountriesHint", locale)}</p>
         </div>
-        <div className="mt-4 w-full max-w-full overflow-x-auto [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
+        <p className="mt-2 text-xs text-neutral-500 md:hidden">{t("adminUsersOrgsMenusScrollHint", locale)}</p>
+        <div className="relative z-0 mt-2 w-full min-w-0 max-w-full touch-pan-x overflow-x-auto overscroll-x-contain [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
           <table className="w-full min-w-[720px] text-sm">
             <thead className="text-xs uppercase tracking-[0.14em] text-neutral-500">
               <tr className="border-b border-neutral-800">

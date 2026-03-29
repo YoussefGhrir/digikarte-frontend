@@ -658,6 +658,23 @@ export function adminListUsers(q?: string) {
   return api<AdminUserDto[]>(`/api/admin/users${qs}`);
 }
 
+export interface AdminUserOrganizationMenuDto {
+  menuId: number;
+  title: string | null;
+  slug: string | null;
+}
+
+export interface AdminUserOrganizationDto {
+  organizationId: number;
+  name: string;
+  menus: AdminUserOrganizationMenuDto[];
+}
+
+/** Super admin : organisations et menus d’un utilisateur client. */
+export function adminUserOrganizations(userId: number) {
+  return api<AdminUserOrganizationDto[]>(`/api/admin/users/${userId}/organizations`);
+}
+
 export function adminCreateUser(data: {
   nom: string;
   prenom: string;

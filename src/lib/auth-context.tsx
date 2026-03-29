@@ -127,7 +127,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const res = await authLogin({ email, password });
       persist(res);
       await refreshUser();
-      router.push(prefixWithLocale("/dashboard", locale));
+      const dest = res.superAdmin ? "/dashboard/admin" : "/dashboard";
+      router.push(prefixWithLocale(dest, locale));
     },
     [persist, router, locale, refreshUser]
   );

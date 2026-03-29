@@ -62,6 +62,14 @@ export default function DashboardLayout({
   const pathname = usePathname();
   /** Route interne sans préfixe /de|/fr|/en (alignée sur les fichiers app/dashboard/...). */
   const path = stripLocaleFromPathname(pathname ?? "/");
+  const searchParams = useSearchParams();
+  const dashboardView = path === "/dashboard" ? searchParams.get("view") : null;
+  let activeOrgId: number | null = null;
+  const orgPathMatch = path.match(/^\/dashboard\/organisations\/(\d+)/);
+  if (orgPathMatch) {
+    activeOrgId = Number(orgPathMatch[1]);
+  }
+
   const localizePath = useCallback(
     (p: string, lang: Locale = locale) => prefixWithLocale(p, lang),
     [locale],
@@ -246,6 +254,15 @@ export default function DashboardLayout({
     }
   }, [path, isSuperAdmin, router, loading, localizePath]);
 
+  // Super admin : pas d’espace client (organisations / menus) — uniquement la gestion admin.
+  useEffect(() => {
+    if (loading || !token || !isSuperAdmin) return;
+    const orgListView = path === "/dashboard" && searchParams.get("view") === "organisations";
+    if (path.startsWith("/dashboard/organisations") || orgListView) {
+      router.replace(localizePath("/dashboard/admin"));
+    }
+  }, [loading, token, isSuperAdmin, path, searchParams, router, localizePath]);
+
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       const target = e.target as Node;
@@ -263,16 +280,15 @@ export default function DashboardLayout({
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  const searchParams = useSearchParams();
-  const dashboardView = path === "/dashboard" ? searchParams.get("view") : null;
-  let activeOrgId: number | null = null;
-  const match = path.match(/^\/dashboard\/organisations\/(\d+)/);
-  if (match) {
-    activeOrgId = Number(match[1]);
-  }
-
   useEffect(() => {
     async function loadOrgs() {
+      if (isSuperAdmin) {
+        setOrgs([]);
+        setCurrentOrgId(null);
+        setOrgsError("");
+        setOrgsLoading(false);
+        return;
+      }
       try {
         const list = await orgList();
         setOrgs(list);
@@ -323,7 +339,7 @@ export default function DashboardLayout({
     if (token) {
       loadOrgs();
     }
-  }, [token, router, logout, path, activeOrgId, localizePath]);
+  }, [token, router, logout, path, activeOrgId, localizePath, isSuperAdmin]);
 
   function handleSelectOrg(id: number) {
     setCurrentOrgId(id);
@@ -448,7 +464,7 @@ export default function DashboardLayout({
   const subscriptionHref = "/dashboard/subscription";
 
   return (
-    <div className="flex min-h-screen overflow-x-hidden bg-neutral-950 text-neutral-100">
+    <div className="flex min-h-screen min-w-0 bg-neutral-950 text-neutral-100">
       {/* Sidebar gauche */}
       <aside className="hidden w-72 flex flex-col border-r border-neutral-800 bg-neutral-950/95 px-5 py-6 shadow-xl/40 backdrop-blur lg:flex">
         <div className="mb-6 flex items-center gap-3">
@@ -955,7 +971,7 @@ export default function DashboardLayout({
           </div>
         )}
 
-        <main className="flex-1 overflow-y-auto overflow-x-hidden scroll-pb-28 bg-neutral-950/95 px-4 py-6 pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pb-[calc(8rem+env(safe-area-inset-bottom,0px))] lg:px-10 lg:py-8 lg:pb-10">
+        <main className="flex min-w-0 flex-1 scroll-pb-28 overflow-y-auto overflow-x-auto bg-neutral-950/95 px-4 py-6 pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pb-[calc(8rem+env(safe-area-inset-bottom,0px))] lg:overflow-x-visible lg:px-10 lg:py-8 lg:pb-10">
           {path.match(/^\/dashboard\/organisations\/[^/]+\/menus\/[^/]+/) ? (
             <div className="w-full min-w-0 max-w-full">{children}</div>
           ) : (

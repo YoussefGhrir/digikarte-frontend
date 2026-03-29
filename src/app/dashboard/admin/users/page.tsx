@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  IconBuilding,
   IconEdit,
   IconPlus,
   IconTrash,
@@ -14,7 +16,9 @@ import {
   adminListUsers,
   adminResetPassword,
   adminUpdateUser,
+  adminUserOrganizations,
   type AdminUserDto,
+  type AdminUserOrganizationDto,
   isApiError,
 } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
@@ -84,11 +88,13 @@ function ModalShell({
   children,
   onClose,
   closeLabel,
+  wide,
 }: {
   title: string;
   children: ReactNode;
   onClose: () => void;
   closeLabel: string;
+  wide?: boolean;
 }) {
   return (
     <div
@@ -98,7 +104,7 @@ function ModalShell({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-3xl border border-neutral-800 bg-neutral-950 p-6 shadow-xl"
+        className={`w-full rounded-3xl border border-neutral-800 bg-neutral-950 p-6 shadow-xl ${wide ? "max-w-2xl" : "max-w-lg"}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between gap-3">
@@ -171,6 +177,11 @@ export default function AdminUsersPage() {
 
   const [viewUser, setViewUser] = useState<AdminUserDto | null>(null);
 
+  const [orgsForUser, setOrgsForUser] = useState<AdminUserDto | null>(null);
+  const [orgsDetail, setOrgsDetail] = useState<AdminUserOrganizationDto[] | null>(null);
+  const [orgsLoading, setOrgsLoading] = useState(false);
+  const [orgsError, setOrgsError] = useState("");
+
   const [actionUser, setActionUser] = useState<AdminUserDto | null>(null);
   const [actionMode, setActionMode] = useState<"require" | "vip" | null>(null);
   const [actionSubmitting, setActionSubmitting] = useState(false);
@@ -197,6 +208,25 @@ export default function AdminUsersPage() {
     void reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  async function openUserOrgs(u: AdminUserDto) {
+    setOrgsForUser(u);
+    setOrgsDetail(null);
+    setOrgsError("");
+    setOrgsLoading(true);
+    try {
+      const data = await adminUserOrganizations(u.userId);
+      setOrgsDetail(data);
+    } catch (e) {
+      if (isApiError(e) && (e.status === 401 || e.status === 403)) {
+        router.replace(prefixWithLocale("/login", locale));
+        return;
+      }
+      setOrgsError(e instanceof Error ? e.message : t("adminUsersOrgsMenusLoadError", locale));
+    } finally {
+      setOrgsLoading(false);
+    }
+  }
 
   useEffect(() => {
     // Les routes sont séparées : VIP = /users, Normal = /users/normal.
@@ -485,7 +515,9 @@ export default function AdminUsersPage() {
       {loading ? (
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-6 text-sm text-neutral-400">{t("adminUsersLoading", locale)}</div>
       ) : (
-        <div className="w-full max-w-full overflow-x-auto rounded-2xl border border-neutral-800 bg-neutral-950/70 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
+        <>
+        <p className="text-xs text-neutral-500 md:hidden">{t("adminUsersOrgsMenusScrollHint", locale)}</p>
+        <div className="relative z-0 w-full min-w-0 max-w-full touch-pan-x overflow-x-auto overscroll-x-contain rounded-2xl border border-neutral-800 bg-neutral-950/70 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
           <table className="w-full min-w-[1040px] text-sm">
             <thead className="text-xs uppercase tracking-[0.14em] text-neutral-500">
               <tr className="border-b border-neutral-800">
@@ -553,6 +585,14 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-3 py-3 min-w-[420px] last:pr-4">
                       <div className="flex flex-nowrap items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => void openUserOrgs(u)}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/35 bg-amber-500/10 px-2.5 py-1.5 text-[11px] font-semibold text-amber-200 hover:bg-amber-500/15 whitespace-nowrap"
+                        >
+                          <IconBuilding className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                          {t("adminUsersOrgsMenusAction", locale)}
+                        </button>
                         <button
                           type="button"
                           onClick={() => setViewUser(u)}
@@ -634,6 +674,66 @@ export default function AdminUsersPage() {
             </tbody>
           </table>
         </div>
+        </>
+      )}
+
+      {orgsForUser && (
+        <ModalShell
+          wide
+          title={`${t("adminUsersOrgsMenusModalTitle", locale)} — ${orgsForUser.prenom} ${orgsForUser.nom}`}
+          onClose={() => {
+            setOrgsForUser(null);
+            setOrgsDetail(null);
+            setOrgsError("");
+          }}
+          closeLabel={t("adminModalClose", locale)}
+        >
+          {orgsLoading && (
+            <p className="text-sm text-neutral-400">{t("adminUsersLoading", locale)}</p>
+          )}
+          {!orgsLoading && orgsError && (
+            <div className="rounded-lg border border-red-500/40 bg-red-950/40 p-3 text-sm text-red-200">{orgsError}</div>
+          )}
+          {!orgsLoading && !orgsError && orgsDetail && orgsDetail.length === 0 && (
+            <p className="text-sm text-neutral-400">{t("adminUsersOrgsMenusEmpty", locale)}</p>
+          )}
+          {!orgsLoading && !orgsError && orgsDetail && orgsDetail.length > 0 && (
+            <ul className="max-h-[min(60vh,520px)] space-y-4 overflow-y-auto pr-1">
+              {orgsDetail.map((org) => (
+                <li key={org.organizationId} className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-3">
+                  <p className="font-semibold text-neutral-100">{org.name}</p>
+                  <p className="mt-0.5 text-[11px] text-neutral-500">#{org.organizationId}</p>
+                  {org.menus.length === 0 ? (
+                    <p className="mt-2 text-xs text-neutral-500">—</p>
+                  ) : (
+                    <ul className="mt-2 space-y-2 border-t border-neutral-800/80 pt-2">
+                      {org.menus.map((m) => (
+                        <li
+                          key={m.menuId}
+                          className="flex flex-col gap-1.5 text-sm text-neutral-300 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2"
+                        >
+                          <span className="font-medium text-neutral-200">{m.title ?? `Menu #${m.menuId}`}</span>
+                          {m.slug ? (
+                            <Link
+                              href={prefixWithLocale(`/menu/${m.slug}`, locale)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="w-fit text-xs font-semibold text-amber-400 hover:text-amber-300 underline-offset-2 hover:underline"
+                            >
+                              {t("adminUsersOrgsMenusPublicLink", locale)}
+                            </Link>
+                          ) : (
+                            <span className="text-xs text-neutral-600">{t("adminUsersOrgsMenusNoSlug", locale)}</span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </ModalShell>
       )}
 
       {/* Create modal */}

@@ -47,7 +47,8 @@ export default function DashboardPage() {
   const pathname = usePathname();
   const path = stripLocaleFromPathname(pathname ?? "/");
   const searchParams = useSearchParams();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  const isSuperAdmin = Boolean((user as { superAdmin?: boolean } | null)?.superAdmin);
 
   const view = searchParams.get("view") === "organisations" ? "organisations" : "dashboard";
 
@@ -64,6 +65,7 @@ export default function DashboardPage() {
   }, [orgs]);
 
   const load = useCallback(async () => {
+    if (isSuperAdmin) return;
     try {
       const list = await orgList();
       setOrgs(list);
@@ -83,11 +85,16 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  }, [logout]);
+  }, [logout, isSuperAdmin]);
 
   useEffect(() => {
+    if (isSuperAdmin) {
+      setLoading(false);
+      router.replace(prefixWithLocale("/dashboard/admin", locale));
+      return;
+    }
     load();
-  }, [load]);
+  }, [load, isSuperAdmin, router, locale]);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
