@@ -1225,84 +1225,87 @@ export default function MenuDetailPage() {
             onClick={() => setIsSectionModalOpen(false)}
           >
             <div
-              className="my-4 w-full max-w-2xl max-h-[min(90dvh,calc(100dvh-2rem))] overflow-y-auto overscroll-contain rounded-3xl border border-neutral-800 bg-neutral-950 p-6 shadow-2xl"
+              className="my-4 flex max-h-[min(92dvh,calc(100dvh-1rem))] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-950 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-            <div className="mb-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">
-                {t("menuChooseSectionKicker", locale)}
-              </p>
-              <h2 className="mt-1 font-forum text-2xl text-neutral-50">
-                {t("menuChooseSectionTitle", locale)}
-              </h2>
-              <p className="mt-2 text-sm font-medium text-neutral-200">
-                {t("menuChooseSectionSubtitle", locale)}
-              </p>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {[
-                { key: "hot", label: t("menuSectionHotDrinks", locale), glyph: "☕" },
-                { key: "cold", label: t("menuSectionColdDrinks", locale), glyph: "🥤" },
-                { key: "coffee", label: t("menuSectionCoffees", locale), glyph: "🍮" },
-                { key: "tea", label: t("menuSectionTeas", locale), glyph: "🍵" },
-                { key: "sandwich", label: t("menuSectionSandwiches", locale), glyph: "🥪" },
-                { key: "snacks", label: t("menuSectionSavorySnacks", locale), glyph: "🥨" },
-                { key: "desserts", label: t("menuSectionDesserts", locale), glyph: "🍰" },
-                { key: "breakfast", label: t("menuSectionBreakfast", locale), glyph: "🍳" },
-              ].map(({ key, label, glyph }) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => {
-                    const exists = itemsBySection.some(([k]) => k === label);
-                    if (!exists) setPendingNewSection(label);
-                    setIsSectionModalOpen(false);
-                  }}
-                  className="flex cursor-pointer items-center gap-3 rounded-2xl border border-neutral-800 bg-neutral-900/80 px-4 py-3 text-left text-sm text-neutral-100 hover:border-amber-400 hover:bg-neutral-900"
-                >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-950 text-base">
-                    {glyph}
-                  </span>
-                  <span className="font-medium">{label}</span>
-                </button>
-              ))}
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-[minmax(0,2.2fr)_minmax(0,1.3fr)]">
-              <div>
-                <label className="mb-1 block text-xs font-semibold uppercase tracking-[0.2em] text-neutral-400">
-                  {t("menuSectionCustomLabel", locale)}
-                </label>
-                <input
-                  value={customSectionTemp}
-                  onChange={(e) => setCustomSectionTemp(e.target.value)}
-                  className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100"
-                  placeholder={t("menuSectionCustomPlaceholder", locale)}
-                />
+              <div className="shrink-0 px-5 pb-3 pt-5 sm:px-6 sm:pb-4 sm:pt-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">
+                  {t("menuChooseSectionKicker", locale)}
+                </p>
+                <h2 className="mt-1 font-forum text-2xl text-neutral-50">
+                  {t("menuChooseSectionTitle", locale)}
+                </h2>
+                <p className="mt-2 text-sm font-medium text-neutral-200">
+                  {t("menuChooseSectionSubtitle", locale)}
+                </p>
               </div>
-              <div className="flex items-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsSectionModalOpen(false)}
-                  className="inline-flex flex-1 cursor-pointer items-center justify-center rounded-xl bg-neutral-700 px-4 py-2 text-sm text-white hover:bg-neutral-600"
-                >
-                  {t("dashboardCancel", locale)}
-                </button>
-                <button
-                  type="button"
-                  disabled={!customSectionTemp.trim()}
-                  onClick={() => {
-                    if (!customSectionTemp.trim()) return;
-                    const name = customSectionTemp.trim();
-                    const exists = itemsBySection.some(([k]) => k === name);
-                    if (!exists) setPendingNewSection(name);
-                    setIsSectionModalOpen(false);
-                  }}
-                  className="inline-flex flex-1 cursor-pointer items-center justify-center rounded-xl bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-900 hover:bg-amber-400 disabled:opacity-50"
-                >
-                  {t("menuAddSectionConfirm", locale)}
-                </button>
+              {/* Mobile : ~3 catégories visibles puis scroll ; desktop : zone scroll raisonnable en 2 colonnes */}
+              <div className="max-h-[min(15rem,36dvh)] shrink-0 overflow-y-auto overscroll-contain border-y border-neutral-800/80 px-5 py-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:thin] sm:max-h-[min(18rem,40dvh)] sm:px-6 lg:max-h-[min(22rem,46dvh)]">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {[
+                    { key: "hot", label: t("menuSectionHotDrinks", locale), glyph: "☕" },
+                    { key: "cold", label: t("menuSectionColdDrinks", locale), glyph: "🥤" },
+                    { key: "coffee", label: t("menuSectionCoffees", locale), glyph: "🍮" },
+                    { key: "tea", label: t("menuSectionTeas", locale), glyph: "🍵" },
+                    { key: "sandwich", label: t("menuSectionSandwiches", locale), glyph: "🥪" },
+                    { key: "snacks", label: t("menuSectionSavorySnacks", locale), glyph: "🥨" },
+                    { key: "desserts", label: t("menuSectionDesserts", locale), glyph: "🍰" },
+                    { key: "breakfast", label: t("menuSectionBreakfast", locale), glyph: "🍳" },
+                  ].map(({ key, label, glyph }) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => {
+                        const exists = itemsBySection.some(([k]) => k === label);
+                        if (!exists) setPendingNewSection(label);
+                        setIsSectionModalOpen(false);
+                      }}
+                      className="flex cursor-pointer items-center gap-3 rounded-2xl border border-neutral-800 bg-neutral-900/80 px-4 py-3 text-left text-sm text-neutral-100 hover:border-amber-400 hover:bg-neutral-900"
+                    >
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-neutral-950 text-base">
+                        {glyph}
+                      </span>
+                      <span className="min-w-0 font-medium leading-snug">{label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+              <div className="shrink-0 space-y-3 bg-neutral-950 px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom,0.75rem))] pt-4 sm:px-6 sm:py-5">
+                <div>
+                  <label className="mb-1 block text-xs font-semibold uppercase tracking-[0.2em] text-neutral-400">
+                    {t("menuSectionCustomLabel", locale)}
+                  </label>
+                  <input
+                    value={customSectionTemp}
+                    onChange={(e) => setCustomSectionTemp(e.target.value)}
+                    className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100"
+                    placeholder={t("menuSectionCustomPlaceholder", locale)}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsSectionModalOpen(false)}
+                    className="inline-flex min-h-[2.75rem] flex-1 cursor-pointer items-center justify-center rounded-xl bg-neutral-700 px-3 py-2 text-xs font-medium text-white hover:bg-neutral-600"
+                  >
+                    {t("dashboardCancel", locale)}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!customSectionTemp.trim()}
+                    onClick={() => {
+                      if (!customSectionTemp.trim()) return;
+                      const name = customSectionTemp.trim();
+                      const exists = itemsBySection.some(([k]) => k === name);
+                      if (!exists) setPendingNewSection(name);
+                      setIsSectionModalOpen(false);
+                    }}
+                    className="inline-flex min-h-[2.75rem] flex-1 cursor-pointer items-center justify-center rounded-xl bg-amber-500 px-3 py-2 text-[11px] font-medium leading-tight text-neutral-900 hover:bg-amber-400 disabled:opacity-50 sm:text-xs"
+                  >
+                    {t("menuAddSectionConfirm", locale)}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
