@@ -877,36 +877,6 @@ export const translations = {
     fr: "Actions",
     en: "Actions",
   },
-  adminUsersOrgsMenusAction: {
-    de: "Orte & Menüs",
-    fr: "Lieux & menus",
-    en: "Venues & menus",
-  },
-  adminUsersOrgsMenusModalTitle: {
-    de: "Organisationen & Menüs",
-    fr: "Organisations et menus",
-    en: "Organizations & menus",
-  },
-  adminUsersOrgsMenusEmpty: {
-    de: "Dieser Benutzer hat noch keine Organisation.",
-    fr: "Cet utilisateur n'a pas encore d'organisation.",
-    en: "This user has no organization yet.",
-  },
-  adminUsersOrgsMenusLoadError: {
-    de: "Laden fehlgeschlagen.",
-    fr: "Échec du chargement.",
-    en: "Failed to load.",
-  },
-  adminUsersOrgsMenusPublicLink: {
-    de: "Öffentliches Menü",
-    fr: "Menu public",
-    en: "Public menu",
-  },
-  adminUsersOrgsMenusNoSlug: {
-    de: "Kein Slug",
-    fr: "Pas de lien public",
-    en: "No public slug",
-  },
   adminUsersOrgsMenusScrollHint: {
     de: "Nach rechts wischen, um alle Aktionen zu sehen.",
     fr: "Faites défiler horizontalement pour voir toutes les actions.",
