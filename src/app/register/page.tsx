@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/auth-context";
 import { localeLabels, t, type Locale } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language-context";
-import { API_BASE, isApiError } from "@/lib/api";
+import { getBrowserApiRoot, isApiError } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
 import { prefixWithLocale, swapLocaleInBrowserPath } from "@/lib/locale-path";
@@ -25,7 +25,7 @@ export default function RegisterPage() {
     null
   );
 
-  const GOOGLE_LOGIN_URL = `${API_BASE}/api/auth/google/login-url`;
+  const GOOGLE_LOGIN_URL = `${getBrowserApiRoot()}/api/auth/google/login-url`;
 
   const languages: Locale[] = ["de", "fr", "en"];
   const [langOpen, setLangOpen] = useState(false);

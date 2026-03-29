@@ -1,10 +1,10 @@
 import type { Locale } from "@/lib/i18n";
 
 /**
- * URL absolue du backend Java (Route Handlers, pas de proxy).
- * Même priorité que next.config.js (rewrites /api).
+ * URL absolue du backend Java (Route Handlers, scripts serveur).
+ * Aligné sur `next.config.js` (rewrites `/api`).
  */
-function serverBackendBase(): string {
+export function getServerBackendBase(): string {
   const fromEnv = process.env.API_BACKEND_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
   if (fromEnv) return fromEnv.replace(/\/$/, "");
   if (process.env.NODE_ENV === "development") return "http://127.0.0.1:8080";
@@ -12,11 +12,34 @@ function serverBackendBase(): string {
 }
 
 /**
- * Base pour les requêtes API.
- * - Navigateur : '' → chemins relatifs `/api/...` proxifiés par Next vers le backend (recommandé sur digi-karte.com).
- * - Serveur : URL absolue (ex. redirection OAuth dans `app/api/.../route.ts`).
+ * Base utilisée à chaque `fetch` (évite une valeur figée au chargement du module).
+ * - Navigateur : '' → `/api/...` proxifié par Next vers le backend.
+ * - Option debug : `NEXT_PUBLIC_FORCE_DIRECT_API=true` + `NEXT_PUBLIC_API_BASE_URL` pour contourner le proxy.
+ * - Serveur : URL absolue.
  */
-export const API_BASE = typeof window === "undefined" ? serverBackendBase() : "";
+function resolveFetchBase(): string {
+  if (typeof window === "undefined") {
+    return getServerBackendBase();
+  }
+  const force =
+    process.env.NEXT_PUBLIC_FORCE_DIRECT_API === "1" ||
+    process.env.NEXT_PUBLIC_FORCE_DIRECT_API === "true";
+  if (force && process.env.NEXT_PUBLIC_API_BASE_URL) {
+    return process.env.NEXT_PUBLIC_API_BASE_URL.replace(/\/$/, "");
+  }
+  return "";
+}
+
+/** Racine API côté navigateur (préfixe avant `/api/...`). */
+export function getBrowserApiRoot(): string {
+  return resolveFetchBase();
+}
+
+/**
+ * @deprecated Préférer `getBrowserApiRoot()` (client) ou `getServerBackendBase()` (Route Handlers).
+ * Conservé pour compat ; sur le client vaut souvent "" (proxy).
+ */
+export const API_BASE = "";
 
 /** Même clé que `language-context` / middleware : langue courante pour les URLs QR côté API. */
 const CLIENT_LANG_STORAGE_KEY = "digikarte-lang";
@@ -93,7 +116,7 @@ export async function api<T>(
     headers[DIGIKARTE_LOCALE_HEADER] = routeLoc;
   }
 
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  const res = await fetch(`${resolveFetchBase()}${path}`, { ...options, headers });
 
   let parsedBody: any = null;
   let rawText: string | null = null;
@@ -218,7 +241,7 @@ export function authUpdateProfilePhoto(file: File): Promise<void> {
   }
   const formData = new FormData();
   formData.append("file", file);
-  return fetch(`${API_BASE}/api/auth/me/photo`, {
+  return fetch(`${resolveFetchBase()}/api/auth/me/photo`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: formData,
@@ -307,7 +330,7 @@ export function orgUpdatePhoto(id: number, file: File): Promise<void> {
   if (!token) return Promise.reject(new Error("Not authenticated"));
   const formData = new FormData();
   formData.append("file", file);
-  return fetch(`${API_BASE}/api/organizations/${id}/photo`, {
+  return fetch(`${resolveFetchBase()}/api/organizations/${id}/photo`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: formData,
@@ -458,7 +481,7 @@ export function menuQrImageUrl(menuId: number, size = 256, mode?: string, locale
   if (mode) params.set("mode", mode);
   const loc = locale ?? getClientRouteLocale();
   if (loc) params.set("locale", loc);
-  return `${API_BASE}/api/menus/${menuId}/qr?${params}` + (token ? `&_t=${token}` : "");
+  return `${resolveFetchBase()}/api/menus/${menuId}/qr?${params}` + (token ? `&_t=${token}` : "");
 }
 
 // Public (sans auth)
@@ -490,7 +513,7 @@ export interface MenuPublicDto {
 }
 
 export function menuPublicBySlug(slug: string) {
-  return fetch(`${API_BASE}/api/public/menu/${slug}`).then((r) => {
+  return fetch(`${resolveFetchBase()}/api/public/menu/${slug}`).then((r) => {
     if (!r.ok) throw new Error("Menu non trouvé");
     return r.json() as Promise<MenuPublicDto>;
   });
@@ -662,8 +685,78 @@ export interface AdminMetricsDto {
   byCountry: AdminCountryMetricsDto[];
 }
 
-export function adminGetMetrics(days = 30) {
-  return api<AdminMetricsDto>(`/api/admin/metrics?days=${days}`);
+function metricsPick(o: Record<string, unknown>, ...keys: string[]): unknown {
+  for (const k of keys) {
+    if (Object.prototype.hasOwnProperty.call(o, k) && o[k] !== undefined && o[k] !== null) {
+      return o[k];
+    }
+  }
+  return undefined;
+}
+
+function metricsInt(v: unknown, d = 0): number {
+  if (typeof v === "number" && Number.isFinite(v)) return Math.trunc(v);
+  if (typeof v === "string" && v.trim() !== "") {
+    const x = parseInt(v, 10);
+    if (!Number.isNaN(x)) return x;
+  }
+  return d;
+}
+
+function metricsDouble(v: unknown, d = 0): number {
+  if (typeof v === "number" && Number.isFinite(v)) return v;
+  if (typeof v === "string" && v.trim() !== "") {
+    const x = Number(v);
+    if (!Number.isNaN(x)) return x;
+  }
+  return d;
+}
+
+/** Accepte camelCase, snake_case ou enveloppe `{ data: … }` (évite un tableau de bord à 0 si le JSON diffère). */
+export function normalizeAdminMetrics(raw: unknown): AdminMetricsDto {
+  if (raw == null || typeof raw !== "object") {
+    throw new Error("Invalid admin metrics response");
+  }
+  let root = raw as Record<string, unknown>;
+  if (root.data && typeof root.data === "object") {
+    root = root.data as Record<string, unknown>;
+  }
+
+  const byCountryRaw = metricsPick(root, "byCountry", "by_country", "ByCountry");
+  let byCountry: AdminCountryMetricsDto[] = [];
+  if (Array.isArray(byCountryRaw)) {
+    byCountry = byCountryRaw.map((item) => {
+      const c = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
+      const q = (...keys: string[]) => metricsPick(c, ...keys);
+      return {
+        country: String(q("country", "Country") ?? "UNKNOWN"),
+        usersCount: metricsInt(q("usersCount", "users_count")),
+        menusCount: metricsInt(q("menusCount", "menus_count")),
+        activeSubscriptions: metricsInt(q("activeSubscriptions", "active_subscriptions")),
+        trialingSubscriptions: metricsInt(q("trialingSubscriptions", "trialing_subscriptions")),
+        expiredSubscriptions: metricsInt(q("expiredSubscriptions", "expired_subscriptions")),
+        cancelledSubscriptions: metricsInt(q("cancelledSubscriptions", "cancelled_subscriptions")),
+        subscriptionRate: metricsDouble(q("subscriptionRate", "subscription_rate")),
+      };
+    });
+  }
+
+  return {
+    totalUsers: metricsInt(metricsPick(root, "totalUsers", "total_users", "TotalUsers")),
+    activeSubscriptions: metricsInt(metricsPick(root, "activeSubscriptions", "active_subscriptions")),
+    trialingSubscriptions: metricsInt(metricsPick(root, "trialingSubscriptions", "trialing_subscriptions")),
+    expiredSubscriptions: metricsInt(metricsPick(root, "expiredSubscriptions", "expired_subscriptions")),
+    cancelledSubscriptions: metricsInt(metricsPick(root, "cancelledSubscriptions", "cancelled_subscriptions")),
+    subscriptionActiveRate: metricsDouble(metricsPick(root, "subscriptionActiveRate", "subscription_active_rate")),
+    revenuePaid: metricsDouble(metricsPick(root, "revenuePaid", "revenue_paid")),
+    revenueCurrency: String(metricsPick(root, "revenueCurrency", "revenue_currency") ?? "EUR"),
+    byCountry,
+  };
+}
+
+export async function adminGetMetrics(days = 30): Promise<AdminMetricsDto> {
+  const raw = await api<unknown>(`/api/admin/metrics?days=${days}`);
+  return normalizeAdminMetrics(raw);
 }
 
 export function adminListUsers(q?: string) {

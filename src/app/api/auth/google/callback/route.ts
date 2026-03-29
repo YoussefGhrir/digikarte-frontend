@@ -1,4 +1,4 @@
-import { API_BASE } from "@/lib/api";
+import { getServerBackendBase } from "@/lib/api";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect("https://www.digi-karte.com/login");
   }
 
-  const backendUrl = new URL(`${API_BASE}/api/auth/google/callback`);
+  const backendUrl = new URL(`${getServerBackendBase()}/api/auth/google/callback`);
   backendUrl.searchParams.set("code", code);
   if (state) {
     backendUrl.searchParams.set("state", state);
