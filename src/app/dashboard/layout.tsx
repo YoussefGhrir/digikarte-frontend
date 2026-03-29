@@ -971,7 +971,7 @@ export default function DashboardLayout({
           </div>
         )}
 
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden bg-neutral-950/95 px-4 py-6 pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] scroll-pb-28 sm:px-6 sm:pb-[calc(8rem+env(safe-area-inset-bottom,0px))] lg:overflow-x-visible lg:px-10 lg:py-8 lg:pb-10">
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overflow-x-clip bg-neutral-950/95 px-4 py-6 pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] scroll-pb-28 sm:px-6 sm:pb-[calc(8rem+env(safe-area-inset-bottom,0px))] lg:overflow-x-visible lg:px-10 lg:py-8 lg:pb-10">
           {path.match(/^\/dashboard\/organisations\/[^/]+\/menus\/[^/]+/) ? (
             <div className="flex min-h-0 w-full min-w-0 max-w-full flex-1 flex-col">{children}</div>
           ) : (
