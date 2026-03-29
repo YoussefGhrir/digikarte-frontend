@@ -670,7 +670,7 @@ export interface AdminUserOrganizationDto {
   menus: AdminUserOrganizationMenuDto[];
 }
 
-/** Super admin : organisations et menus d’un utilisateur client. */
+/** Admin / super admin : organisations et menus d’un utilisateur client. */
 export function adminUserOrganizations(userId: number) {
   return api<AdminUserOrganizationDto[]>(`/api/admin/users/${userId}/organizations`);
 }
