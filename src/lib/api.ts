@@ -672,7 +672,8 @@ export interface AdminUserOrganizationDto {
 
 /** Admin / super admin : organisations et menus d’un utilisateur client. */
 export function adminUserOrganizations(userId: number) {
-  return api<AdminUserOrganizationDto[]>(`/api/admin/users/${userId}/organizations`);
+  // Chemin dédié : sous Boot 4 / WebMVC 7, /api/admin/users/{id}/organizations peut être pris pour du statique.
+  return api<AdminUserOrganizationDto[]>(`/api/admin/user-organizations/${userId}`);
 }
 
 export function adminCreateUser(data: {
