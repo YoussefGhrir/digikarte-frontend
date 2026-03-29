@@ -116,7 +116,11 @@ export async function api<T>(
     headers[DIGIKARTE_LOCALE_HEADER] = routeLoc;
   }
 
-  const res = await fetch(`${resolveFetchBase()}${path}`, { ...options, headers });
+  const res = await fetch(`${resolveFetchBase()}${path}`, {
+    ...options,
+    headers,
+    cache: options.cache ?? "default",
+  });
 
   let parsedBody: any = null;
   let rawText: string | null = null;
@@ -717,6 +721,11 @@ export function normalizeAdminMetrics(raw: unknown): AdminMetricsDto {
   if (raw == null || typeof raw !== "object") {
     throw new Error("Invalid admin metrics response");
   }
+  if (Array.isArray(raw)) {
+    throw new Error(
+      "Admin metrics returned a JSON array (wrong endpoint or cached response). Check /api/admin/metrics.",
+    );
+  }
   let root = raw as Record<string, unknown>;
   if (root.data && typeof root.data === "object") {
     root = root.data as Record<string, unknown>;
@@ -755,7 +764,10 @@ export function normalizeAdminMetrics(raw: unknown): AdminMetricsDto {
 }
 
 export async function adminGetMetrics(days = 30): Promise<AdminMetricsDto> {
-  const raw = await api<unknown>(`/api/admin/metrics?days=${days}`);
+  const bust = Date.now();
+  const raw = await api<unknown>(`/api/admin/metrics?days=${days}&_=${bust}`, {
+    cache: "no-store",
+  });
   return normalizeAdminMetrics(raw);
 }
 
