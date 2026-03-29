@@ -88,6 +88,16 @@ export const translations = {
     fr: "Studio de menus QR digitaux",
     en: "Digital QR menu studio",
   },
+  landingMenuSetupNoteLabel: {
+    de: "Menü bearbeiten",
+    fr: "Édition du menu",
+    en: "Editing your menu",
+  },
+  landingMenuSetupNoteBody: {
+    de: "Die Einrichtung klappt auch auf dem Smartphone — auf dem PC oder Laptop ist sie übersichtlicher und angenehmer; dort empfehlen wir sie.",
+    fr: "Vous pouvez tout configurer depuis un smartphone — sur ordinateur, c’est plus pratique et confortable, nous vous le recommandons.",
+    en: "You can set everything up on your phone — a desktop or laptop is clearer and easier to use; that’s what we recommend.",
+  },
   heroTitle: {
     de: "Digitale Menüs mit QR-Code für Restaurant, Café und Bar",
     fr: "Menus digitaux QR pour restaurant, café et bar",
@@ -1287,6 +1297,11 @@ export const translations = {
     de: "Abmelden",
     fr: "Déconnexion",
     en: "Log out",
+  },
+  authRedirectingToLogin: {
+    de: "Weiterleitung zur Anmeldung…",
+    fr: "Redirection vers la connexion…",
+    en: "Redirecting to sign in…",
   },
   profileDeleteAccount: {
     de: "Konto löschen",

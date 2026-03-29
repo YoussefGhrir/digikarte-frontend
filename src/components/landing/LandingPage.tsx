@@ -217,8 +217,75 @@ export default function LandingPage({ syncLocale }: { syncLocale?: Locale }) {
         </div>
       </header>
 
+      <div className="mx-auto w-full max-w-6xl px-4 pb-2 pt-1 sm:px-6">
+        <aside
+          className="relative overflow-hidden rounded-2xl border border-amber-500/15 bg-white/60 px-3.5 py-3 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset] backdrop-blur-md dark:border-amber-400/10 dark:bg-neutral-950/40 dark:shadow-[0_1px_0_rgba(255,255,255,0.04)_inset] sm:px-4 sm:py-3.5"
+          aria-label={t("landingMenuSetupNoteLabel", locale)}
+        >
+          <div
+            className="pointer-events-none absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-amber-400/80 via-amber-500/50 to-emerald-500/60 dark:from-amber-300/70 dark:via-amber-400/40 dark:to-emerald-400/50"
+            aria-hidden
+          />
+          <div className="flex gap-3 pl-2 sm:gap-3.5 sm:pl-2.5">
+            <span
+              className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-neutral-200/80 bg-neutral-50/90 text-neutral-500 dark:border-neutral-700/80 dark:bg-neutral-900/80 dark:text-neutral-400"
+              aria-hidden
+            >
+              <span className="flex items-end gap-0.5">
+                <svg
+                  width="14"
+                  height="20"
+                  viewBox="0 0 14 20"
+                  fill="none"
+                  className="text-amber-600/90 dark:text-amber-400/80"
+                  aria-hidden
+                >
+                  <rect
+                    x="1"
+                    y="1"
+                    width="12"
+                    height="18"
+                    rx="2"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                  />
+                  <circle cx="7" cy="16" r="0.75" fill="currentColor" />
+                </svg>
+                <svg
+                  width="22"
+                  height="16"
+                  viewBox="0 0 22 16"
+                  fill="none"
+                  className="text-emerald-600/85 dark:text-emerald-400/75"
+                  aria-hidden
+                >
+                  <rect
+                    x="1"
+                    y="2"
+                    width="20"
+                    height="12"
+                    rx="1.5"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                  />
+                  <path d="M4 14.5h14" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
+                </svg>
+              </span>
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-700/90 dark:text-amber-300/85">
+                {t("landingMenuSetupNoteLabel", locale)}
+              </p>
+              <p className="mt-1 text-[13px] leading-snug text-neutral-600 dark:text-neutral-300 sm:text-sm sm:leading-relaxed">
+                {t("landingMenuSetupNoteBody", locale)}
+              </p>
+            </div>
+          </div>
+        </aside>
+      </div>
+
       {/* HERO principal : texte + carte QR moderne */}
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-20 overflow-x-hidden px-6 pb-20 pt-8 md:pt-10">
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-20 overflow-x-hidden px-6 pb-20 pt-4 md:pt-6">
         <section className="grid gap-10 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] md:items-center">
           {/* Colonne gauche : texte marketing */}
           <div>
