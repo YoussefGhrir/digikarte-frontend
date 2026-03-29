@@ -609,66 +609,77 @@ export default function AdminUsersPage() {
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-6 text-sm text-neutral-400">{t("adminUsersLoading", locale)}</div>
       ) : (
         <>
-        <div className="space-y-3 lg:hidden">
-          {filteredSorted.map((u) => {
-            const active = isActiveSubscription(u.subscriptionStatus);
-            return (
-              <div
-                key={u.userId}
-                className="box-border w-full max-w-full rounded-2xl border border-neutral-700 bg-neutral-950/80 p-4 shadow-inner"
-              >
-                <p className="font-forum text-lg text-neutral-50">
-                  {u.prenom} {u.nom}
-                </p>
-                <p className="mt-1 break-words text-sm text-neutral-300">{u.email}</p>
-                <p className="mt-2 text-xs text-neutral-500">
-                  {u.telephone} · {u.country ?? "—"}
-                </p>
-                <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-neutral-400">
-                  <span>
-                    {t("adminUsersOrganizationsLabel", locale)}: {u.organizationsCount}
-                  </span>
-                  <span>
-                    {t("adminUsersMenusLabel", locale)}: {u.menusCount}
-                  </span>
-                </div>
-                <div className="mt-3 flex flex-col gap-2">
-                  <span
-                    className={`inline-flex w-fit items-center rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${statusBadge(
-                      u.subscriptionStatus
-                    )}`}
-                  >
-                    {u.subscriptionStatus}
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    <span
-                      className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${
-                        active
-                          ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
-                          : "bg-red-500/10 text-red-300 border-red-500/30"
-                      }`}
-                    >
-                      {active ? t("adminSubscriptionActive", locale) : t("adminSubscriptionInactive", locale)}
-                    </span>
-                    <span
-                      className={`inline-flex w-fit items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${
-                        u.subscriptionBypass
-                          ? "border-emerald-400/40 bg-emerald-500/10 text-emerald-200"
-                          : "border-neutral-700 bg-neutral-900/60 text-neutral-400"
-                      }`}
-                    >
-                      {u.subscriptionBypass ? t("dashboardAdminVipShort", locale) : t("dashboardAdminNormalShort", locale)}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-4 border-t border-neutral-800 pt-3">{renderUserActions(u)}</div>
-              </div>
-            );
-          })}
-          {filteredSorted.length === 0 && (
+        <div className="lg:hidden">
+          {filteredSorted.length === 0 ? (
             <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-6 text-center text-sm text-neutral-500">
               {t("adminUsersNoUsersFound", locale)}
             </div>
+          ) : (
+            <>
+            <p className="mb-2 text-xs text-neutral-500">{t("adminUsersMobileListViewportHint", locale)}</p>
+            <div
+              className="max-h-[min(32rem,52dvh)] min-h-0 overflow-y-auto overscroll-y-contain rounded-2xl border border-neutral-800/90 bg-neutral-950/50 p-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:thin]"
+              aria-label={t("adminUsersMobileScrollListLabel", locale)}
+            >
+              <div className="space-y-3 pr-0.5">
+                {filteredSorted.map((u) => {
+                  const active = isActiveSubscription(u.subscriptionStatus);
+                  return (
+                    <div
+                      key={u.userId}
+                      className="box-border w-full max-w-full rounded-2xl border border-neutral-700 bg-neutral-950/90 p-4 shadow-inner"
+                    >
+                      <p className="font-forum text-lg text-neutral-50">
+                        {u.prenom} {u.nom}
+                      </p>
+                      <p className="mt-1 break-words text-sm text-neutral-300">{u.email}</p>
+                      <p className="mt-2 text-xs text-neutral-500">
+                        {u.telephone} · {u.country ?? "—"}
+                      </p>
+                      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-neutral-400">
+                        <span>
+                          {t("adminUsersOrganizationsLabel", locale)}: {u.organizationsCount}
+                        </span>
+                        <span>
+                          {t("adminUsersMenusLabel", locale)}: {u.menusCount}
+                        </span>
+                      </div>
+                      <div className="mt-3 flex flex-col gap-2">
+                        <span
+                          className={`inline-flex w-fit items-center rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${statusBadge(
+                            u.subscriptionStatus
+                          )}`}
+                        >
+                          {u.subscriptionStatus}
+                        </span>
+                        <div className="flex flex-wrap gap-2">
+                          <span
+                            className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${
+                              active
+                                ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
+                                : "bg-red-500/10 text-red-300 border-red-500/30"
+                            }`}
+                          >
+                            {active ? t("adminSubscriptionActive", locale) : t("adminSubscriptionInactive", locale)}
+                          </span>
+                          <span
+                            className={`inline-flex w-fit items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${
+                              u.subscriptionBypass
+                                ? "border-emerald-400/40 bg-emerald-500/10 text-emerald-200"
+                                : "border-neutral-700 bg-neutral-900/60 text-neutral-400"
+                            }`}
+                          >
+                            {u.subscriptionBypass ? t("dashboardAdminVipShort", locale) : t("dashboardAdminNormalShort", locale)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="mt-4 border-t border-neutral-800 pt-3">{renderUserActions(u)}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            </>
           )}
         </div>
 

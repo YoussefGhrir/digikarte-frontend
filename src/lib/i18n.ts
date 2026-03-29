@@ -902,6 +902,16 @@ export const translations = {
     fr: "Faites défiler horizontalement pour voir toutes les actions.",
     en: "Scroll sideways to see all actions.",
   },
+  adminUsersMobileScrollListLabel: {
+    de: "Benutzerliste",
+    fr: "Liste des utilisateurs",
+    en: "User list",
+  },
+  adminUsersMobileListViewportHint: {
+    de: "Nach unten scrollen, um weitere Benutzer zu sehen.",
+    fr: "Faites défiler vers le bas pour voir plus d’utilisateurs.",
+    en: "Scroll down to see more users.",
+  },
   adminUsersKicker: {
     de: "Admin",
     fr: "Admin",
