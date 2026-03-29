@@ -49,7 +49,7 @@ export default function OrganisationPage() {
       setMenus(menusData);
     } catch (e) {
       if (isApiError(e) && (e.status === 401 || e.status === 403)) {
-        logout({ redirectTo: prefixWithLocale("/", locale) });
+        logout();
         return;
       }
       setError(e instanceof Error ? e.message : "Erreur");

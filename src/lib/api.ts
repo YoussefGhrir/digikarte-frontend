@@ -1,9 +1,22 @@
 import type { Locale } from "@/lib/i18n";
 
-// Backend API (configurable en prod via NEXT_PUBLIC_API_BASE_URL)
-export const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ||
-  "https://digicarte-043d88a805be.herokuapp.com";
+/**
+ * URL absolue du backend Java (Route Handlers, pas de proxy).
+ * Même priorité que next.config.js (rewrites /api).
+ */
+function serverBackendBase(): string {
+  const fromEnv = process.env.API_BACKEND_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (fromEnv) return fromEnv.replace(/\/$/, "");
+  if (process.env.NODE_ENV === "development") return "http://127.0.0.1:8080";
+  return "https://digicarte-043d88a805be.herokuapp.com";
+}
+
+/**
+ * Base pour les requêtes API.
+ * - Navigateur : '' → chemins relatifs `/api/...` proxifiés par Next vers le backend (recommandé sur digi-karte.com).
+ * - Serveur : URL absolue (ex. redirection OAuth dans `app/api/.../route.ts`).
+ */
+export const API_BASE = typeof window === "undefined" ? serverBackendBase() : "";
 
 /** Même clé que `language-context` / middleware : langue courante pour les URLs QR côté API. */
 const CLIENT_LANG_STORAGE_KEY = "digikarte-lang";

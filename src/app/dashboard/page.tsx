@@ -78,7 +78,7 @@ export default function DashboardPage() {
       }
     } catch (e) {
       if (isApiError(e) && (e.status === 401 || e.status === 403 || e.status === 404)) {
-        logout({ redirectTo: "/" });
+        logout();
         return;
       }
       setError(e instanceof Error ? e.message : "Erreur");
