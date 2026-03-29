@@ -420,8 +420,89 @@ export default function AdminUsersPage() {
     }
   }
 
+  function renderUserActions(u: AdminUserDto) {
+    return (
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => void openUserOrgs(u)}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/35 bg-amber-500/10 px-2.5 py-1.5 text-[11px] font-semibold text-amber-200 hover:bg-amber-500/15 whitespace-nowrap"
+        >
+          <IconBuilding className="h-3.5 w-3.5 shrink-0" aria-hidden />
+          {t("adminUsersOrgsMenusAction", locale)}
+        </button>
+        <button
+          type="button"
+          onClick={() => setViewUser(u)}
+          className="rounded-lg bg-neutral-900/40 px-2.5 py-1.5 text-[11px] font-semibold text-neutral-200 hover:bg-neutral-900 whitespace-nowrap"
+          aria-label={t("adminUsersViewAction", locale)}
+        >
+          <span className="inline-flex items-center gap-2">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden
+            >
+              <path
+                d="M2 12C2 12 5.5 5 12 5C18.5 5 22 12 22 12C22 12 18.5 19 12 19C5.5 19 2 12 2 12Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            {t("adminUsersViewAction", locale)}
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => openEdit(u)}
+          className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-orange-500/90 text-white hover:bg-orange-400"
+          aria-label={t("adminUsersEditAction", locale)}
+        >
+          <IconEdit className="inline-block h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setResetUser(u);
+            setResetPassword("");
+            setResetError("");
+          }}
+          className="rounded-lg bg-sky-600/90 px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-sky-500 whitespace-nowrap"
+          aria-label={t("adminUsersResetPasswordAction", locale)}
+        >
+          {t("adminUsersResetPasswordAction", locale)}
+        </button>
+        {isSuperAdmin && (
+          <button
+            type="button"
+            onClick={() => {
+              setDeleteUser(u);
+              setDeleteError("");
+            }}
+            className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/90 text-white hover:bg-red-400"
+            aria-label={t("adminUsersDeleteAction", locale)}
+          >
+            <IconTrash className="inline-block h-4 w-4" />
+          </button>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="min-w-0 space-y-6">
+    <div className="w-full min-w-0 max-w-full space-y-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">{t("adminUsersKicker", locale)}</p>
@@ -457,7 +538,7 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      <div className="w-full min-w-0 rounded-3xl border border-neutral-600/90 bg-gradient-to-br from-neutral-900 via-neutral-950 to-neutral-900 p-4 shadow-[0_14px_40px_rgba(0,0,0,0.45)] ring-1 ring-white/5 sm:p-5">
+      <div className="box-border w-full min-w-0 max-w-full rounded-3xl border border-neutral-600/90 bg-gradient-to-br from-neutral-900 via-neutral-950 to-neutral-900 p-4 shadow-[0_14px_40px_rgba(0,0,0,0.45)] ring-1 ring-inset ring-white/10 sm:p-5">
         <div className="flex flex-col gap-4">
           <div className="min-w-0">
             <label className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-400">
@@ -485,7 +566,7 @@ export default function AdminUsersPage() {
                 <option value="inactive">{t("adminUsersStatusInactiveOption", locale)}</option>
               </select>
             </div>
-            <div className="min-w-0 sm:max-lg:col-span-2 lg:flex-1 lg:min-w-[min(100%,280px)]">
+            <div className="min-w-0 sm:max-lg:col-span-2 lg:flex-1 lg:min-w-[280px]">
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.18em] text-neutral-400">
                 {t("adminUsersSortLabel", locale)}
               </label>
@@ -528,8 +609,71 @@ export default function AdminUsersPage() {
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-6 text-sm text-neutral-400">{t("adminUsersLoading", locale)}</div>
       ) : (
         <>
-        <p className="text-xs text-neutral-400 md:hidden">{t("adminUsersOrgsMenusScrollHint", locale)}</p>
-        <div className="relative z-0 w-full min-w-0 max-w-full overflow-x-auto overscroll-x-contain rounded-2xl border border-neutral-800 bg-neutral-950/70 touch-pan-x [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
+        <div className="space-y-3 lg:hidden">
+          {filteredSorted.map((u) => {
+            const active = isActiveSubscription(u.subscriptionStatus);
+            return (
+              <div
+                key={u.userId}
+                className="box-border w-full max-w-full rounded-2xl border border-neutral-700 bg-neutral-950/80 p-4 shadow-inner"
+              >
+                <p className="font-forum text-lg text-neutral-50">
+                  {u.prenom} {u.nom}
+                </p>
+                <p className="mt-1 break-words text-sm text-neutral-300">{u.email}</p>
+                <p className="mt-2 text-xs text-neutral-500">
+                  {u.telephone} · {u.country ?? "—"}
+                </p>
+                <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-neutral-400">
+                  <span>
+                    {t("adminUsersOrganizationsLabel", locale)}: {u.organizationsCount}
+                  </span>
+                  <span>
+                    {t("adminUsersMenusLabel", locale)}: {u.menusCount}
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-col gap-2">
+                  <span
+                    className={`inline-flex w-fit items-center rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${statusBadge(
+                      u.subscriptionStatus
+                    )}`}
+                  >
+                    {u.subscriptionStatus}
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    <span
+                      className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${
+                        active
+                          ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
+                          : "bg-red-500/10 text-red-300 border-red-500/30"
+                      }`}
+                    >
+                      {active ? t("adminSubscriptionActive", locale) : t("adminSubscriptionInactive", locale)}
+                    </span>
+                    <span
+                      className={`inline-flex w-fit items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${
+                        u.subscriptionBypass
+                          ? "border-emerald-400/40 bg-emerald-500/10 text-emerald-200"
+                          : "border-neutral-700 bg-neutral-900/60 text-neutral-400"
+                      }`}
+                    >
+                      {u.subscriptionBypass ? t("dashboardAdminVipShort", locale) : t("dashboardAdminNormalShort", locale)}
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-4 border-t border-neutral-800 pt-3">{renderUserActions(u)}</div>
+              </div>
+            );
+          })}
+          {filteredSorted.length === 0 && (
+            <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-6 text-center text-sm text-neutral-500">
+              {t("adminUsersNoUsersFound", locale)}
+            </div>
+          )}
+        </div>
+
+        <p className="mb-2 hidden text-xs text-neutral-400 lg:block">{t("adminUsersOrgsMenusScrollHint", locale)}</p>
+        <div className="relative z-0 hidden w-full min-w-0 overflow-x-auto overscroll-x-contain rounded-2xl border border-neutral-800 bg-neutral-950/70 [-webkit-overflow-scrolling:touch] [scrollbar-width:thin] lg:block">
           <table className="w-full min-w-[1520px] border-collapse text-sm lg:min-w-0">
             <thead className="text-xs uppercase tracking-[0.14em] text-neutral-500">
               <tr className="border-b border-neutral-800">
@@ -595,84 +739,7 @@ export default function AdminUsersPage() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-3 py-3 min-w-[420px] last:pr-4">
-                      <div className="flex flex-nowrap items-center gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => void openUserOrgs(u)}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/35 bg-amber-500/10 px-2.5 py-1.5 text-[11px] font-semibold text-amber-200 hover:bg-amber-500/15 whitespace-nowrap"
-                        >
-                          <IconBuilding className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                          {t("adminUsersOrgsMenusAction", locale)}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setViewUser(u)}
-                          className="rounded-lg bg-neutral-900/40 px-2.5 py-1.5 text-[11px] font-semibold text-neutral-200 hover:bg-neutral-900 whitespace-nowrap"
-                          aria-label={t("adminUsersViewAction", locale)}
-                        >
-                          <span className="inline-flex items-center gap-2">
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                              aria-hidden
-                            >
-                              <path
-                                d="M2 12C2 12 5.5 5 12 5C18.5 5 22 12 22 12C22 12 18.5 19 12 19C5.5 19 2 12 2 12Z"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            {t("adminUsersViewAction", locale)}
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => openEdit(u)}
-                          className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-orange-500/90 text-white hover:bg-orange-400"
-                          aria-label={t("adminUsersEditAction", locale)}
-                        >
-                          <IconEdit className="inline-block h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setResetUser(u);
-                            setResetPassword("");
-                            setResetError("");
-                          }}
-                          className="rounded-lg bg-sky-600/90 px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-sky-500 whitespace-nowrap"
-                          aria-label={t("adminUsersResetPasswordAction", locale)}
-                        >
-                          {t("adminUsersResetPasswordAction", locale)}
-                        </button>
-                        {isSuperAdmin && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setDeleteUser(u);
-                              setDeleteError("");
-                            }}
-                            className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/90 text-white hover:bg-red-400"
-                            aria-label={t("adminUsersDeleteAction", locale)}
-                          >
-                            <IconTrash className="inline-block h-4 w-4" />
-                          </button>
-                        )}
-                      </div>
-                    </td>
+                    <td className="px-3 py-3 min-w-[420px] last:pr-4">{renderUserActions(u)}</td>
                   </tr>
                 );
               })}
