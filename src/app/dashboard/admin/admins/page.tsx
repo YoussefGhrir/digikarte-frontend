@@ -270,17 +270,15 @@ export default function AdminAdminsPage() {
         </div>
       </div>
 
-      <div className="rounded-3xl border border-neutral-700 bg-gradient-to-br from-neutral-950 via-neutral-950 to-neutral-900/90 p-4 shadow-[0_14px_40px_rgba(0,0,0,0.45)]">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div className="flex-1">
-            <label className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">{t("adminUsersSearchLabel", locale)}</label>
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder={t("adminUsersSearchPlaceholder", locale)}
-              className="mt-2 w-full rounded-2xl border border-neutral-700 bg-neutral-950/80 px-3.5 py-3 text-sm text-neutral-100 shadow-inner outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-            />
-          </div>
+      <div className="w-full min-w-0 overflow-hidden rounded-3xl border border-neutral-600/90 bg-gradient-to-br from-neutral-900 via-neutral-950 to-neutral-900 p-4 shadow-[0_14px_40px_rgba(0,0,0,0.45)] ring-1 ring-white/5 sm:p-5">
+        <div className="min-w-0">
+          <label className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-400">{t("adminUsersSearchLabel", locale)}</label>
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={t("adminUsersSearchPlaceholder", locale)}
+            className="mt-2 w-full min-w-0 rounded-2xl border border-neutral-600 bg-neutral-900/95 px-3.5 py-3 text-sm text-neutral-100 shadow-inner outline-none transition placeholder:text-neutral-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/25"
+          />
         </div>
       </div>
 
@@ -294,9 +292,10 @@ export default function AdminAdminsPage() {
         </div>
       ) : (
         <>
-        <p className="text-xs text-neutral-500 md:hidden">{t("adminUsersOrgsMenusScrollHint", locale)}</p>
-        <div className="relative z-0 w-full min-w-0 max-w-full touch-pan-x overflow-x-auto overscroll-x-contain rounded-2xl border border-neutral-800 bg-neutral-950/70 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]">
-          <table className="w-full min-w-[1040px] text-sm">
+        <p className="text-xs text-neutral-400 md:hidden">{t("adminUsersOrgsMenusScrollHint", locale)}</p>
+        <div className="relative z-0 -mx-1 w-full min-w-0 max-w-full overflow-x-auto overscroll-x-contain px-1 pb-1 max-lg:touch-pan-x max-lg:[scrollbar-width:thin] max-lg:[-webkit-overflow-scrolling:touch] lg:mx-0 lg:overflow-x-visible lg:px-0 lg:pb-0">
+          <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70">
+            <table className="w-max min-w-full text-sm lg:w-full lg:min-w-0">
             <thead className="text-xs uppercase tracking-[0.14em] text-neutral-500">
               <tr className="border-b border-neutral-800">
                 <th className="px-3 py-3 text-left font-medium whitespace-nowrap first:pl-4">{t("profileFirstName", locale)}</th>
@@ -423,6 +422,7 @@ export default function AdminAdminsPage() {
               )}
             </tbody>
           </table>
+          </div>
         </div>
         </>
       )}
